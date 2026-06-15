@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barameter</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤦🏻‍♀️</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0a0a0b; color: white; font-family: system-ui, -apple-system, sans-serif; }
+        .glass { background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); }
+        .status-good { background: linear-gradient(145deg, #052e16, #14532d); border-color: #22c55e; }
+        .status-warn { background: linear-gradient(145deg, #431407, #78350f); border-color: #f59e0b; }
+        .status-bad { background: linear-gradient(145deg, #450a0a, #7f1d1d); border-color: #ef4444; }
+    </style>
+</head>
+<body class="p-4 max-w-md mx-auto">
+
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <h1 class="text-4xl font-black tracking-tighter">Barameter</h1>
+            <p class="text-zinc-500 text-sm">Nezúfaj, Bara ti povie, že čo!</p>
+        </div>
+        <button onclick="useMyLocation()" class="p-3 glass rounded-2xl text-2xl">📍</button>
+    </div>
+
+    <div class="relative mb-6">
+        <div class="flex gap-2">
+            <input id="cityInput" type="text" placeholder="Zadaj mesto..." 
+                   class="flex-1 bg-zinc-900 border border-zinc-800 rounded-2xl px-5 py-3 text-lg focus:outline-none focus:border-emerald-500">
+            <button onclick="searchCity()" class="bg-emerald-600 hover:bg-emerald-500 px-6 rounded-2xl font-bold">Hľadať</button>
+        </div>
+        
+        <!-- Autocomplete suggestions -->
+        <div id="suggestions" class="hidden absolute z-50 mt-1 w-full bg-zinc-900 border border-zinc-700 rounded-2xl overflow-hidden shadow-xl"></div>
+    </div>
+
+    <!-- Main Status Card -->
+    <div id="statusCard" onclick="showTipsModal()"
+         class="glass rounded-3xl p-8 border mb-6 transition-all duration-300 cursor-pointer">
+        
+        <div class="flex justify-between items-start mb-4">
+            <div>
+                <div id="locationName" class="text-2xl font-bold">Bratislava</div>
+                <div id="currentTime" class="text-emerald-400 text-sm font-mono mt-0.5"></div>
+            </div>
+            <button onclick="event.stopImmediatePropagation(); openMap()" class="text-3xl opacity-70 hover:opacity-100">🗺️</button>
+        </div>
+
+        <div class="text-center py-8">
+            <div id="statusEmoji" class="text-8xl mb-4">⏳</div>
+            <div id="statusText" class="text-5xl font-black tracking-tighter">Načítavam...</div>
+            <div id="statusDesc" class="text-zinc-400 mt-3 text-xl"></div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4 text-center text-sm">
+            <div>
+                <div class="text-zinc-500">Teplota</div>
+                <div id="temp" class="font-bold text-2xl mt-1">--°C</div>
+            </div>
+            <div>
+                <div class="text-zinc-500">Vietor</div>
+                <div id="wind" class="font-bold text-2xl mt-1">-- km/h</div>
+            </div>
+            <div>
+                <div class="text-zinc-500">Dážď</div>
+                <div id="rain" class="font-bold text-2xl mt-1">--</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tips Modal -->
+    <div id="tipsModal" onclick="hideTipsModal()" 
+         class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+        <div onclick="event.stopImmediatePropagation()" 
+             class="glass rounded-3xl p-8 max-w-sm w-full mx-4 border border-zinc-700">
+            
+            <div class="flex justify-between items-center mb-6">
+                <div class="font-bold text-xl">Tipy pre filmárov</div>
+                <button onclick="hideTipsModal()" class="text-3xl text-zinc-400 hover:text-white">×</button>
+            </div>
+            
+            <div id="modalTipsContent" class="space-y-4 text-base"></div>
+            
+            <button onclick="hideTipsModal()" 
+                    class="mt-8 w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl font-medium">
+                Zavrieť
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentLat = 48.1486;
+        let currentLon = 17.1077;
+        let currentCity = "Bratislava";
+        let currentStatusType = "good";
+
+        function updateTime() {
+            const el = document.getElementById('currentTime');
+            const now = new Date();
+            el.innerText = now.toLocaleTimeString('sk-SK', { hour: '2-digit', minute: '2-digit' });
+        }
+        setInterval(updateTime, 30000);
+        updateTime();
+
+        function setStatus(statusClass, emoji, text, desc, statusType) {
+            const card = document.getElementById('statusCard');
+            card.className = `glass rounded-3xl p-8 border mb-6 transition-all duration-300 cursor-pointer ${statusClass}`;
+            
+            document.getElementById('statusEmoji').innerText = emoji;
+            document.getElementById('statusText').innerText = text;
+            document.getElementById('statusDesc').innerText = desc;
+            currentStatusType = statusType;
+        }
+
+        function showTipsModal() {
+            const modal = document.getElementById('tipsModal');
+            const content = document.getElementById('modalTipsContent');
+            
+            let html = '';
+
+            if (currentStatusType === 'good') {
+                html = `
+                    <div class="flex gap-3"><span class="text-emerald-400 mt-1">→</span> <span>Využi dobré svetlo na široké zábery a detaily.</span></div>
+                    <div class="flex gap-3"><span class="text-emerald-400 mt-1">→</span> <span>Skontroluj expozíciu – môže byť príliš jasno.</span></div>
+                    <div class="flex gap-3"><span class="text-emerald-400 mt-1">→</span> <span>Ideálny čas na natural look bez veľkých úprav.</span></div>
+                `;
+            } else if (currentStatusType === 'warn') {
+                html = `
+                    <div class="flex gap-3"><span class="text-amber-400 mt-1">→</span> <span><strong>Vietor:</strong> Veterník na mikrofón + zaisti statív.</span></div>
+                    <div class="flex gap-3"><span class="text-amber-400 mt-1">→</span> <span><strong>Prehánky:</strong> Maj pripravené ochranné plachty na kameru.</span></div>
+                    <div class="flex gap-3"><span class="text-amber-400 mt-1">→</span> <span>Zváž kratšie zábery a rýchlejšie presuny.</span></div>
+                `;
+            } else {
+                html = `
+                    <div class="flex gap-3"><span class="text-red-400 mt-1">→</span> <span><strong>Dažď / búrka:</strong> Chráň všetku elektroniku. Ideálne zostaň vnútri.</span></div>
+                    <div class="flex gap-3"><span class="text-red-400 mt-1">→</span> <span>Ak musíš točiť: Použi dažďový kryt + extra batérie.</span></div>
+                    <div class="flex gap-3"><span class="text-red-400 mt-1">→</span> <span>Zváž presunutie natáčania na iný deň.</span></div>
+                `;
+            }
+
+            content.innerHTML = html;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function hideTipsModal() {
+            const modal = document.getElementById('tipsModal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
+
+        async function fetchWeather(lat, lon, cityName) {
+            currentLat = lat;
+            currentLon = lon;
+            currentCity = cityName || "Tvoja poloha";
+            document.getElementById('locationName').innerText = currentCity;
+
+            try {
+                const res = await fetch(
+                    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+                    `&current=temperature_2m,wind_speed_10m,weather_code,precipitation` +
+                    `&timezone=auto`
+                );
+                
+                if (!res.ok) throw new Error();
+
+                const data = await res.json();
+                const curr = data.current;
+
+                document.getElementById('temp').innerText = Math.round(curr.temperature_2m) + "°C";
+                document.getElementById('wind').innerText = Math.round(curr.wind_speed_10m) + " km/h";
+                document.getElementById('rain').innerText = curr.precipitation > 0 ? "Áno" : "Nie";
+
+                const wind = curr.wind_speed_10m;
+                const code = curr.weather_code;
+
+                if (code >= 61 || code === 95 || wind > 35) {
+                    setStatus("status-bad", "❌", "Zmotaj káble a choď!", "Dážď / silný vietor / búrka", "bad");
+                } 
+                else if (wind > 20 || code >= 45 || curr.precipitation > 0) {
+                    setStatus("status-warn", "⚠️", "Ježííš..davaj pozor dnes!", "Vietor alebo prehánky", "warn");
+                } 
+                else {
+                    setStatus("status-good", "✅", "Nekukaj a toč!", "Dobré podmienky, žiadne nadčasy", "good");
+                }
+
+            } catch (error) {
+                setStatus("status-bad", "⚠️", "Chyba", "Nepodarilo sa načítať počasie", "bad");
+            }
+        }
+
+        function searchCity() {
+            const input = document.getElementById('cityInput').value.trim();
+            if (!input) return;
+
+            fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(input)}&count=1&language=sk`)
+                .then(r => r.json())
+                .then(d => {
+                    if (d.results && d.results[0]) {
+                        fetchWeather(d.results[0].latitude, d.results[0].longitude, d.results[0].name);
+                    } else {
+                        alert("Mesto nenájdené");
+                    }
+                });
+        }
+
+        function useMyLocation() {
+            if (!navigator.geolocation) return alert("Geolokácia nie je podporovaná");
+            navigator.geolocation.getCurrentPosition(p => {
+                fetchWeather(p.coords.latitude, p.coords.longitude, "Moja poloha");
+            });
+        }
+
+        function openMap() {
+    var city = document.getElementById('locationName').innerText;
+    // Použijeme klasické spájanie reťazcov, kde nemôže vzniknúť SyntaxError
+    var url = 'https://www.google.com/maps/search/' + encodeURIComponent(city);
+    window.open(url, '_blank');
+}
+
+        // Autocomplete
+        let debounceTimer = null;
+        const cityInput = document.getElementById('cityInput');
+        const suggestionsBox = document.getElementById('suggestions');
+
+        cityInput.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(async () => {
+                const query = cityInput.value.trim();
+                if (query.length < 2) {
+                    suggestionsBox.classList.add('hidden');
+                    return;
+                }
+
+                try {
+                    const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=5&language=sk`);
+                    const data = await res.json();
+
+                    suggestionsBox.innerHTML = '';
+                    if (!data.results || data.results.length === 0) {
+                        suggestionsBox.classList.add('hidden');
+                        return;
+                    }
+
+                    data.results.forEach(city => {
+                        const div = document.createElement('div');
+                        div.className = 'px-5 py-3 hover:bg-zinc-800 cursor-pointer flex justify-between text-sm border-b border-zinc-800 last:border-none';
+                        div.innerHTML = `
+                            <span class="font-medium">${city.name}</span>
+                            <span class="text-zinc-500 text-xs">${city.admin1 || ''} ${city.country || ''}</span>
+                        `;
+                        div.onclick = () => {
+                            cityInput.value = city.name;
+                            suggestionsBox.classList.add('hidden');
+                            fetchWeather(city.latitude, city.longitude, city.name);
+                        };
+                        suggestionsBox.appendChild(div);
+                    });
+
+                    suggestionsBox.classList.remove('hidden');
+                } catch (e) {
+                    suggestionsBox.classList.add('hidden');
+                }
+            }, 280);
+        });
+
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!suggestionsBox.contains(e.target) && e.target !== cityInput) {
+                suggestionsBox.classList.add('hidden');
+            }
+        });
+
+        document.getElementById('cityInput').addEventListener('keypress', e => {
+            if (e.key === 'Enter') {
+                suggestionsBox.classList.add('hidden');
+                searchCity();
+            }
+        });
+
+        // Initial load
+        fetchWeather(48.1486, 17.1077, "Bratislava");
+    </script>
+</body>
+</html>
