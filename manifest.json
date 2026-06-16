@@ -1,9 +1,9 @@
 {
-  "name": "Bara meter",
-  "short_name": "Bara",
+  "name": "Barameter",
+  "short_name": "Barameter",
   "start_url": "index.html",
   "display": "fullscreen",
-  "background_color": "#333333",
+  "background_color": "#000000",
   "theme_color": "#333333",
   "icons": [
     {
