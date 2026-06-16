@@ -3,11 +3,11 @@
   "short_name": "Bara",
   "start_url": "index.html",
   "display": "fullscreen",
-  "background_color": "#0a0a0b",
-  "theme_color": "#0a0a0b",
+  "background_color": "#333333",
+  "theme_color": "#333333",
   "icons": [
     {
-      "src": "https://www.svgrepo.com/show/407865/woman-facepalming-light-skin-tone.svg",
+      "src": "icons/woman-facepalming.svg",
       "sizes": "any",
       "type": "image/svg+xml"
     }
