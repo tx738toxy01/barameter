@@ -191,16 +191,6 @@
             }
         }
 
-function toggleFullScreen() {
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-    } else {
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        }
-    }
-}
-
         function searchCity() {
             const input = document.getElementById('cityInput').value.trim();
             if (!input) return;
