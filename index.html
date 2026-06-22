@@ -38,43 +38,56 @@
     </div>
 
     <!-- Main Status Card -->
-    <div id="statusCard" onclick="showTipsModal()"
-         class="glass rounded-3xl p-8 border mb-6 transition-all duration-300 cursor-pointer">
+    <div class="space-y-4 mb-6">
         
-        <div class="flex justify-between items-start mb-4">
-            <div>
-                <div id="locationName" class="text-2xl font-bold">Bratislava</div>
-                <div id="currentTime" class="text-emerald-400 text-sm font-mono mt-0.5"></div>
+        <div id="statusCard" onclick="showTipsModal()" class="glass rounded-3xl p-6 border transition-all duration-300 cursor-pointer status-good">
+            
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <div class="text-3xl md:text-4xl font-black text-white mb-1 tracking-tight">Bára, a čo teraz?</div>
+                    <div class="flex items-center gap-2">
+                        <div id="locationName" class="text-xs md:text-sm font-bold text-zinc-400 uppercase tracking-widest">Bratislava</div>
+                        <span class="text-zinc-600">•</span>
+                        <div id="currentTime" class="text-emerald-400 text-sm font-mono"></div>
+                    </div>
+                </div>
+                <button onclick="event.stopImmediatePropagation(); openMap()" class="text-3xl opacity-70 hover:opacity-100 mt-1">🗺️</button>
             </div>
-            <button onclick="event.stopImmediatePropagation(); openMap()" class="text-3xl opacity-70 hover:opacity-100">🗺️</button>
+
+            <div class="text-center py-5">
+                <div id="statusEmoji" class="text-7xl mb-4 drop-shadow-lg">⏳</div>
+                <div id="statusText" class="text-4xl font-black tracking-tighter leading-tight">Načítavam...</div>
+                <div id="statusDesc" class="text-zinc-300 mt-2 text-lg"></div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4 text-center text-sm bg-black/20 p-4 rounded-2xl">
+                <div>
+                    <div class="text-zinc-400">Teplota</div>
+                    <div id="temp" class="font-bold text-xl mt-1 text-white">--°C</div>
+                </div>
+                <div>
+                    <div class="text-zinc-400">Vietor</div>
+                    <div id="wind" class="font-bold text-xl mt-1 text-white">-- km/h</div>
+                </div>
+                <div>
+                    <div class="text-zinc-400">Zrážky</div>
+                    <div id="rain" class="font-bold text-xl mt-1 text-white">--</div>
+                </div>
+            </div>
         </div>
 
-        <div class="text-center py-8">
-            <div id="statusEmoji" class="text-8xl mb-4">⏳</div>
-            <div id="statusText" class="text-5xl font-black tracking-tighter">Načítavam...</div>
-            <div id="statusDesc" class="text-zinc-400 mt-3 text-xl"></div>
-        </div>
+        <div class="grid grid-cols-2 gap-4">
+            <div onclick="openCalendar()" class="glass rounded-3xl p-5 border border-zinc-700/50 hover:bg-zinc-800 transition-all cursor-pointer flex flex-col justify-center items-center text-center">
+                <div class="text-4xl mb-3 drop-shadow-lg">📅</div>
+                <div class="font-bold text-[15px] leading-tight text-white">Bára, a čo<br>ďalšie dni?</div>
+            </div>
 
-        <div class="grid grid-cols-3 gap-4 text-center text-sm">
-            <div>
-                <div class="text-zinc-500">Teplota</div>
-                <div id="temp" class="font-bold text-2xl mt-1">--°C</div>
-            </div>
-            <div>
-                <div class="text-zinc-500">Vietor</div>
-                <div id="wind" class="font-bold text-2xl mt-1">-- km/h</div>
-            </div>
-            <div>
-                <div class="text-zinc-500">Dážď</div>
-                <div id="rain" class="font-bold text-2xl mt-1">--</div>
+            <!-- 3. KARTA: Vtip -->
+            <div onclick="tellJoke()" class="glass rounded-3xl p-5 border border-zinc-700/50 hover:bg-zinc-800 transition-all cursor-pointer flex flex-col justify-center items-center text-center">
+                <div class="text-4xl mb-3 drop-shadow-lg">🎭</div>
+                <div class="font-bold text-[15px] leading-tight text-white">Bára,<br>povedz vtip!</div>
             </div>
         </div>
-    </div>
-
-<!-- Vtip na hlavnej obrazovke -->
-    <div class="glass rounded-3xl p-6 border mb-6 text-center cursor-default">
-        <div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">Vtip od Báry🎭</div>
-        <div id="mainJoke" class="italic text-zinc-300 text-sm">Načítavam vtip...</div>
     </div>
 
     <!-- Tips Modal -->
@@ -96,13 +109,49 @@
             </button>
         </div>
     </div>
+<div id="calendarModal" onclick="if(event.target === this) hideCalendar()" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+        <div class="bg-zinc-900 rounded-3xl w-full max-w-md max-h-[85vh] overflow-y-auto border border-zinc-700 shadow-2xl">
+            <div class="sticky top-0 bg-zinc-900/95 backdrop-blur px-6 py-4 flex justify-between items-center border-b border-zinc-700 z-10">
+                <div id="calendarTitle" class="font-bold text-lg text-white">Výhľad na 16 dní</div>
+                <button onclick="hideCalendar()" class="text-3xl text-zinc-400 hover:text-white">&times;</button>
+            </div>
+            <div id="calendarGrid" class="p-5 grid grid-cols-4 gap-3"></div>
+        </div>
+    </div>
 
+    <div id="dayDetailModal" onclick="if(event.target === this) hideDayDetail()" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[60] p-4">
+        <div class="bg-zinc-900 rounded-3xl w-full max-w-sm max-h-[85vh] overflow-y-auto border border-zinc-700 shadow-2xl">
+            <div class="sticky top-0 bg-zinc-900/95 backdrop-blur px-5 py-4 flex justify-between items-center border-b border-zinc-700 z-10">
+                <button onclick="hideDayDetail()" class="text-zinc-400 hover:text-white text-sm font-bold flex items-center gap-1"><span>←</span> Späť</button>
+                <div id="dayDetailTitle" class="font-bold text-lg text-emerald-400">Detail dňa</div>
+            </div>
+            <div id="dayDetailContent" class="p-5 space-y-3"></div>
+        </div>
+    </div>
+<!-- Joke Modal -->
+    <div id="jokeModal" onclick="if(event.target === this) this.classList.replace('flex','hidden')" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+        <div class="bg-zinc-900 rounded-3xl p-8 text-center max-w-sm w-full border border-zinc-700 shadow-2xl">
+            <div class="text-6xl mb-4">🤣</div>
+            <div id="jokeContent" class="text-lg font-medium text-emerald-400 mb-6"></div>
+            <button onclick="document.getElementById('jokeModal').classList.replace('flex','hidden')" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-2xl transition-all">Haha, dík!</button>
+        </div>
+    </div>
     <script>
         let currentLat = 48.1486;
         let currentLon = 17.1077;
         let currentCity = "Bratislava";
         let currentStatusType = "good";
-        let currentOwmData = null; // Tu si uložíme dáta o stanici pre vyskakovacie okno
+        let currentOwmData = null;
+        let forecast16Data = null; // Tu si appka uloží stiahnutý kalendár
+
+        // Zoznam vtipov pre to malé tretie okienko
+        const jokes = [
+            "Prečo má kameraman rád zlé počasie? Lebo má aspoň dobrú clonu!",
+            "Režisér hovorí: 'Točíme!' Počasie: 'Dobre, tu máš búrku!'",
+            "Aký je rozdiel medzi meteorológom a osvetľovačom? Osvetľovač vie urobiť slnko aj o polnoci.",
+            "Prečo herci neznášajú dážď? Lebo im zmyje talent... a make-up.",
+            "Ak sa ti nepáči počasie na pľaci, počkaj 5 minút. Ak sa ti nepáči režisér, smola."
+        ];
 
 // Naša vlastná offline databáza vtipov (Vylepšená filmárska edícia)
         const skVtipy = [
@@ -267,51 +316,153 @@ async function showTipsModal() {
             modal.classList.add('hidden');
         }
 
-        async function fetchWeather(lat, lon, cityName) {
-            currentLat = lat;
-            currentLon = lon;
+async function fetchWeather(lat, lon, cityName) {
+            currentLat = lat; currentLon = lon;
             currentCity = cityName || "Tvoja poloha";
             document.getElementById('locationName').innerText = currentCity;
-
+            
             try {
-                // Sťahujeme reálne aktuálne dáta zo staníc (OpenWeatherMap)
+                // 1. ZÍSKAVAME SÚČASNÝ STAV ZO STANICE (OWM)
                 const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=5405cbe3a37f0d34116a9ff45d7b1e58&units=metric&lang=sk`);
-                
-                if (!res.ok) throw new Error();
-
                 const data = await res.json();
-                currentOwmData = data; // Uložíme dáta pre vyskakovacie okno
-
-                const temp = Math.round(data.main.temp);
-                const wind = Math.round(data.wind.speed * 3.6);
-                const code = data.weather[0] ? data.weather[0].id : 800;
+                currentOwmData = data;
                 
-                // Ak je kód počasia medzi 200 a 699, znamená to nejakú formu zrážok (búrka, mrholenie, dážď, sneh)
-                const isRaining = (code >= 200 && code < 700);
+                document.getElementById('temp').innerText = Math.round(data.main.temp) + "°C";
+                document.getElementById('wind').innerText = Math.round(data.wind.speed * 3.6) + " km/h";
+                document.getElementById('rain').innerText = data.weather[0].id < 700 ? "Áno" : "Nie";
 
-                document.getElementById('temp').innerText = temp + "°C";
-                document.getElementById('wind').innerText = wind + " km/h";
-                document.getElementById('rain').innerText = isRaining ? "Áno" : "Nie";
+                const code = data.weather[0].id;
+                const wind = data.wind.speed * 3.6;
+                if (code < 600 || wind > 35) setStatus("status-bad", "❌", "Zmotaj káble!", "Búrka / Dážď", "bad");
+                else if (wind > 20 || code < 800) setStatus("status-warn", "⚠️", "Dávaj pozor!", "Vietor / Hmla", "warn");
+                else setStatus("status-good", "✅", "Nekukaj a toč!", "Ideálne podmienky", "good");
 
-                // Logika pre status bar na základe REÁLNEHO stavu
-                if ((code >= 200 && code < 300) || (code >= 500 && code < 700) || wind > 35) {
-                    setStatus("status-bad", "❌", "Zmotaj káble a choď!", "Dážď / sneženie / búrka alebo silný vietor", "bad");
-                } 
-                else if (wind > 20 || (code >= 300 && code < 400) || (code >= 700 && code < 800)) {
-                    setStatus("status-warn", "⚠️", "Ježííš..davaj pozor dnes!", "Vietor, mrholenie alebo hmla", "warn");
-                } 
-                else {
-                    setStatus("status-good", "✅", "Nekukaj a toč!", "Dobré podmienky, žiadne nadčasy", "good");
-                }
+                // 2. ZÍSKAVAME 16-DŇOVÚ PREDPOVEĎ (Open-Meteo) PRE KALENDÁR
+                const resOm = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,sunrise,sunset&hourly=temperature_2m,windspeed_10m,cloudcover,weathercode&forecast_days=16&timezone=auto`);
+                forecast16Data = await resOm.json();
 
-// Zobrazenie náhodného vtipu
-                const nahodnyVtip = skVtipy[Math.floor(Math.random() * skVtipy.length)];
-                document.getElementById('mainJoke').innerText = `"${nahodnyVtip}"`;
-
-            } catch (error) {
-                setStatus("status-bad", "⚠️", "Chyba", "Nepodarilo sa načítať aktuálne dáta zo stanice", "bad");
+            } catch (e) { 
+                setStatus("status-bad", "⚠️", "Chyba", "Stanica nedostupná", "bad"); 
             }
         }
+
+        // --- PREKLADAČ KÓDOV PRE KALENDÁR ---
+        function getOmIcon(code) {
+            if (code === 0) return '☀️';
+            if (code === 1 || code === 2) return '🌤️';
+            if (code === 3) return '☁️';
+            if (code === 45 || code === 48) return '🌫️';
+            if (code >= 51 && code <= 67) return '🌧️';
+            if (code >= 71 && code <= 77) return '🌨️';
+            if (code >= 80 && code <= 82) return '🌧️';
+            if (code >= 85 && code <= 86) return '🌨️';
+            if (code >= 95) return '⛈️';
+            return '☁️';
+        }
+        
+        function getOmDesc(code) {
+            if (code === 0) return 'Jasno';
+            if (code === 1 || code === 2) return 'Polooblačno';
+            if (code === 3) return 'Zamračené';
+            if (code === 45 || code === 48) return 'Hmla';
+            if (code >= 51 && code <= 67 || code >= 80 && code <= 82) return 'Dážď';
+            if (code >= 71 && code <= 77 || code >= 85 && code <= 86) return 'Sneh';
+            if (code >= 95) return 'Búrka';
+            return 'Neznáme';
+        }
+
+        // --- FUNKCIE PRE NOVÉ OKNÁ (Vtip, Kalendár, Detail dňa) ---
+        function tellJoke() {
+            const randomJoke = skVtipy[Math.floor(Math.random() * skVtipy.length)];
+            document.getElementById('jokeContent').innerText = randomJoke;
+            document.getElementById('jokeModal').classList.replace('hidden', 'flex');
+        }
+
+        function openCalendar() {
+            if (!forecast16Data) return alert("Počkaj chvíľu, kalendár sa ešte sťahuje...");
+            
+            // Doplníme názov mesta do hlavičky kalendára
+            document.getElementById('calendarTitle').innerText = `16 dní: ${currentCity}`;
+            
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+            
+            const daysSk = ['Ne', 'Po', 'Ut', 'St', 'Št', 'Pi', 'So'];
+
+            for (let i = 0; i < 16; i++) {
+                const dateObj = new Date(forecast16Data.daily.time[i]);
+                const dayName = daysSk[dateObj.getDay()];
+                const dayNum = dateObj.getDate() + '.' + (dateObj.getMonth() + 1) + '.';
+                const icon = getOmIcon(forecast16Data.daily.weathercode[i]);
+                const tempMax = Math.round(forecast16Data.daily.temperature_2m_max[i]);
+
+                const div = document.createElement('div');
+                div.className = 'bg-zinc-800/50 hover:bg-zinc-700 border border-zinc-700/50 rounded-2xl p-3 flex flex-col items-center justify-center cursor-pointer transition-all';
+                div.onclick = () => openDayDetail(i, dayName, dayNum);
+                div.innerHTML = `
+                    <div class="text-xs text-zinc-400 font-bold">${dayName}</div>
+                    <div class="text-xs font-medium text-zinc-300 mb-2">${dayNum}</div>
+                    <div class="text-3xl mb-1">${icon}</div>
+                    <div class="text-sm font-bold text-white">${tempMax}°</div>
+                `;
+                grid.appendChild(div);
+            }
+            document.getElementById('calendarModal').classList.replace('hidden', 'flex');
+        }
+
+        function hideCalendar() { document.getElementById('calendarModal').classList.replace('flex', 'hidden'); }
+
+        function openDayDetail(dayIndex, dayName, dayNum) {
+            // Doplníme názov mesta do hlavičky detailu dňa
+            document.getElementById('dayDetailTitle').innerText = `${currentCity} | ${dayName} ${dayNum}`;
+            const content = document.getElementById('dayDetailContent');
+            content.innerHTML = '';
+            
+            // Vytiahneme čas východu a západu slnka
+            const sunrise = new Date(forecast16Data.daily.sunrise[dayIndex]).toLocaleTimeString('sk-SK', {hour: '2-digit', minute:'2-digit'});
+            const sunset = new Date(forecast16Data.daily.sunset[dayIndex]).toLocaleTimeString('sk-SK', {hour: '2-digit', minute:'2-digit'});
+
+            // Pridáme pásik so slnkom na vrch detailu
+            content.innerHTML = `
+                <div class="flex justify-between items-center bg-zinc-800/50 rounded-2xl p-3 mb-2 border border-zinc-700/50">
+                    <div class="flex items-center gap-2"><span class="text-xl drop-shadow-md">🌅</span> <span class="text-sm font-bold text-emerald-400">${sunrise}</span></div>
+                    <div class="flex items-center gap-2"><span class="text-sm font-bold text-amber-400">${sunset}</span> <span class="text-xl drop-shadow-md">🌇</span></div>
+                </div>
+            `;
+
+            // 6-hodinové intervaly (Ráno 06:00, Obed 12:00, Večer 18:00, Noc 21:00)
+            const hoursToDisplay = [6, 12, 18, 21];
+            const labels = ["Ráno (06:00)", "Obed (12:00)", "Večer (18:00)", "Noc (21:00)"];
+
+            hoursToDisplay.forEach((hour, idx) => {
+                const absoluteIndex = (dayIndex * 24) + hour;
+                const temp = Math.round(forecast16Data.hourly.temperature_2m[absoluteIndex]);
+                const wind = Math.round(forecast16Data.hourly.windspeed_10m[absoluteIndex]);
+                const cloud = forecast16Data.hourly.cloudcover[absoluteIndex];
+                const code = forecast16Data.hourly.weathercode[absoluteIndex];
+                
+                content.innerHTML += `
+                    <div class="bg-zinc-800/80 border border-zinc-700 rounded-2xl p-4 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="text-4xl w-10 text-center drop-shadow-lg">${getOmIcon(code)}</div>
+                            <div>
+                                <div class="text-sm text-zinc-400 font-bold mb-1">${labels[idx]}</div>
+                                <div class="text-xl font-black text-white">${temp}°C</div>
+                            </div>
+                        </div>
+                        <div class="text-right text-xs text-zinc-400 space-y-1">
+                            <div class="font-bold text-emerald-400 bg-emerald-900/20 px-2 py-1 rounded-md inline-block mb-1">${getOmDesc(code)}</div>
+                            <div>Vietor: <strong class="text-zinc-200">${wind} km/h</strong></div>
+                            <div>Oblaky: <strong class="text-zinc-200">${cloud}%</strong></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('dayDetailModal').classList.replace('hidden', 'flex');
+        }
+
+        function hideDayDetail() { document.getElementById('dayDetailModal').classList.replace('flex', 'hidden'); }
 
         function searchCity() {
             const input = document.getElementById('cityInput').value.trim();
