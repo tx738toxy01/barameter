@@ -339,34 +339,63 @@ async function fetchWeather(lat, lon, cityName) {
             currentCity = cityName || "Tvoja poloha";
             document.getElementById('locationName').innerText = currentCity;
             
-            // Úvodný toast pri štarte hľadania
             showToast(`Načítavam lokáciu ${currentCity}... ⏳`);
             
             try {
-                // 1. ZÍSKAVAME SÚČASNÝ STAV ZO STANICE (OWM)
-                const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=5405cbe3a37f0d34116a9ff45d7b1e58&units=metric&lang=sk`);
-                const data = await res.json();
-                currentOwmData = data;
-                
-                document.getElementById('temp').innerText = Math.round(data.main.temp) + "°C";
-                document.getElementById('wind').innerText = Math.round(data.wind.speed * 3.6) + " km/h";
-                document.getElementById('rain').innerText = data.weather[0].id < 700 ? "Áno" : "Nie";
-
-                const code = data.weather[0].id;
-                const wind = data.wind.speed * 3.6;
-                if (code < 600 || wind > 35) setStatus("status-bad", "❌", "Zmotaj káble!", "Búrka / Dážď", "bad");
-                else if (wind > 20 || code < 800) setStatus("status-warn", "⚠️", "Dávaj pozor!", "Vietor / Hmla", "warn");
-                else setStatus("status-good", "✅", "Nekukaj a toč!", "Ideálne podmienky", "good");
-
-                // 2. ZÍSKAVAME 16-DŇOVÚ PREDPOVEĎ + SLNKO (Open-Meteo) PRE KALENDÁR
-                const resOm = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,sunrise,sunset&hourly=temperature_2m,windspeed_10m,cloudcover,weathercode&forecast_days=16&timezone=auto`);
+                // Všetko sťahujeme už len z Open-Meteo (Aktuálne + Predpoveď). ŽIADEN API KĽÚČ!
+                const resOm = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,surface_pressure,weathercode,windspeed_10m&daily=weathercode,temperature_2m_max,sunrise,sunset&hourly=temperature_2m,windspeed_10m,cloudcover,weathercode&forecast_days=16&timezone=auto`);
                 forecast16Data = await resOm.json();
 
-                // Úspešný toast na konci
+                const current = forecast16Data.current;
+
+                // Trik: Prekladač OWM kódov, aby nám pekne fungovali ikonky v detaile
+                function mapToOwmCode(c) {
+                    if (c === 0) return 800;
+                    if (c === 1 || c === 2) return 801;
+                    if (c === 3) return 804;
+                    if (c === 45 || c === 48) return 741;
+                    if ((c >= 51 && c <= 67) || (c >= 80 && c <= 82)) return 500;
+                    if ((c >= 71 && c <= 77) || (c >= 85 && c <= 86)) return 600;
+                    if (c >= 95) return 200;
+                    return 800;
+                }
+
+                // Vytvoríme "falošný" OWM objekt pre náš detailný modal
+                currentOwmData = {
+                    name: "Open-Meteo (Satelit & Modely)",
+                    main: {
+                        temp: current.temperature_2m,
+                        feels_like: current.apparent_temperature,
+                        humidity: current.relative_humidity_2m,
+                        pressure: current.surface_pressure
+                    },
+                    wind: { speed: current.windspeed_10m / 3.6 }, // Delíme 3.6, lebo modal to automaticky násobí späť
+                    weather: [{ 
+                        id: mapToOwmCode(current.weathercode),
+                        description: getOmDesc(current.weathercode),
+                        icon: current.is_day ? '01d' : '01n' // Správna ikonka podľa toho, či je deň alebo noc
+                    }]
+                };
+                
+                const temp = Math.round(current.temperature_2m);
+                const wind = Math.round(current.windspeed_10m);
+                const code = current.weathercode;
+                
+                document.getElementById('temp').innerText = temp + "°C";
+                document.getElementById('wind').innerText = wind + " km/h";
+                
+                // Kódy Open-Meteo nad 50 znamenajú mrholenie/dážď/sneh
+                document.getElementById('rain').innerText = (code >= 51 && code <= 99) ? "Áno" : "Nie";
+
+                // Logika Bárinho statusu prispôsobená pre Open-Meteo
+                if (code >= 95 || wind > 35) setStatus("status-bad", "❌", "Zmotaj káble!", "Búrka / Silný vietor", "bad");
+                else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82) || wind > 20) setStatus("status-warn", "⚠️", "Dávaj pozor!", "Zrážky / Vietor", "warn");
+                else setStatus("status-good", "✅", "Nekukaj a toč!", "Ideálne podmienky", "good");
+
                 showToast(`Lokácia ${currentCity} načítaná ✅`);
 
             } catch (e) { 
-                setStatus("status-bad", "⚠️", "Chyba", "Stanica nedostupná", "bad"); 
+                setStatus("status-bad", "⚠️", "Chyba", "Služba nedostupná", "bad"); 
                 showToast(`Chyba pri načítavaní ${currentCity} ❌`);
             }
         }
