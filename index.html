@@ -28,6 +28,7 @@
     <div class="relative mb-6">
         <div class="flex gap-2">
             <input id="cityInput" type="text" placeholder="Zadaj mesto..." 
+                   autocomplete="off" autocorrect="off" spellcheck="false"
                    class="flex-1 bg-zinc-900 border border-zinc-800 rounded-2xl px-5 py-3 text-lg focus:outline-none focus:border-emerald-500">
             <button onclick="searchCity()" class="bg-emerald-600 hover:bg-emerald-500 px-6 rounded-2xl font-bold">Hľadať</button>
         </div>
@@ -68,6 +69,12 @@
                 <div id="rain" class="font-bold text-2xl mt-1">--</div>
             </div>
         </div>
+    </div>
+
+<!-- Vtip na hlavnej obrazovke -->
+    <div class="glass rounded-3xl p-6 border mb-6 text-center cursor-default">
+        <div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">Vtip od Báry🎭</div>
+        <div id="mainJoke" class="italic text-zinc-300 text-sm">Načítavam vtip...</div>
     </div>
 
     <!-- Tips Modal -->
@@ -250,16 +257,6 @@ async function showTipsModal() {
             }
             html += `</div>`;
 
-// --- NÁHODNÝ VTIP NA ZÁVER ---
-            const nahodnyVtip = skVtipy[Math.floor(Math.random() * skVtipy.length)];
-            
-            html += `
-                <div class="mt-6 pt-5 border-t border-zinc-700/50">
-                    <div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">Pre odľahčenie nálady na pľaci 🎭</div>
-                    <div class="italic text-zinc-300 text-sm">"${nahodnyVtip}"</div>
-                </div>
-            `;
-
             // Prepíšeme dočasný loading text reálnym obsahom
             content.innerHTML = html;
         }
@@ -306,6 +303,10 @@ async function showTipsModal() {
                 else {
                     setStatus("status-good", "✅", "Nekukaj a toč!", "Dobré podmienky, žiadne nadčasy", "good");
                 }
+
+// Zobrazenie náhodného vtipu
+                const nahodnyVtip = skVtipy[Math.floor(Math.random() * skVtipy.length)];
+                document.getElementById('mainJoke').innerText = `"${nahodnyVtip}"`;
 
             } catch (error) {
                 setStatus("status-bad", "⚠️", "Chyba", "Nepodarilo sa načítať aktuálne dáta zo stanice", "bad");
@@ -356,7 +357,8 @@ async function showTipsModal() {
                 }
 
                 try {
-                    const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=5&language=sk`);
+                    // Stiahneme viac výsledkov (15), aby sme ich mohli dobre vyfiltrovať a zoradiť
+                    const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=15&language=sk`);
                     const data = await res.json();
 
                     suggestionsBox.innerHTML = '';
@@ -365,12 +367,25 @@ async function showTipsModal() {
                         return;
                     }
 
-                    data.results.forEach(city => {
+                    // Vypočítame vzdialenosť pre každý výsledok a zoradíme ich od najbližšieho
+                    const zoradeneVysledky = data.results.map(city => {
+                        city.distance = calculateDistance(currentLat, currentLon, city.latitude, city.longitude);
+                        return city;
+                    }).sort((a, b) => a.distance - b.distance).slice(0, 5); // Zoberieme 5 najbližších
+
+                    zoradeneVysledky.forEach(city => {
                         const div = document.createElement('div');
-                        div.className = 'px-5 py-3 hover:bg-zinc-800 cursor-pointer flex justify-between text-sm border-b border-zinc-800 last:border-none';
+                        // Pridali sme items-center, aby boli texty a badge pekne v rovine
+                        div.className = 'px-5 py-3 hover:bg-zinc-800 cursor-pointer flex justify-between items-center text-sm border-b border-zinc-800 last:border-none';
+                        
                         div.innerHTML = `
-                            <span class="font-medium">${city.name}</span>
-                            <span class="text-zinc-500 text-xs">${city.admin1 || ''} ${city.country || ''}</span>
+                            <div>
+                                <div class="font-medium text-white">${city.name}</div>
+                                <div class="text-zinc-500 text-xs">${city.admin1 || ''} ${city.country || ''}</div>
+                            </div>
+                            <div class="text-emerald-500 text-xs bg-emerald-500/10 px-2 py-1 rounded-full whitespace-nowrap ml-3">
+                                ${city.distance.toFixed(1)} km
+                            </div>
                         `;
                         div.onclick = () => {
                             cityInput.value = city.name;
