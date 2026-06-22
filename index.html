@@ -136,6 +136,10 @@
             <button onclick="document.getElementById('jokeModal').classList.replace('flex','hidden')" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-2xl transition-all">Haha, dík!</button>
         </div>
     </div>
+<!-- Toast Message -->
+    <div id="toastMsg" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[100] bg-zinc-800 text-white px-6 py-3 rounded-full shadow-2xl border border-zinc-700 opacity-0 transition-opacity duration-300 pointer-events-none hidden font-medium text-sm whitespace-nowrap">
+        Načítavam...
+    </div>
     <script>
         let currentLat = 48.1486;
         let currentLon = 17.1077;
@@ -324,6 +328,9 @@ async function fetchWeather(lat, lon, cityName) {
             currentCity = cityName || "Tvoja poloha";
             document.getElementById('locationName').innerText = currentCity;
             
+            // Úvodný toast pri štarte hľadania
+            showToast(`Načítavam lokáciu ${currentCity}... ⏳`);
+            
             try {
                 // 1. ZÍSKAVAME SÚČASNÝ STAV ZO STANICE (OWM)
                 const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=5405cbe3a37f0d34116a9ff45d7b1e58&units=metric&lang=sk`);
@@ -340,12 +347,16 @@ async function fetchWeather(lat, lon, cityName) {
                 else if (wind > 20 || code < 800) setStatus("status-warn", "⚠️", "Dávaj pozor!", "Vietor / Hmla", "warn");
                 else setStatus("status-good", "✅", "Nekukaj a toč!", "Ideálne podmienky", "good");
 
-                // 2. ZÍSKAVAME 16-DŇOVÚ PREDPOVEĎ (Open-Meteo) PRE KALENDÁR
+                // 2. ZÍSKAVAME 16-DŇOVÚ PREDPOVEĎ + SLNKO (Open-Meteo) PRE KALENDÁR
                 const resOm = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,sunrise,sunset&hourly=temperature_2m,windspeed_10m,cloudcover,weathercode&forecast_days=16&timezone=auto`);
                 forecast16Data = await resOm.json();
 
+                // Úspešný toast na konci
+                showToast(`Lokácia ${currentCity} načítaná ✅`);
+
             } catch (e) { 
                 setStatus("status-bad", "⚠️", "Chyba", "Stanica nedostupná", "bad"); 
+                showToast(`Chyba pri načítavaní ${currentCity} ❌`);
             }
         }
 
@@ -482,10 +493,32 @@ async function fetchWeather(lat, lon, cityName) {
                 });
         }
 
+        // Toast systém
+        let toastTimeout;
+        function showToast(msg) {
+            const toast = document.getElementById('toastMsg');
+            toast.innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.remove('opacity-0'), 10);
+            
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('opacity-0');
+                setTimeout(() => toast.classList.add('hidden'), 300);
+            }, 2500);
+        }
+
+        // Tlačidlo Moja poloha
         function useMyLocation() {
             if (!navigator.geolocation) return alert("Geolokácia nie je podporovaná");
+            
+            showToast("Zisťujem tvoju polohu... 📍");
+            document.getElementById('cityInput').value = "Moja poloha"; // Doplní text do vyhľadávača
+            
             navigator.geolocation.getCurrentPosition(p => {
                 fetchWeather(p.coords.latitude, p.coords.longitude, "Moja poloha");
+            }, () => {
+                showToast("Nepodarilo sa zistiť polohu ❌");
             });
         }
 
