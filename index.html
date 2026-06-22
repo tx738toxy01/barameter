@@ -76,12 +76,12 @@
         <div onclick="event.stopImmediatePropagation()" 
              class="glass rounded-3xl p-8 max-w-sm w-full mx-4 border border-zinc-700">
             
-            <div class="flex justify-between items-center mb-6">
-                <div class="font-bold text-xl">Tipy pre filmárov</div>
+            <div class="flex justify-between items-center mb-4">
+                <div class="font-bold text-xl">Detaily a tipy</div>
                 <button onclick="hideTipsModal()" class="text-3xl text-zinc-400 hover:text-white">×</button>
             </div>
             
-            <div id="modalTipsContent" class="space-y-4 text-base"></div>
+            <div id="modalTipsContent" class="text-base"></div>
             
             <button onclick="hideTipsModal()" 
                     class="mt-8 w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl font-medium">
@@ -95,6 +95,30 @@
         let currentLon = 17.1077;
         let currentCity = "Bratislava";
         let currentStatusType = "good";
+        let currentOwmData = null; // Tu si uložíme dáta o stanici pre vyskakovacie okno
+
+// Naša vlastná offline databáza vtipov (Vylepšená filmárska edícia)
+        const skVtipy = [
+            "Režisér: 'Krásne svetlo, točíme!' Zvukár: 'Počkaj, letí lietadlo.' Režisér: 'Už prešlo, ideme!' Zvukár: 'Počkaj, teraz breše pes.' Režisér: 'Ticho je, akcia!' Slnko: *Zájde za mrak.*",
+            "Klient pozerá do monitora: 'A to slnko by sme nemohli v postprodukcii posunúť trošku viac doľava?'",
+            "Aký je rozdiel medzi predpoveďou počasia od SHMÚ a produkčným plánom? Predpoveď počasia aspoň občas vyjde.",
+            "Kameraman na ostriča: 'Máš to ostré?' Ostrič: 'Jasné, úplne žiletka!' Režisér: 'Tak prečo je to na monitore rozmazané?!' Ostrič: 'Lebo to je umelecký zámer.'",
+            "Herec: 'Je tu zima, fúka a leje, ja v tomto nehrám!' Produkčný: 'Neboj sa nič, na kamere to vyzerá ako taký jemný, drahý cinematic dáždik.'",
+            "Vieš, prečo sa filmári na pľaci tak radi a často bavia o zlom počasí? Lebo na klienta sa nahlas nadávať nesmie.",
+            "Otázka na produkciu: 'Máme budget na umelý dážď?' Produkcia: 'Pozri sa von, od tretej hlásia búrku, počkáme si na organický.'",
+            "Najkratší filmársky vtip: 'Zajtra končíme presne podľa harmonogramu.'"
+        ];
+
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Polomer Zeme v km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+}
 
         function updateTime() {
             const el = document.getElementById('currentTime');
@@ -114,35 +138,130 @@
             currentStatusType = statusType;
         }
 
-        function showTipsModal() {
+async function showTipsModal() {
             const modal = document.getElementById('tipsModal');
             const content = document.getElementById('modalTipsContent');
             
+            // Predbežný loading, kým na pozadí počítame vzdialenosť podľa tvojho nápadu
+            content.innerHTML = '<div class="text-center py-8 text-zinc-400">Načítavam dáta a počítam vzdialenosť... ⏳</div>';
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
             let html = '';
 
-            if (currentStatusType === 'good') {
-                html = `
-                    <div class="flex gap-3"><span class="text-emerald-400 mt-1">→</span> <span>Využi dobré svetlo na široké zábery a detaily.</span></div>
-                    <div class="flex gap-3"><span class="text-emerald-400 mt-1">→</span> <span>Skontroluj expozíciu – môže byť príliš jasno.</span></div>
-                    <div class="flex gap-3"><span class="text-emerald-400 mt-1">→</span> <span>Ideálny čas na natural look bez veľkých úprav.</span></div>
-                `;
-            } else if (currentStatusType === 'warn') {
-                html = `
-                    <div class="flex gap-3"><span class="text-amber-400 mt-1">→</span> <span><strong>Vietor:</strong> Veterník na mikrofón + zaisti statív.</span></div>
-                    <div class="flex gap-3"><span class="text-amber-400 mt-1">→</span> <span><strong>Prehánky:</strong> Maj pripravené ochranné plachty na kameru.</span></div>
-                    <div class="flex gap-3"><span class="text-amber-400 mt-1">→</span> <span>Zváž kratšie zábery a rýchlejšie presuny.</span></div>
-                `;
-            } else {
-                html = `
-                    <div class="flex gap-3"><span class="text-red-400 mt-1">→</span> <span><strong>Dažď / búrka:</strong> Chráň všetku elektroniku. Ideálne zostaň vnútri.</span></div>
-                    <div class="flex gap-3"><span class="text-red-400 mt-1">→</span> <span>Ak musíš točiť: Použi dažďový kryt + extra batérie.</span></div>
-                    <div class="flex gap-3"><span class="text-red-400 mt-1">→</span> <span>Zváž presunutie natáčania na iný deň.</span></div>
+            // 1. INFO O METEOSTANICI
+            if (currentOwmData) {
+                let stName = currentOwmData.name || "Neznáma stanica";
+                
+                // --- TVOJ NÁPAD: Dynamické zistenie skutočnej polohy podľa názvu ---
+                let distanceBadge = '';
+                // Ak máme názov a nie je to úplne to isté miesto, aké sme hľadali
+                if (stName !== "Neznáma stanica" && stName !== currentCity) {
+                    try {
+                        // Bleskovo zistíme skutočné súradnice vráteného miesta (napr. Liptovský Hrádok)
+                        const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(stName)}&count=1`);
+                        const geoData = await geoRes.json();
+                        
+                        if (geoData.results && geoData.results[0]) {
+                            let realLat = geoData.results[0].latitude;
+                            let realLon = geoData.results[0].longitude;
+                            
+                            // Vypočítame SKUTOČNÚ vzdialenosť
+                            let distanceKm = calculateDistance(currentLat, currentLon, realLat, realLon).toFixed(1);
+                            
+                            if (distanceKm > 0.1) {
+                                distanceBadge = `<div class="text-xs text-emerald-500 font-medium bg-emerald-500/10 px-2 py-0.5 rounded-full">~ ${distanceKm} km ďaleko</div>`;
+                            }
+                        }
+                    } catch (e) {
+                        console.log("Nepodarilo sa načítať reálnu polohu stanice");
+                    }
+                }
+                // ----------------------------------------------------------------------
+
+                let wTemp = Math.round(currentOwmData.main.temp);
+                let wFeels = Math.round(currentOwmData.main.feels_like);
+                let wSpd = Math.round(currentOwmData.wind.speed * 3.6);
+                let wHum = currentOwmData.main.humidity;
+                let wPress = currentOwmData.main.pressure;
+                let wDesc = currentOwmData.weather[0] ? currentOwmData.weather[0].description : "";
+                if (wDesc) wDesc = wDesc.charAt(0).toUpperCase() + wDesc.slice(1);
+                
+                // Určenie správnej ikonky
+                let owmCode = currentOwmData.weather[0] ? currentOwmData.weather[0].id : 800;
+                let owmIconStr = currentOwmData.weather[0] ? currentOwmData.weather[0].icon : '01d';
+                let isNightOWM = owmIconStr.includes('n');
+                let owmIcon = '❓';
+                if (owmCode >= 200 && owmCode < 300) owmIcon = '⛈️';
+                else if (owmCode >= 300 && owmCode < 600) owmIcon = '🌧️';
+                else if (owmCode >= 600 && owmCode < 700) owmIcon = '🌨️';
+                else if (owmCode >= 700 && owmCode < 800) owmIcon = '🌫️';
+                else if (owmCode === 800) owmIcon = isNightOWM ? '🌙' : '☀️';
+                else if (owmCode === 801 || owmCode === 802) owmIcon = isNightOWM ? '☁️' : '🌤️';
+                else if (owmCode >= 803) owmIcon = '☁️';
+
+                html += `
+                    <div class="mb-5 pb-5 border-b border-zinc-700/50">
+                        <div class="flex justify-between items-baseline mb-1">
+                            <div class="text-xs text-zinc-500 uppercase tracking-wider">Dáta z meteostanice</div>
+                            ${distanceBadge}
+                        </div>
+                        <div class="text-2xl font-black text-white mb-4">${stName}</div>
+                        
+                        <div class="flex items-center gap-4 mb-4 bg-zinc-800/50 p-3 rounded-2xl border border-zinc-700/50">
+                            <div class="text-5xl drop-shadow-lg">${owmIcon}</div>
+                            <div>
+                                <div class="text-3xl font-black">${wTemp}°C</div>
+                                <div class="text-sm text-zinc-300 font-medium">${wDesc}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-y-3 text-sm px-2">
+                            <div class="text-zinc-500">Pocitovo:</div> <div class="text-right font-bold">${wFeels} °C</div>
+                            <div class="text-zinc-500">Vietor:</div> <div class="text-right font-bold">${wSpd} km/h</div>
+                            <div class="text-zinc-500">Vlhkosť:</div> <div class="text-right font-bold">${wHum} %</div>
+                            <div class="text-zinc-500">Tlak:</div> <div class="text-right font-bold">${wPress} hPa</div>
+                        </div>
+                    </div>
                 `;
             }
 
+            // 2. TIPY PRE FILMÁROV
+            html += `<div class="font-bold text-lg mb-3 text-emerald-400">Tipy na natáčanie</div><div class="space-y-4 text-sm">`;
+
+            if (currentStatusType === 'good') {
+                html += `
+                    <div class="flex gap-3"><span class="text-emerald-400 mt-0.5">→</span> <span>Využi dobré svetlo na široké zábery a detaily.</span></div>
+                    <div class="flex gap-3"><span class="text-emerald-400 mt-0.5">→</span> <span>Skontroluj expozíciu – môže byť príliš jasno.</span></div>
+                    <div class="flex gap-3"><span class="text-emerald-400 mt-0.5">→</span> <span>Ideálny čas na natural look bez veľkých úprav.</span></div>
+                `;
+            } else if (currentStatusType === 'warn') {
+                html += `
+                    <div class="flex gap-3"><span class="text-amber-400 mt-0.5">→</span> <span><strong>Vietor:</strong> Veterník na mikrofón + zaisti statív.</span></div>
+                    <div class="flex gap-3"><span class="text-amber-400 mt-0.5">→</span> <span><strong>Prehánky/Hmla:</strong> Maj pripravené ochranné plachty na kameru.</span></div>
+                    <div class="flex gap-3"><span class="text-amber-400 mt-0.5">→</span> <span>Zváž kratšie zábery a rýchlejšie presuny.</span></div>
+                `;
+            } else {
+                html += `
+                    <div class="flex gap-3"><span class="text-red-400 mt-0.5">→</span> <span><strong>Zlé počasie:</strong> Chráň všetku elektroniku. Ideálne zostaň vnútri.</span></div>
+                    <div class="flex gap-3"><span class="text-red-400 mt-0.5">→</span> <span>Ak musíš točiť: Použi dažďový kryt + extra batérie.</span></div>
+                    <div class="flex gap-3"><span class="text-red-400 mt-0.5">→</span> <span>Zváž presunutie natáčania exteriérov na iný deň.</span></div>
+                `;
+            }
+            html += `</div>`;
+
+// --- NÁHODNÝ VTIP NA ZÁVER ---
+            const nahodnyVtip = skVtipy[Math.floor(Math.random() * skVtipy.length)];
+            
+            html += `
+                <div class="mt-6 pt-5 border-t border-zinc-700/50">
+                    <div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">Pre odľahčenie nálady na pľaci 🎭</div>
+                    <div class="italic text-zinc-300 text-sm">"${nahodnyVtip}"</div>
+                </div>
+            `;
+
+            // Prepíšeme dočasný loading text reálnym obsahom
             content.innerHTML = html;
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
         }
 
         function hideTipsModal() {
@@ -158,36 +277,38 @@
             document.getElementById('locationName').innerText = currentCity;
 
             try {
-                const res = await fetch(
-                    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
-                    `&current=temperature_2m,wind_speed_10m,weather_code,precipitation` +
-                    `&timezone=auto`
-                );
+                // Sťahujeme reálne aktuálne dáta zo staníc (OpenWeatherMap)
+                const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=5405cbe3a37f0d34116a9ff45d7b1e58&units=metric&lang=sk`);
                 
                 if (!res.ok) throw new Error();
 
                 const data = await res.json();
-                const curr = data.current;
+                currentOwmData = data; // Uložíme dáta pre vyskakovacie okno
 
-                document.getElementById('temp').innerText = Math.round(curr.temperature_2m) + "°C";
-                document.getElementById('wind').innerText = Math.round(curr.wind_speed_10m) + " km/h";
-                document.getElementById('rain').innerText = curr.precipitation > 0 ? "Áno" : "Nie";
+                const temp = Math.round(data.main.temp);
+                const wind = Math.round(data.wind.speed * 3.6);
+                const code = data.weather[0] ? data.weather[0].id : 800;
+                
+                // Ak je kód počasia medzi 200 a 699, znamená to nejakú formu zrážok (búrka, mrholenie, dážď, sneh)
+                const isRaining = (code >= 200 && code < 700);
 
-                const wind = curr.wind_speed_10m;
-                const code = curr.weather_code;
+                document.getElementById('temp').innerText = temp + "°C";
+                document.getElementById('wind').innerText = wind + " km/h";
+                document.getElementById('rain').innerText = isRaining ? "Áno" : "Nie";
 
-                if (code >= 61 || code === 95 || wind > 35) {
-                    setStatus("status-bad", "❌", "Zmotaj káble a choď!", "Dážď / silný vietor / búrka", "bad");
+                // Logika pre status bar na základe REÁLNEHO stavu
+                if ((code >= 200 && code < 300) || (code >= 500 && code < 700) || wind > 35) {
+                    setStatus("status-bad", "❌", "Zmotaj káble a choď!", "Dážď / sneženie / búrka alebo silný vietor", "bad");
                 } 
-                else if (wind > 20 || code >= 45 || curr.precipitation > 0) {
-                    setStatus("status-warn", "⚠️", "Ježííš..davaj pozor dnes!", "Vietor alebo prehánky", "warn");
+                else if (wind > 20 || (code >= 300 && code < 400) || (code >= 700 && code < 800)) {
+                    setStatus("status-warn", "⚠️", "Ježííš..davaj pozor dnes!", "Vietor, mrholenie alebo hmla", "warn");
                 } 
                 else {
                     setStatus("status-good", "✅", "Nekukaj a toč!", "Dobré podmienky, žiadne nadčasy", "good");
                 }
 
             } catch (error) {
-                setStatus("status-bad", "⚠️", "Chyba", "Nepodarilo sa načítať počasie", "bad");
+                setStatus("status-bad", "⚠️", "Chyba", "Nepodarilo sa načítať aktuálne dáta zo stanice", "bad");
             }
         }
 
