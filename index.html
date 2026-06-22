@@ -362,7 +362,7 @@ async function fetchWeather(lat, lon, cityName) {
 
                 // Vytvoríme "falošný" OWM objekt pre náš detailný modal
                 currentOwmData = {
-                    name: "Open-Meteo (Satelit & Modely)",
+                    name: currentCity,
                     main: {
                         temp: current.temperature_2m,
                         feels_like: current.apparent_temperature,
