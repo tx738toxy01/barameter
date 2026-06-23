@@ -27,17 +27,26 @@
             <h1 class="text-4xl font-black tracking-tighter">Barameter</h1>
             <p class="text-zinc-500 text-sm">Nezúfaj, Bara ti povie, že čo!</p>
         </div>
-        <button onclick="useMyLocation(true)" class="px-4 py-2 glass rounded-2xl font-medium text-base text-emerald-400 hover:bg-zinc-800 transition-all shadow-md tracking-wide">
+        <button onclick="showMyMapOnly()" class="px-4 py-2 glass rounded-2xl font-medium text-base text-emerald-400 hover:bg-zinc-800 transition-all shadow-md tracking-wide">
             Bára, kde som?
         </button>
     </div>
 
     <div class="relative mb-6">
         <div class="flex gap-2">
-            <input id="cityInput" type="text" placeholder="Zadaj mesto..." 
-                   autocomplete="off" autocorrect="off" spellcheck="false"
-                   class="flex-1 bg-zinc-900 border border-zinc-800 rounded-2xl px-5 py-3 text-lg focus:outline-none focus:border-emerald-500">
-            <button onclick="searchCity()" class="bg-emerald-600 hover:bg-emerald-500 px-6 rounded-2xl font-bold">Hľadať</button>
+            <!-- Nový obal iba pre okienko a špendlík, aby sa špendlík držal vnútri -->
+            <div class="relative w-full">
+                <input type="text" id="cityInput" placeholder="Zadaj mesto..." autocomplete="off" class="w-full bg-zinc-900 border border-zinc-700 text-white text-lg rounded-2xl px-5 py-3 pr-12 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all placeholder:text-zinc-600 shadow-inner">
+                
+                <!-- Červený špendlík Google Maps -->
+                <button onclick="useMyLocation()" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-red-500 hover:text-red-400 transition-colors z-10" title="Načítať počasie pre moju polohu">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                        <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+            
+            <button onclick="searchCity()" class="bg-emerald-600 hover:bg-emerald-500 px-6 rounded-2xl font-bold shrink-0">Hľadať</button>
         </div>
         
         <!-- Autocomplete suggestions -->
@@ -585,23 +594,33 @@ async function fetchWeather(lat, lon, cityName) {
         }
 
         // Tlačidlo Moja poloha
-        // Vylepšená funkcia pre polohu, ktorá vie na požiadanie rovno otvoriť aj mapu
-        function useMyLocation(openMapAfter = false) {
+        // Nová funkcia pre "Bára, kde som?" -> LEN otvorí mapu podľa GPS (bez zmeny aplikácie)
+        function showMyMapOnly() {
+            if (!navigator.geolocation) return alert("Geolokácia nie je podporovaná");
+            
+            showToast("Zisťujem polohu pre mapu... 📍");
+            
+            navigator.geolocation.getCurrentPosition(p => {
+                document.getElementById('mapModalTitle').innerHTML = '<span class="text-2xl">🗺️</span> Tu si!';
+                document.getElementById('mapIframe').src = `https://maps.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}&z=14&output=embed`;
+                document.getElementById('mapModal').classList.replace('hidden', 'flex');
+            }, () => {
+                showToast("Nepodarilo sa zistiť polohu pre mapu ❌");
+            });
+        }
+
+        // Funkcia pre Špendlík vo vyhľadávači -> LEN zmení polohu aplikácie na GPS
+        function useMyLocation() {
             if (!navigator.geolocation) return alert("Geolokácia nie je podporovaná");
             
             showToast("Zisťujem tvoju polohu... 📍");
-            document.getElementById('cityInput').value = "Moja poloha";
+            
+            const cityInputEl = document.getElementById('cityInput');
+            cityInputEl.value = "Moja poloha";
+            cityInputEl.blur(); // Okamžite schová klávesnicu, ak bola otvorená
             
             navigator.geolocation.getCurrentPosition(p => {
-                // Spustíme načítanie počasia pre appku
                 fetchWeather(p.coords.latitude, p.coords.longitude, "Moja poloha");
-                
-                // Ak sme klikli na "Bára, kde som?", zmeníme nadpis a otvoríme mapu
-                if (openMapAfter) {
-                    document.getElementById('mapModalTitle').innerHTML = '<span class="text-2xl">🗺️</span> Tu si!';
-                    document.getElementById('mapIframe').src = `https://maps.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}&z=14&output=embed`;
-                    document.getElementById('mapModal').classList.replace('hidden', 'flex');
-                }
             }, () => {
                 showToast("Nepodarilo sa zistiť polohu ❌");
             });
