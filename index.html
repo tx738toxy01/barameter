@@ -13,6 +13,11 @@
         .status-good { background: linear-gradient(145deg, #052e16, #14532d); border-color: #22c55e; }
         .status-warn { background: linear-gradient(145deg, #431407, #78350f); border-color: #f59e0b; }
         .status-bad { background: linear-gradient(145deg, #450a0a, #7f1d1d); border-color: #ef4444; }
+@keyframes locationFlash {
+            0%, 100% { color: white; transform: scale(1); box-shadow: none; border-color: rgba(255,255,255,0.1); }
+            50% { color: #34d399; transform: scale(1.05); text-shadow: 0 0 15px rgba(52, 211, 153, 0.8); border-color: #34d399; }
+        }
+        .flash-location { animation: locationFlash 0.6s ease-in-out 2; }
     </style>
 </head>
 <body class="p-4 max-w-md mx-auto">
@@ -22,7 +27,7 @@
             <h1 class="text-4xl font-black tracking-tighter">Barameter</h1>
             <p class="text-zinc-500 text-sm">Nezúfaj, Bara ti povie, že čo!</p>
         </div>
-        <button onclick="openMapModal()" class="px-5 py-3 glass rounded-2xl font-normal text-xl text-emerald-400 hover:bg-zinc-800 transition-all shadow-lg tracking-wide">
+        <button onclick="useMyLocation(true)" class="px-5 py-3 glass rounded-2xl font-normal text-xl text-emerald-400 hover:bg-zinc-800 transition-all shadow-lg tracking-wide">
             Bára, kde som?
         </button>
     </div>
@@ -36,7 +41,7 @@
         </div>
         
         <!-- Autocomplete suggestions -->
-        <div id="suggestions" class="hidden absolute z-50 mt-1 w-full bg-zinc-900 border border-zinc-700 rounded-2xl overflow-hidden shadow-xl"></div>
+        <div id="suggestions" class="hidden absolute z-50 mt-1 w-full max-h-60 overflow-y-auto overscroll-contain bg-zinc-900 border border-zinc-700 rounded-2xl shadow-xl"></div>
     </div>
 
     <!-- Main Status Card -->
@@ -47,13 +52,15 @@
             <div class="flex justify-between items-start mb-4">
                 <div>
                     <div class="text-3xl md:text-4xl font-black text-white mb-1 tracking-tight">Bára, a čo teraz?</div>
-                    <div class="flex items-center gap-2">
-                        <div id="locationName" class="text-xs md:text-sm font-bold text-zinc-400 uppercase tracking-widest">Bratislava</div>
+                    <div class="flex items-center gap-3 mt-1">
+                        <div id="locationName" class="text-sm md:text-base font-black text-white uppercase tracking-widest bg-black/30 px-3 py-1 rounded-xl border border-white/10 transition-all origin-left inline-block">Bratislava</div>
                         <span class="text-zinc-600">•</span>
-                        <div id="currentTime" class="text-emerald-400 text-sm font-mono"></div>
+                        <div id="currentTime" class="text-emerald-400 text-sm font-mono mt-0.5"></div>
                     </div>
                 </div>
-                <button onclick="event.stopImmediatePropagation(); useMyLocation()" class="text-3xl opacity-70 hover:opacity-100 mt-1 transition-all" title="Moja poloha">📍</button>
+                <button onclick="event.stopImmediatePropagation(); openMapModal()" class="px-3 py-1.5 glass rounded-xl font-normal text-xs text-emerald-400 hover:bg-zinc-800 transition-all text-center leading-tight shadow-md mt-1 border border-emerald-500/20 whitespace-nowrap">
+                    Bára, kde<br>to je?
+                </button>
             </div>
 
             <div class="text-center py-5">
@@ -337,7 +344,14 @@ async function showTipsModal() {
 async function fetchWeather(lat, lon, cityName) {
             currentLat = lat; currentLon = lon;
             currentCity = cityName || "Tvoja poloha";
-            document.getElementById('locationName').innerText = currentCity;
+            
+            const locEl = document.getElementById('locationName');
+            locEl.innerText = currentCity;
+            
+            // Reštart CSS animácie pre efekt prebliknutia
+            locEl.classList.remove('flash-location');
+            void locEl.offsetWidth; // Magický trik, ktorý prehliadač donúti všimnúť si zmenu
+            locEl.classList.add('flash-location');
             
             showToast(`Načítavam lokáciu ${currentCity}... ⏳`);
             
@@ -426,9 +440,25 @@ async function fetchWeather(lat, lon, cityName) {
         }
 
         // --- FUNKCIE PRE NOVÉ OKNÁ (Vtip, Kalendár, Detail dňa) ---
+        // Premenná pre zamiešaný balíček vtipov
+        let shuffledJokes = [];
+
+        function getNextJoke() {
+            // Ak je balíček prázdny (na začiatku alebo keď sme už ukázali všetky)
+            if (shuffledJokes.length === 0) {
+                // Skopírujeme všetky vtipy a poriadne ich zamiešame
+                shuffledJokes = [...skVtipy];
+                for (let i = shuffledJokes.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffledJokes[i], shuffledJokes[j]] = [shuffledJokes[j], shuffledJokes[i]];
+                }
+            }
+            // Vytiahneme posledný vtip z balíčka a zároveň ho odtiaľ zmažeme
+            return shuffledJokes.pop();
+        }
+
         function tellJoke() {
-            const randomJoke = skVtipy[Math.floor(Math.random() * skVtipy.length)];
-            document.getElementById('jokeContent').innerText = randomJoke;
+            document.getElementById('jokeContent').innerText = getNextJoke();
             document.getElementById('jokeModal').classList.replace('hidden', 'flex');
         }
 
@@ -519,14 +549,20 @@ async function fetchWeather(lat, lon, cityName) {
         function hideDayDetail() { document.getElementById('dayDetailModal').classList.replace('flex', 'hidden'); }
 
         function searchCity() {
-            const input = document.getElementById('cityInput').value.trim();
+            const cityInputEl = document.getElementById('cityInput');
+            const input = cityInputEl.value.trim();
             if (!input) return;
+            
+            cityInputEl.blur(); // Toto odstráni kurzor a schová klávesnicu
 
             fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(input)}&count=1&language=sk`)
                 .then(r => r.json())
                 .then(d => {
                     if (d.results && d.results[0]) {
-                        fetchWeather(d.results[0].latitude, d.results[0].longitude, d.results[0].name);
+                        const city = d.results[0];
+                        fetchWeather(city.latitude, city.longitude, city.name);
+                        // Uloženie do našej novej histórie
+                        saveToHistory({ name: city.name, lat: city.latitude, lon: city.longitude, desc: `${city.admin1 || ''} ${city.country || ''}`.trim() });
                     } else {
                         alert("Mesto nenájdené");
                     }
@@ -549,23 +585,31 @@ async function fetchWeather(lat, lon, cityName) {
         }
 
         // Tlačidlo Moja poloha
-        function useMyLocation() {
+        // Vylepšená funkcia pre polohu, ktorá vie na požiadanie rovno otvoriť aj mapu
+        function useMyLocation(openMapAfter = false) {
             if (!navigator.geolocation) return alert("Geolokácia nie je podporovaná");
             
             showToast("Zisťujem tvoju polohu... 📍");
-            document.getElementById('cityInput').value = "Moja poloha"; // Doplní text do vyhľadávača
+            document.getElementById('cityInput').value = "Moja poloha";
             
             navigator.geolocation.getCurrentPosition(p => {
+                // Spustíme načítanie počasia pre appku
                 fetchWeather(p.coords.latitude, p.coords.longitude, "Moja poloha");
+                
+                // Ak sme klikli na "Bára, kde som?", rovno mu podstrčíme súradnice do mapy a otvoríme ju
+                if (openMapAfter) {
+                    document.getElementById('mapIframe').src = `https://maps.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
+                    document.getElementById('mapModal').classList.replace('hidden', 'flex');
+                }
             }, () => {
                 showToast("Nepodarilo sa zistiť polohu ❌");
             });
         }
 
+        // Otvorenie mapy pre aktuálne zvolené / vyhľadané miesto v aplikácii pomocou súradníc
         function openMapModal() {
-            var city = document.getElementById('locationName').innerText;
-            // Špeciálna URL adresa pre vloženie Google Mapy (Embed) priamo do okna
-            document.getElementById('mapIframe').src = 'https://maps.google.com/maps?q=' + encodeURIComponent(city) + '&t=&z=12&ie=UTF8&iwloc=&output=embed';
+            // Použijeme globálne premenné currentLat a currentLon, ktoré sa menia pri každom vyhľadaní mesta
+            document.getElementById('mapIframe').src = `https://maps.google.com/maps?q=${currentLat},${currentLon}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
             document.getElementById('mapModal').classList.replace('hidden', 'flex');
         }
 
@@ -574,22 +618,75 @@ async function fetchWeather(lat, lon, cityName) {
             document.getElementById('mapIframe').src = ''; // Vymažeme zdroj, aby mapa nebežala na pozadí
         }
 
-        // Autocomplete
+// História a Autocomplete
         let debounceTimer = null;
         const cityInput = document.getElementById('cityInput');
         const suggestionsBox = document.getElementById('suggestions');
+        
+        // Načítanie histórie z pamäte prehliadača (alebo prázdny zoznam, ak tam nič nie je)
+        let searchHistory = JSON.parse(localStorage.getItem('barameter_history')) || [];
 
+        function saveToHistory(city) {
+            // Odstránime, ak už existuje (aby sme ho pri opakovanom hľadaní len posunuli na vrch zoznamu)
+            searchHistory = searchHistory.filter(item => item.name !== city.name);
+            searchHistory.unshift(city); // Pridáme na prvé miesto
+            if (searchHistory.length > 10) searchHistory.pop(); // Necháme si vždy len posledných 10
+            
+            // Uložíme natrvalo do prehliadača
+            localStorage.setItem('barameter_history', JSON.stringify(searchHistory));
+        }
+
+        function showHistory() {
+            if (searchHistory.length === 0) return;
+            
+            // Malá hlavička, ktorá pri skrolovaní zostáva prilepená na vrchu
+            suggestionsBox.innerHTML = '<div class="px-5 py-2 text-xs font-bold text-zinc-500 uppercase tracking-wider bg-zinc-900 sticky top-0 border-b border-zinc-800 z-10">Nedávne hľadania</div>';
+            
+            searchHistory.forEach(city => {
+                const div = document.createElement('div');
+                div.className = 'px-5 py-3 hover:bg-zinc-800 cursor-pointer flex justify-between items-center text-sm border-b border-zinc-800 last:border-none';
+                div.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="text-zinc-600 text-lg">🕒</span>
+                        <div>
+                            <div class="font-medium text-white">${city.name}</div>
+                            <div class="text-zinc-500 text-xs">${city.desc || ''}</div>
+                        </div>
+                    </div>
+                `;
+                // Používame onmousedown namiesto onclick, inak sa okno pri dotyku ihneď zatvorí kvôli strate focusu na políčku
+                div.onmousedown = (e) => { 
+                    e.preventDefault(); 
+                    cityInput.value = city.name;
+                    suggestionsBox.classList.add('hidden');
+                    cityInput.blur(); // Zruší kurzor a schová klávesnicu
+                    fetchWeather(city.lat, city.lon, city.name);
+                    saveToHistory(city); // Presunie miesto opäť na prvé miesto v histórii
+                };
+                suggestionsBox.appendChild(div);
+            });
+            suggestionsBox.classList.remove('hidden');
+        }
+
+        // Keď do okienka ťukneš, okamžite vymaž text a ukáž históriu
+        cityInput.addEventListener('focus', () => {
+            cityInput.value = ''; // Toto vymaže aktuálny text
+            showHistory();        // A hneď ukáže zoznam histórie
+        });
+
+        // Štandardný Autocomplete pre nové hľadania
         cityInput.addEventListener('input', () => {
             clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(async () => {
-                const query = cityInput.value.trim();
-                if (query.length < 2) {
-                    suggestionsBox.classList.add('hidden');
-                    return;
-                }
+            const query = cityInput.value.trim();
+            
+            if (query.length < 2) {
+                if (query.length === 0) showHistory(); // Ak zmažeš text, ukáž históriu
+                else suggestionsBox.classList.add('hidden');
+                return;
+            }
 
+            debounceTimer = setTimeout(async () => {
                 try {
-                    // Stiahneme viac výsledkov (15), aby sme ich mohli dobre vyfiltrovať a zoradiť
                     const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=15&language=sk`);
                     const data = await res.json();
 
@@ -599,30 +696,31 @@ async function fetchWeather(lat, lon, cityName) {
                         return;
                     }
 
-                    // Vypočítame vzdialenosť pre každý výsledok a zoradíme ich od najbližšieho
                     const zoradeneVysledky = data.results.map(city => {
                         city.distance = calculateDistance(currentLat, currentLon, city.latitude, city.longitude);
                         return city;
-                    }).sort((a, b) => a.distance - b.distance).slice(0, 5); // Zoberieme 5 najbližších
+                    }).sort((a, b) => a.distance - b.distance).slice(0, 5);
 
                     zoradeneVysledky.forEach(city => {
                         const div = document.createElement('div');
-                        // Pridali sme items-center, aby boli texty a badge pekne v rovine
                         div.className = 'px-5 py-3 hover:bg-zinc-800 cursor-pointer flex justify-between items-center text-sm border-b border-zinc-800 last:border-none';
-                        
+                        const desc = `${city.admin1 || ''} ${city.country || ''}`.trim();
                         div.innerHTML = `
                             <div>
                                 <div class="font-medium text-white">${city.name}</div>
-                                <div class="text-zinc-500 text-xs">${city.admin1 || ''} ${city.country || ''}</div>
+                                <div class="text-zinc-500 text-xs">${desc}</div>
                             </div>
                             <div class="text-emerald-500 text-xs bg-emerald-500/10 px-2 py-1 rounded-full whitespace-nowrap ml-3">
                                 ${city.distance.toFixed(1)} km
                             </div>
                         `;
-                        div.onclick = () => {
+                        div.onmousedown = (e) => {
+                            e.preventDefault();
                             cityInput.value = city.name;
                             suggestionsBox.classList.add('hidden');
+                            cityInput.blur(); // Zruší kurzor a schová klávesnicu
                             fetchWeather(city.latitude, city.longitude, city.name);
+                            saveToHistory({ name: city.name, lat: city.latitude, lon: city.longitude, desc: desc });
                         };
                         suggestionsBox.appendChild(div);
                     });
@@ -634,12 +732,24 @@ async function fetchWeather(lat, lon, cityName) {
             }, 280);
         });
 
-        // Hide suggestions when clicking outside
+        // Schovanie okna a "zjedenie" prvého kliknutia, ak používateľ klikne inde
         document.addEventListener('click', (e) => {
-            if (!suggestionsBox.contains(e.target) && e.target !== cityInput) {
+            // Výnimka: ak klikneme na zelené tlačidlo "Hľadať", klik nezastavíme
+            const isSearchBtn = e.target.closest('button[onclick="searchCity()"]');
+            
+            // Ak je roletka otvorená a klikli sme mimo nej a mimo vyhľadávacieho poľa
+            if (!suggestionsBox.classList.contains('hidden') && !suggestionsBox.contains(e.target) && e.target !== cityInput) {
+                
+                // Ak sme NEklikli na tlačidlo "Hľadať", zastavíme tento klik, aby neaktivoval iné okná a karty
+                if (!isSearchBtn) {
+                    e.stopPropagation(); 
+                    e.preventDefault();
+                }
+                
                 suggestionsBox.classList.add('hidden');
+                cityInput.blur(); // Okamžite schová klávesnicu na mobile
             }
-        });
+        }, true); // 'true' zapína Capture fázu (tento kód zachytí kliknutie ako úplne prvý štít)
 
         document.getElementById('cityInput').addEventListener('keypress', e => {
             if (e.key === 'Enter') {
@@ -652,4 +762,9 @@ async function fetchWeather(lat, lon, cityName) {
         fetchWeather(48.1486, 17.1077, "Bratislava");
     </script>
 </body>
+<div class="hidden landscape:flex fixed inset-0 z-[9999] bg-zinc-950 flex-col items-center justify-center p-6 text-center">
+        <div class="text-7xl mb-6 drop-shadow-lg">📱</div>
+        <div class="text-3xl font-black text-white mb-3">Nespi!</div>
+        <div class="text-zinc-400 text-lg">Prosím ťa, otoč si telefón späť na výšku, takto sa spolu baviť nebudeme.</div>
+    </div>
 </html>
