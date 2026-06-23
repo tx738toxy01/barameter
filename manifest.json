@@ -5,6 +5,7 @@
   "display": "fullscreen",
   "background_color": "#000000",
   "theme_color": "#333333",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "woman-facepalming-light-skin-tone-svgrepo-com.svg",
