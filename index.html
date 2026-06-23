@@ -78,19 +78,32 @@
                 <div id="statusDesc" class="text-zinc-300 mt-2 text-lg"></div>
             </div>
 
-            <div class="grid grid-cols-3 gap-4 text-center text-sm bg-black/20 p-4 rounded-2xl">
-                <div>
-                    <div class="text-zinc-400">Teplota</div>
-                    <div id="temp" class="font-bold text-xl mt-1 text-white">--°C</div>
+            <div class="grid grid-cols-4 gap-4 text-center bg-black/20 py-5 px-4 -mx-6 rounded-3xl mb-2 shadow-inner">
+                <div class="flex flex-col items-center">
+                    <div class="text-3xl drop-shadow-md mb-2">🌡️</div>
+                    <div class="text-zinc-400 text-[11px] uppercase tracking-wider mb-1">Teplota</div>
+                    <div id="temp" class="font-black text-lg text-white">--°C</div>
                 </div>
-                <div>
-                    <div class="text-zinc-400">Vietor</div>
-                    <div id="wind" class="font-bold text-xl mt-1 text-white">-- km/h</div>
+                <div class="flex flex-col items-center">
+                    <div class="text-3xl drop-shadow-md mb-2">💨</div>
+                    <div class="text-zinc-400 text-[11px] uppercase tracking-wider mb-1">Vietor</div>
+                    <div id="wind" class="font-black text-lg text-white">-- km/h</div>
                 </div>
-                <div>
-                    <div class="text-zinc-400">Zrážky</div>
-                    <div id="rain" class="font-bold text-xl mt-1 text-white">--</div>
+                <div class="flex flex-col items-center">
+                    <div class="text-3xl drop-shadow-md mb-2">☔</div>
+                    <div class="text-zinc-400 text-[11px] uppercase tracking-wider mb-1">Zrážky</div>
+                    <div id="rain" class="font-black text-lg text-white">--</div>
                 </div>
+                <div class="flex flex-col items-center">
+                    <div class="text-3xl drop-shadow-md mb-2">☁️</div>
+                    <div class="text-zinc-400 text-[11px] uppercase tracking-wider mb-1">Oblaky</div>
+                    <div id="clouds" class="font-black text-lg text-white">-- %</div>
+                </div>
+            </div>
+            
+            <!-- Značka modelu -->
+            <div class="text-center mt-3 text-[10px] text-white/30 font-mono uppercase tracking-widest">
+                Data by: <span class="font-bold">ICON Seamless</span>
             </div>
         </div>
 
@@ -114,9 +127,12 @@
         <div onclick="event.stopImmediatePropagation()" 
              class="glass rounded-3xl p-8 max-w-sm w-full mx-4 border border-zinc-700">
             
-            <div class="flex justify-between items-center mb-4">
-                <div class="font-bold text-xl">Detaily a tipy</div>
-                <button onclick="hideTipsModal()" class="text-3xl text-zinc-400 hover:text-white">×</button>
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <div class="font-bold text-xl">Detaily a tipy</div>
+                    <div class="text-[9px] text-emerald-500/60 uppercase tracking-widest mt-1 font-mono">Model: ICON Seamless</div>
+                </div>
+                <button onclick="hideTipsModal()" class="text-3xl text-zinc-400 hover:text-white leading-none">×</button>
             </div>
             
             <div id="modalTipsContent" class="text-base"></div>
@@ -365,9 +381,23 @@ async function fetchWeather(lat, lon, cityName) {
             showToast(`Načítavam lokáciu ${currentCity}... ⏳`);
             
             try {
-                // Všetko sťahujeme už len z Open-Meteo (Aktuálne + Predpoveď). ŽIADEN API KĽÚČ!
-                const resOm = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,surface_pressure,weathercode,windspeed_10m&daily=weathercode,temperature_2m_max,sunrise,sunset&hourly=temperature_2m,windspeed_10m,cloudcover,weathercode&forecast_days=16&timezone=auto`);
-                forecast16Data = await resOm.json();
+                // 1. VOLANIE: IBA aktuálne počasie (Model: ICON)
+                const iconUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,surface_pressure,weathercode,windspeed_10m,cloudcover&models=icon_seamless&timezone=auto`;
+                
+                // 2. VOLANIE: Hodinovka aj 16-dňová predpoveď (Model: AUTO)
+                const autoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,windspeed_10m,cloudcover,weathercode&daily=weathercode,temperature_2m_max,sunrise,sunset&forecast_days=16&timezone=auto`;
+
+                // Stiahneme obe naraz
+                const [resIcon, resAuto] = await Promise.all([fetch(iconUrl), fetch(autoUrl)]);
+                const dataIcon = await resIcon.json();
+                const dataAuto = await resAuto.json();
+
+                // Spojíme dáta: Aktuálne z ICON, hodinovka a dni z AUTO
+                forecast16Data = {
+                    current: dataIcon.current,
+                    hourly: dataAuto.hourly, // <-- Zmena: Hodinovka sa už ťahá z Auto
+                    daily: dataAuto.daily
+                };
 
                 const current = forecast16Data.current;
 
@@ -392,20 +422,22 @@ async function fetchWeather(lat, lon, cityName) {
                         humidity: current.relative_humidity_2m,
                         pressure: current.surface_pressure
                     },
-                    wind: { speed: current.windspeed_10m / 3.6 }, // Delíme 3.6, lebo modal to automaticky násobí späť
+                    wind: { speed: current.windspeed_10m / 3.6 }, 
                     weather: [{ 
                         id: mapToOwmCode(current.weathercode),
                         description: getOmDesc(current.weathercode),
-                        icon: current.is_day ? '01d' : '01n' // Správna ikonka podľa toho, či je deň alebo noc
+                        icon: current.is_day ? '01d' : '01n' 
                     }]
                 };
                 
                 const temp = Math.round(current.temperature_2m);
                 const wind = Math.round(current.windspeed_10m);
                 const code = current.weathercode;
+                const clouds = current.cloudcover; // <-- Tu sme to vytiahli z dát
                 
                 document.getElementById('temp').innerText = temp + "°C";
                 document.getElementById('wind').innerText = wind + " km/h";
+                document.getElementById('clouds').innerText = clouds + " %"; // <-- Tu sme to vložili na obrazovku
                 
                 // Kódy Open-Meteo nad 50 znamenajú mrholenie/dážď/sneh
                 document.getElementById('rain').innerText = (code >= 51 && code <= 99) ? "Áno" : "Nie";
@@ -474,8 +506,13 @@ async function fetchWeather(lat, lon, cityName) {
         function openCalendar() {
             if (!forecast16Data) return alert("Počkaj chvíľu, kalendár sa ešte sťahuje...");
             
-            // Doplníme názov mesta do hlavičky kalendára
-            document.getElementById('calendarTitle').innerText = `16 dní: ${currentCity}`;
+            // Doplníme názov mesta a značku modelu do hlavičky kalendára
+            document.getElementById('calendarTitle').innerHTML = `
+                16 dní: ${currentCity} 
+                <span class="ml-2 text-[9px] bg-black/40 text-zinc-400 px-2 py-1 rounded-md align-middle uppercase tracking-widest border border-zinc-700/50 font-mono">
+                    Model: Auto
+                </span>
+            `;
             
             const grid = document.getElementById('calendarGrid');
             grid.innerHTML = '';
@@ -506,8 +543,13 @@ async function fetchWeather(lat, lon, cityName) {
         function hideCalendar() { document.getElementById('calendarModal').classList.replace('flex', 'hidden'); }
 
         function openDayDetail(dayIndex, dayName, dayNum) {
-            // Doplníme názov mesta do hlavičky detailu dňa
-            document.getElementById('dayDetailTitle').innerText = `${currentCity} | ${dayName} ${dayNum}`;
+            // Doplníme názov mesta a značku modelu do hlavičky detailu dňa
+            document.getElementById('dayDetailTitle').innerHTML = `
+                <div class="text-right">
+                    <div>${currentCity} | ${dayName} ${dayNum}</div>
+                    <div class="text-[9px] text-emerald-500/60 uppercase tracking-widest mt-0.5 font-mono">Model: Auto</div>
+                </div>
+            `;
             const content = document.getElementById('dayDetailContent');
             content.innerHTML = '';
             
