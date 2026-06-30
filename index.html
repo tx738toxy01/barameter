@@ -52,67 +52,70 @@
     <div class="flex-1 flex flex-col gap-3 min-h-0 pb-1">
         
         <!-- Hlavná stavová karta (Gumená: flex-1 a flex-col) -->
-        <div id="statusCard" onclick="showTipsModal()" class="glass rounded-3xl p-5 border transition-all duration-300 cursor-pointer status-good flex-1 flex flex-col justify-between min-h-0">
+        <div id="statusCard" onclick="showTipsModal()" class="glass rounded-3xl p-5 border transition-all duration-300 cursor-pointer status-good flex-1 flex flex-col min-h-0">
             
-            <div class="flex justify-between items-start shrink-0">
-                <div>
-                    <div class="text-2xl md:text-3xl font-black text-white mb-1 tracking-tight">Bára, a čo teraz?</div>
-                    <div class="flex items-center gap-2 mt-1">
-                        <div id="locationName" class="text-xs md:text-sm font-black text-white uppercase tracking-widest bg-black/30 px-2 py-1 rounded-xl border border-white/10 transition-all origin-left inline-block">Bratislava</div>
-                        <span class="text-zinc-600">•</span>
-                        <div id="currentTime" class="text-emerald-400 text-xs font-mono mt-0.5"></div>
+            <div class="shrink-0">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-2xl md:text-3xl font-black text-white mb-1 tracking-tight">Bára, a čo teraz?</div>
+                        <div class="flex items-center gap-2 mt-1">
+                            <div id="locationName" class="text-xs md:text-sm font-black text-white uppercase tracking-widest bg-black/30 px-2 py-1 rounded-xl border border-white/10 transition-all origin-left inline-block">Bratislava</div>
+                            <span class="text-zinc-600">•</span>
+                            <div id="currentTime" class="text-emerald-400 text-xs font-mono mt-0.5"></div>
+                        </div>
                     </div>
+                    <button onclick="event.stopImmediatePropagation(); openMapModal()" class="px-2.5 py-1.5 glass rounded-xl font-normal text-[11px] text-emerald-400 hover:bg-zinc-800 transition-all text-center leading-tight shadow-md mt-1 border border-emerald-500/20 whitespace-nowrap">
+                        Bára, kde<br>to je?
+                    </button>
                 </div>
-                <button onclick="event.stopImmediatePropagation(); openMapModal()" class="px-2.5 py-1.5 glass rounded-xl font-normal text-[11px] text-emerald-400 hover:bg-zinc-800 transition-all text-center leading-tight shadow-md mt-1 border border-emerald-500/20 whitespace-nowrap">
-                    Bára, kde<br>to je?
-                </button>
-            </div>
 
-            <!-- Priestor pre ikonu a status (flexibilný stred) -->
-            <div class="relative text-center flex-1 flex flex-col justify-center min-h-0 py-2">
-                <div class="absolute top-0 left-1 right-1 flex justify-between items-center text-[10px] md:text-xs opacity-80">
+                <div class="flex justify-between items-center text-[11px] md:text-xs opacity-80 mt-4 px-1">
                     <div class="flex items-center gap-1 text-emerald-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6"/><path d="M12 2l-3 3"/><path d="M12 2l3 3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6"/><path d="M12 2l-3 3"/><path d="M12 2l3 3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
                         <span id="mainSunrise" class="font-bold tracking-wider">--:--</span>
                     </div>
                     <div class="flex items-center gap-1 text-amber-400">
                         <span id="mainSunset" class="font-bold tracking-wider">--:--</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10V2"/><path d="M12 10l-3-3"/><path d="M12 10l3-3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10V2"/><path d="M12 10l-3-3"/><path d="M12 10l3-3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
                     </div>
                 </div>
+            </div>
 
-                <div id="statusEmoji" class="text-6xl md:text-7xl mb-2 md:mb-4 drop-shadow-lg mt-4">⏳</div>
+            <div class="flex-1 flex flex-col justify-center items-center text-center min-h-0">
+                <div id="statusEmoji" class="text-[5.5rem] mb-2 drop-shadow-lg leading-none">⏳</div>
                 <div id="statusText" class="text-3xl md:text-4xl font-black tracking-tighter leading-tight shrink-0">Načítavam...</div>
                 <div id="statusDesc" class="text-zinc-300 mt-1 md:mt-2 text-sm md:text-lg"></div>
             </div>
 
-            <div class="grid grid-cols-4 gap-2 text-center bg-black/20 py-3 px-2 -mx-5 rounded-3xl mt-1 shadow-inner shrink-0">
-                <div class="flex flex-col items-center justify-center">
-                    <div class="text-2xl drop-shadow-md mb-1">🌡️</div>
-                    <div class="text-zinc-400 text-[9px] uppercase tracking-wider mb-0.5">Teplota</div>
-                    <div id="temp" class="font-black text-sm md:text-base text-white">--°C</div>
+            <div class="shrink-0 mt-2">
+                <div class="grid grid-cols-4 gap-2 text-center bg-black/20 py-3 px-2 -mx-5 rounded-3xl shadow-inner">
+                    <div class="flex flex-col items-center justify-center">
+                        <div class="text-2xl drop-shadow-md mb-1">🌡️</div>
+                        <div class="text-zinc-400 text-[9px] uppercase tracking-wider mb-0.5">Teplota</div>
+                        <div id="temp" class="font-black text-sm md:text-base text-white">--°C</div>
+                    </div>
+                    <div class="flex flex-col items-center justify-center">
+                        <div class="text-2xl drop-shadow-md mb-1">💨</div>
+                        <div class="text-zinc-400 text-[9px] uppercase tracking-wider mb-0.5">Vietor</div>
+                        <div id="wind" class="font-black text-sm md:text-base text-white">-- km/h</div>
+                    </div>
+                    <div class="flex flex-col items-center justify-center">
+                        <div class="text-2xl drop-shadow-md mb-1">☔</div>
+                        <div class="text-zinc-400 text-[9px] uppercase tracking-wider mb-0.5">Zrážky</div>
+                        <div id="rain" class="font-black text-sm md:text-base text-white">--</div>
+                    </div>
+                    <div class="flex flex-col items-center justify-center">
+                        <div class="text-2xl drop-shadow-md mb-1">☁️</div>
+                        <div class="text-zinc-400 text-[9px] uppercase tracking-wider mb-0.5">Oblaky</div>
+                        <div id="clouds" class="font-black text-sm md:text-base text-white">-- %</div>
+                    </div>
                 </div>
-                <div class="flex flex-col items-center justify-center">
-                    <div class="text-2xl drop-shadow-md mb-1">💨</div>
-                    <div class="text-zinc-400 text-[9px] uppercase tracking-wider mb-0.5">Vietor</div>
-                    <div id="wind" class="font-black text-sm md:text-base text-white">-- km/h</div>
+                
+                <div class="text-center mt-3 text-[9px] text-white/40 font-mono uppercase tracking-widest hover:text-white/80 transition-colors">
+                    <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Weather data by <span class="font-bold text-white/60">Open-Meteo.com</span></a>
+                    <span class="mx-1 text-white/20">|</span>
+                    <span>Model: ICON</span>
                 </div>
-                <div class="flex flex-col items-center justify-center">
-                    <div class="text-2xl drop-shadow-md mb-1">☔</div>
-                    <div class="text-zinc-400 text-[9px] uppercase tracking-wider mb-0.5">Zrážky</div>
-                    <div id="rain" class="font-black text-sm md:text-base text-white">--</div>
-                </div>
-                <div class="flex flex-col items-center justify-center">
-                    <div class="text-2xl drop-shadow-md mb-1">☁️</div>
-                    <div class="text-zinc-400 text-[9px] uppercase tracking-wider mb-0.5">Oblaky</div>
-                    <div id="clouds" class="font-black text-sm md:text-base text-white">-- %</div>
-                </div>
-            </div>
-            
-            <div class="text-center mt-2 md:mt-3 text-[9px] text-white/40 font-mono uppercase tracking-widest hover:text-white/80 transition-colors shrink-0">
-                <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Weather data by <span class="font-bold text-white/60">Open-Meteo.com</span></a>
-                <span class="mx-1 text-white/20">|</span>
-                <span>Model: ICON</span>
             </div>
         </div>
 
@@ -279,8 +282,8 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 
         function setStatus(statusClass, emoji, text, desc, statusType) {
             const card = document.getElementById('statusCard');
-            // Pridali sme sem naše nové flexibilné triedy z HTML, aby ich skript neprepísal
-            card.className = `glass rounded-3xl p-5 border transition-all duration-300 cursor-pointer flex-1 flex flex-col justify-between min-h-0 ${statusClass}`;
+            // Upravené triedy pre správne uviazanie hlavičky a päty (odstránené justify-between)
+            card.className = `glass rounded-3xl p-5 border transition-all duration-300 cursor-pointer flex-1 flex flex-col min-h-0 ${statusClass}`;
             
             document.getElementById('statusEmoji').innerText = emoji;
             document.getElementById('statusText').innerText = text;
