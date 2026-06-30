@@ -73,8 +73,20 @@
                 </button>
             </div>
 
-            <div class="text-center py-5">
-                <div id="statusEmoji" class="text-7xl mb-4 drop-shadow-lg">⏳</div>
+            <div class="relative text-center py-5">
+                <!-- Východ a západ na hlavnej karte (malé minimal ikony) -->
+                <div class="absolute top-0 left-2 right-2 flex justify-between items-center text-xs opacity-80">
+                    <div class="flex items-center gap-1 text-emerald-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6"/><path d="M12 2l-3 3"/><path d="M12 2l3 3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
+                        <span id="mainSunrise" class="font-bold tracking-wider">--:--</span>
+                    </div>
+                    <div class="flex items-center gap-1 text-amber-400">
+                        <span id="mainSunset" class="font-bold tracking-wider">--:--</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10V2"/><path d="M12 10l-3-3"/><path d="M12 10l3-3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
+                    </div>
+                </div>
+
+                <div id="statusEmoji" class="text-7xl mb-4 drop-shadow-lg mt-5">⏳</div>
                 <div id="statusText" class="text-4xl font-black tracking-tighter leading-tight">Načítavam...</div>
                 <div id="statusDesc" class="text-zinc-300 mt-2 text-lg"></div>
             </div>
@@ -102,9 +114,11 @@
                 </div>
             </div>
             
-            <!-- Značka modelu -->
-            <div class="text-center mt-3 text-[10px] text-white/30 font-mono uppercase tracking-widest">
-                Data by: <span class="font-bold">ICON Seamless</span>
+            <!-- Oficiálna atribúcia a klikateľný odkaz -->
+            <div class="text-center mt-3 text-[10px] text-white/40 font-mono uppercase tracking-widest hover:text-white/80 transition-colors">
+                <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Weather data by <span class="font-bold text-white/60">Open-Meteo.com</span></a>
+                <span class="mx-1 text-white/20">|</span>
+                <span>Model: ICON</span>
             </div>
         </div>
 
@@ -167,8 +181,9 @@
     <div id="jokeModal" onclick="if(event.target === this) this.classList.replace('flex','hidden')" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
         <div class="bg-zinc-900 rounded-3xl p-8 text-center max-w-sm w-full border border-zinc-700 shadow-2xl">
             <div class="text-6xl mb-4">🤣</div>
-            <div id="jokeContent" class="text-lg font-medium text-emerald-400 mb-6"></div>
-            <button onclick="document.getElementById('jokeModal').classList.replace('flex','hidden')" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-2xl transition-all">Haha, dík!</button>
+            <!-- Tu sme pridali max-h-[50vh] a overflow-y-auto -->
+            <div id="jokeContent" class="text-lg font-medium text-emerald-400 mb-6 max-h-[50vh] overflow-y-auto px-2 overscroll-contain text-left"></div>
+            <button onclick="document.getElementById('jokeModal').classList.replace('flex','hidden')" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-2xl transition-all mt-2 shadow-md">Bára, dík!</button>
         </div>
     </div>
 
@@ -225,24 +240,29 @@
         let forecast16Data = null; // Tu si appka uloží stiahnutý kalendár
 
         // Zoznam vtipov pre to malé tretie okienko
-        const jokes = [
-            "Proč má Harry Potter na čele jizvu ve tvaru blesku? Protože když byl malý, tak ho srazil Opel. Na druhou stranu může být rád, že ho nesrazil Renault...",
-            "Tak sa vám raz šťúram špendlíkom v uchu a zrazu ticho! No a tak sa pozriem na ten špendlík zblízka a zrazu tma!",
-            "Nemíváte-li ve sportech štěstí napoprvé, parašutismus není pro vás.",
-            "Každý člověk má dobré srdce. - Hannibal Lecter"
-        ];
-
-// Naša vlastná offline databáza vtipov (Vylepšená filmárska edícia)
         const skVtipy = [
             "Aký je rozdiel medzi hlavným kameramanom a Bohom? Boh si nemyslí, že je hlavný kameraman.",
             "Aký je rozdiel medzi predpoveďou počasia od SHMÚ a dispozíciou? Predpoveď počasia občas vyjde.",
             "Prečo po blesku prichádza hrom? Aj Boh musí čakať na zvuk.",
             "Vieš, prečo filmári na pľaci tak radi a často nadávajú na zlé počasie? Lebo na hercov sa nahlas nadávať nesmie.",
             "Najkratší filmársky vtip: 'Dnes ideme presne podľa dispo.'",
+            "Na počiatku Boh stvoril kameramana. Boh si prezrel kameramana a bol spokojný. Kameraman si prezrel Boha a vraví: „Otoč hlavu, tu sa pozeraj, vyššie bradu....to čo je za svetlo?“ Boh povedal: „To je moje.“ Kameraman povedal: „Tak pozri sa, chcelo by to čistý low-key. To veľké pichnime na dimmer a stiahneme ho, nech len tak tlie, dajme jej takých 2700 Kelvinov. Potom zober nejaký Skypanel alebo LED matrac, daj to cez chimeru s voštinou, zavesme to jemne zvrchu zo strany, nech to namotivujeme od nej a nerozbijeme si to kade-tade. Z druhej strany to úplne zabijeme – prines mi dve čierne floppyny do véčka, nech z toho urobíme poriadny negatívny výkryt a líca im padajú do tmy. Na odlepenie od pozadia chcem nejakú studenú mesačku. Daj mi doozadu M18-tku s CTB-čkom, nech im to vytvorí peknú kontru a jemne lízne vlasy a rameno. A ak budú mať mŕtve oči, pichneme im k objektívu jednu malú Asteru stiahnutú na 2 % len na iskru. Môžeš to začať stavať?... A tak Boh stvoril vesmír'",
+            "Koľko hercov je potrebných na zaskrutkovanie žiarovky? Jeden. Chyti žiarovku a celý svet sa točí okolo neho.'",
+            "Koľko rekvizitárov je potrebných na zaskrutkovanie žiarovky?<br>Musí to byť žiarovka? Mám taký parádny svietnik...'",
+            "Koľko strihačov je potrebných na výmenu žiarovky?<br>Ak zmením žiarovku, budeme musieť zmeniť všetko.'",
+            "Koľko produkčných je potrebných na zaskrutkovanie žiarovky?<br>Čo je to žiarovka?'",
+            "Koľko zvukárov je potrebných na zaskrutkovanie žiarovky?<br>Čo?'",
+            "Koľko scenáristov je potrebných na výmenu žiarovky?<br>Tak moment, ja už nič meniť nebudem!'",
+            "Koľko vodičov je potrebných na výmenu žiarovky?<br>Máš nejaký problém?'",
             "Prečo efektári nefajčia? Trvalo by im štyri hodiny, kým by to zapálili.",
-            "Koľko rekvizitárov je potrebných na výmenu žiarovky? „No dovoľ! To je stavba!“",
-            "Aký je rozdiel medzi štábom a psom? - Ľudia sa rozčuľujú, keď sa so psom zaobchádza zle."
+            "Koľko rekvizitárov je potrebných na výmenu žiarovky?<br>„No dovoľ! To je stavba!“",
+            "Aký je rozdiel medzi štábom a psom?<br>Ľudia sa rozčuľujú, keď sa so psom zaobchádza zle.",
+            "Proč má Harry Potter na čele jizvu ve tvaru blesku? Protože když byl malý, tak ho srazil Opel. Na druhou stranu může být rád, že ho nesrazil Renault...",
+            "Tak sa vám raz šťúram špendlíkom v uchu a zrazu ticho! No a tak sa pozriem na ten špendlík zblízka a zrazu tma!",
+            "Nemíváte-li ve sportech štěstí napoprvé, parašutismus není pro vás.",
+            "Každý člověk má dobré srdce. - Hannibal Lecter"
         ];
+
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 6371; // Polomer Zeme v km
@@ -463,7 +483,13 @@ async function fetchWeather(lat, lon, cityName) {
                 const wind = Math.round(current.windspeed_10m);
                 const code = current.weathercode;
                 const clouds = current.cloudcover; // <-- Tu sme to vytiahli z dát
+                // Vytiahneme východ a západ slnka pre aktuálny deň (index 0 v daily poli)
+                const todaySunrise = new Date(dataAuto.daily.sunrise[0]).toLocaleTimeString('sk-SK', {hour: '2-digit', minute:'2-digit'});
+                const todaySunset = new Date(dataAuto.daily.sunset[0]).toLocaleTimeString('sk-SK', {hour: '2-digit', minute:'2-digit'});
                 
+                // Vložíme ich do nových elementov na hlavnej karte
+                document.getElementById('mainSunrise').innerText = todaySunrise;
+                document.getElementById('mainSunset').innerText = todaySunset;
                 document.getElementById('temp').innerText = temp + "°C";
                 document.getElementById('wind').innerText = wind + " km/h";
                 document.getElementById('clouds').innerText = clouds + " %"; // <-- Tu sme to vložili na obrazovku
@@ -528,7 +554,7 @@ async function fetchWeather(lat, lon, cityName) {
         }
 
         function tellJoke() {
-            document.getElementById('jokeContent').innerText = getNextJoke();
+            document.getElementById('jokeContent').innerHTML = getNextJoke();
             document.getElementById('jokeModal').classList.replace('hidden', 'flex');
         }
 
