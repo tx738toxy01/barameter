@@ -188,6 +188,8 @@
                 <div id="hourlyContext" class="text-lg font-black" style="color: #34d399;">Pondelok 12.5. • Ráno (06:00)</div>
                 <div style="height: 1px; background: #3f3f46; width: 60%; margin: 16px auto 0;"></div>
             </div>
+            
+            <div class="text-xl font-black tracking-wide mb-3 mt-4 drop-shadow-md" style="color: #ffffff;">Bára radí:</div>
 
             <div id="hourlyEmoji" class="text-7xl mb-4 drop-shadow-lg">✅</div>
             <div id="hourlyTitle" class="text-3xl font-black text-white mb-2 tracking-tight">Nekukaj a toč!</div>
@@ -613,7 +615,7 @@ async function fetchWeather(lat, lon, cityName) {
             const shareUrl = window.location.origin + window.location.pathname;
             
             // Krátky a pekný text, ktorý bude pod obrázkom
-            const textToShare = `Neveríš? Kukni sa sám:\n👇\n${shareUrl}`;
+            const textToShare = `Neveríš? Mne je to jedno. sKukni sa sám:\n👇\n${shareUrl}`;
 
             try {
                 showToast('Pripravujem... 📸');
