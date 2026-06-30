@@ -7,6 +7,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤦🏻‍♀️</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         body { background-color: #0a0a0b; color: white; font-family: system-ui, -apple-system, sans-serif; }
         .glass { background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); }
@@ -173,17 +174,15 @@
 
 <!-- Okno pre hodinovú predpoveď od Báry -->
     <div id="hourlyStatusModal" onclick="if(event.target === this) this.classList.replace('flex','hidden')" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[80] p-4">
-        <!-- Pridaná trieda relative pre správne umiestnenie tlačidla -->
-        <div class="relative bg-zinc-900 rounded-3xl p-8 text-center max-w-sm w-full border border-zinc-700 shadow-2xl">
+        
+        <div id="hourlyModalContent" class="relative bg-zinc-900 rounded-3xl p-8 text-center max-w-sm w-full border border-zinc-700 shadow-2xl">
             
-            <!-- TLAČIDLO ZDIEĽAŤ -->
-            <button onclick="shareHourlyStatus()" class="absolute top-4 right-4 text-zinc-400 hover:text-white p-2 bg-zinc-800 hover:bg-zinc-700 rounded-full transition-all border border-zinc-700 shadow-sm" title="Zdieľať Bárin tip">
+            <button id="shareBtn" onclick="shareHourlyStatus()" class="absolute top-4 right-4 text-zinc-400 hover:text-white p-2 bg-zinc-800 hover:bg-zinc-700 rounded-full transition-all border border-zinc-700 shadow-sm" title="Zdieľať Bárin tip">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
                     <path fill-rule="evenodd" d="M15.75 4.5a3 3 0 11.825 2.066l-8.421 4.679a3.002 3.002 0 010 1.51l8.421 4.679a3 3 0 11-.729 1.31l-8.421-4.678a3 3 0 110-4.132l8.421-4.679a3 3 0 01-.096-.755z" clip-rule="evenodd" />
                 </svg>
             </button>
 
-            <!-- HLAVIČKA s detailmi -->
             <div class="mb-5 bg-zinc-800/80 rounded-2xl py-2 px-4 border border-zinc-700/50 inline-block shadow-inner mt-2">
                 <div id="hourlyLocation" class="text-xs text-zinc-400 mb-1 font-medium tracking-wide">📍 Bratislava</div>
                 <div id="hourlyContext" class="text-sm font-bold text-emerald-400">Pondelok 12.5. • Ráno (06:00)</div>
@@ -192,7 +191,8 @@
             <div id="hourlyEmoji" class="text-7xl mb-4 drop-shadow-lg">✅</div>
             <div id="hourlyTitle" class="text-3xl font-black text-white mb-2 tracking-tight">Nekukaj a toč!</div>
             <div id="hourlyDesc" class="text-zinc-400 text-lg mb-6">Ideálne podmienky</div>
-            <button onclick="document.getElementById('hourlyStatusModal').classList.replace('flex','hidden')" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-2xl transition-all shadow-md">Rozumiem, Bára</button>
+            
+            <button id="closeModalBtn" onclick="document.getElementById('hourlyStatusModal').classList.replace('flex','hidden')" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-2xl transition-all shadow-md mt-2">Rozumiem, Bára</button>
         </div>
     </div>
 
@@ -601,42 +601,70 @@ async function fetchWeather(lat, lon, cityName) {
         }
 
         async function shareHourlyStatus() {
-            // Vytiahneme si texty z okna
+            // Vytiahneme si dáta pre odkaz
             const loc = document.getElementById('hourlyLocation').innerText;
             const time = document.getElementById('hourlyContext').innerText;
             const emoji = document.getElementById('hourlyEmoji').innerText;
             const title = document.getElementById('hourlyTitle').innerText;
             const desc = document.getElementById('hourlyDesc').innerText;
 
-            // Zabalíme tieto dáta do URL odkazu
+            // Zabalíme do URL odkazu
             const baseUrl = window.location.origin + window.location.pathname;
-            const params = new URLSearchParams({
-                share: '1',
-                loc: loc,
-                time: time,
-                emoji: emoji,
-                title: title,
-                desc: desc
-            });
-            
-            // Toto je ten zázračný odkaz, ktorý sa pošle
+            const params = new URLSearchParams({ share: '1', loc: loc, time: time, emoji: emoji, title: title, desc: desc });
             const shareUrl = `${baseUrl}?${params.toString()}`;
-            const textToShare = `Bára má pre teba info z pľacu! Pozri si to tu:\n`;
+            
+            // Text, ktorý bude vo WhatsAppe ako popisok pod obrázkom (dáme tam rovno aj náš odkaz)
+            const textToShare = `Bára má pre teba info z pľacu! Klikni na odkaz pre zobrazenie v appke:\n${shareUrl}`;
 
-            if (navigator.share) {
-                try {
-                    await navigator.share({
-                        title: 'Bárina predpoveď',
-                        text: textToShare,
-                        url: shareUrl
-                    });
-                } catch (err) {
-                    console.log('Zdieľanie bolo zrušené.');
-                }
-            } else {
-                // Pre počítače: skopírujeme text aj s odkazom
-                navigator.clipboard.writeText(textToShare + shareUrl);
-                showToast('Odkaz skopírovaný do schránky! 📋');
+            try {
+                showToast('Kreslím obrázok pre WhatsApp... 📸');
+                
+                // 1. Schováme tlačidlá (Zdieľať a Zavrieť), aby neboli na vygenerovanom obrázku
+                document.getElementById('shareBtn').style.display = 'none';
+                document.getElementById('closeModalBtn').style.display = 'none';
+
+                // 2. Odfotíme samotné okno pomocou html2canvas
+                const modalContent = document.getElementById('hourlyModalContent');
+                const canvas = await html2canvas(modalContent, {
+                    backgroundColor: '#18181b', // farba pozadia (zinc-900), aby to nebolo priehľadné
+                    scale: 2 // vyššia kvalita pre retina displeje mobilov
+                });
+
+                // 3. Vrátime tlačidlá späť do okna, aby s ním používateľ mohol ďalej pracovať
+                document.getElementById('shareBtn').style.display = 'block';
+                document.getElementById('closeModalBtn').style.display = 'block';
+
+                // 4. Prevedieme plátno na reálny PNG súbor
+                canvas.toBlob(async (blob) => {
+                    if (!blob) return showToast('Chyba pri tvorbe obrázka ❌');
+                    const file = new File([blob], 'barameter-info.png', { type: 'image/png' });
+
+                    // 5. Zdieľame OBRÁZOK + TEXT s ODKAZOM naraz
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        await navigator.share({
+                            files: [file],
+                            title: 'Bárina predpoveď',
+                            text: textToShare
+                        });
+                    } else if (navigator.share) {
+                        // Záloha, ak prehliadač nevie zdieľať obrázky (pošle len odkaz)
+                        await navigator.share({
+                            title: 'Bárina predpoveď',
+                            text: textToShare
+                        });
+                    } else {
+                        // Pre PC
+                        navigator.clipboard.writeText(textToShare);
+                        showToast('Odkaz skopírovaný do schránky! 📋');
+                    }
+                }, 'image/png');
+
+            } catch (err) {
+                console.log('Chyba pri zdieľaní:', err);
+                // Pre istotu vrátime tlačidlá ak by niečo zlyhalo
+                document.getElementById('shareBtn').style.display = 'block';
+                document.getElementById('closeModalBtn').style.display = 'block';
+                showToast('Zdieľanie sa nepodarilo ❌');
             }
         }
 
