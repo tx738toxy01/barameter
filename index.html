@@ -473,7 +473,7 @@ async function fetchWeather(lat, lon, cityName) {
 
                 // Logika Bárinho statusu prispôsobená pre Open-Meteo
                 if (code >= 95 || wind > 35) setStatus("status-bad", "❌", "Zmotaj káble!", "Búrka / Silný vietor", "bad");
-                else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82) || wind > 20) setStatus("status-warn", "⚠️", "Dávaj pozor!", "Zrážky / Vietor", "warn");
+                else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82) || wind > 20) setStatus("status-warn", "⚠️", "Ježíš, dávaj pozor!", "Zrážky / Vietor", "warn");
                 else setStatus("status-good", "✅", "Nekukaj a toč!", "Ideálne podmienky", "good");
 
                 showToast(`Lokácia ${currentCity} načítaná ✅`);
@@ -582,7 +582,7 @@ async function fetchWeather(lat, lon, cityName) {
                 desc = "Búrka alebo veľmi silný vietor.";
             } else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82) || wind > 20) {
                 emoji = "⚠️";
-                title = "Dávaj pozor!";
+                title = "Ježíš, dávaj pozor!";
                 desc = "Môže pršať, alebo fúka silnejší vietor.";
             } else {
                 emoji = "✅";
