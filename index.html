@@ -608,13 +608,11 @@ async function fetchWeather(lat, lon, cityName) {
             const title = document.getElementById('hourlyTitle').innerText;
             const desc = document.getElementById('hourlyDesc').innerText;
 
-            // Zabalíme do URL odkazu
-            const baseUrl = window.location.origin + window.location.pathname;
-            const params = new URLSearchParams({ share: '1', loc: loc, time: time, emoji: emoji, title: title, desc: desc });
-            const shareUrl = `${baseUrl}?${params.toString()}`;
+            // Čistý odkaz priamo na tvoju aplikáciu (bez dlhých parametrov)
+            const shareUrl = window.location.origin + window.location.pathname;
             
-            // Text, ktorý bude vo WhatsAppe ako popisok pod obrázkom (dáme tam rovno aj náš odkaz)
-            const textToShare = `Bára má pre teba info z pľacu! Otvor si okno priamo v appke tu:\n👇\n${shareUrl}`;
+            // Krátky a pekný text, ktorý bude pod obrázkom
+            const textToShare = `Neveríš? Kukni sa sám:\n👇\n${shareUrl}`;
 
             try {
                 showToast('Pripravujem... 📸');
