@@ -21,12 +21,12 @@
         .flash-location { animation: locationFlash 0.6s ease-in-out 2; }
     </style>
 </head>
-<body class="p-3 md:p-4 max-w-md mx-auto flex flex-col h-[100dvh] overflow-hidden">
+<body class="p-3 md:p-4 w-[95vw] max-w-screen-xl mx-auto flex flex-col h-[100dvh] overflow-hidden">
 
     <!-- Hlavička -->
     <div class="flex justify-between items-center mb-3 shrink-0">
         <div>
-            <h1 class="text-3xl md:text-4xl font-black tracking-tighter">Barameter</h1>
+            <h1 class="text-[clamp(1.8rem,5vw,3rem)] font-black tracking-tighter">Barameter</h1>
             <p class="text-zinc-500 text-xs md:text-sm">Nezúfaj, Bara ti povie, že čo!</p>
         </div>
         <button onclick="showMyMapOnly()" class="px-3 py-2 glass rounded-2xl font-medium text-sm md:text-base text-emerald-400 hover:bg-zinc-800 transition-all shadow-md tracking-wide">
@@ -82,17 +82,17 @@
             </div>
 
             <div class="flex-1 flex flex-col justify-center items-center text-center py-2 min-h-0 shrink">
-                <div id="statusEmoji" class="text-[5.5rem] md:text-[7rem] mb-2 drop-shadow-lg leading-none shrink-0">⏳</div>
-                <div id="statusText" class="text-3xl md:text-4xl font-black tracking-tighter leading-tight shrink-0">Načítavam...</div>
-                <div id="statusDesc" class="text-zinc-300 mt-1 text-sm md:text-lg shrink-0"></div>
+                <div id="statusEmoji" class="text-[clamp(5.5rem,15vw,9rem)] mb-2 drop-shadow-lg leading-none shrink-0">⏳</div>
+                <div id="statusText" class="text-[clamp(1.8rem,5vw,3.5rem)] font-black tracking-tighter leading-tight shrink-0">Načítavam...</div>
+                <div id="statusDesc" class="text-zinc-300 mt-1 text-[clamp(0.875rem,2.5vw,1.5rem)] shrink-0"></div>
             </div>
 
             <div class="shrink-0">
                 <div class="grid grid-cols-4 gap-2 text-center bg-black/20 py-3 px-2 -mx-4 md:-mx-5 rounded-3xl shadow-inner mb-2">
                     <div class="flex flex-col items-center justify-center">
-                        <div class="text-2xl drop-shadow-md mb-1">🌡️</div>
+                        <div class="text-[clamp(1.5rem,4vw,2.5rem)] drop-shadow-md mb-1">🌡️</div>
                         <div class="text-zinc-400 text-[9px] uppercase tracking-wider mb-0.5">Teplota</div>
-                        <div id="temp" class="font-black text-sm md:text-base text-white">--°C</div>
+                        <div id="temp" class="font-black text-[clamp(0.875rem,2.5vw,1.5rem)] text-white">--°C</div>
                     </div>
                     <div class="flex flex-col items-center justify-center">
                         <div class="text-2xl drop-shadow-md mb-1">💨</div>
@@ -122,8 +122,8 @@
         <!-- Dve spodné tlačidlá -->
         <div class="grid grid-cols-2 gap-3 shrink-0">
             <div onclick="openCalendar()" class="glass rounded-3xl p-3 md:p-4 border border-zinc-700/50 hover:bg-zinc-800 transition-all cursor-pointer flex flex-col justify-center items-center text-center">
-                <div class="text-3xl mb-2 drop-shadow-lg">📅</div>
-                <div class="font-bold text-[13px] md:text-[15px] leading-tight text-white">Bára, a čo<br>ďalšie dni?</div>
+                <div class="text-[clamp(1.8rem,4vw,3.5rem)] mb-2 drop-shadow-lg">📅</div>
+                <div class="font-bold text-[clamp(13px,2vw,20px)] leading-tight text-white">Bára, a čo<br>ďalšie dni?</div>
             </div>
 
             <div onclick="tellJoke()" class="glass rounded-3xl p-3 md:p-4 border border-zinc-700/50 hover:bg-zinc-800 transition-all cursor-pointer flex flex-col justify-center items-center text-center">
