@@ -183,9 +183,9 @@
                 </svg>
             </button>
 
-            <div class="mb-5 bg-zinc-800/80 rounded-2xl py-2 px-4 border border-zinc-700/50 inline-block shadow-inner mt-2">
-                <div id="hourlyLocation" class="text-xs text-zinc-400 mb-1 font-medium tracking-wide">📍 Bratislava</div>
-                <div id="hourlyContext" class="text-sm font-bold text-emerald-400">Pondelok 12.5. • Ráno (06:00)</div>
+            <div class="mb-5 bg-zinc-800 rounded-2xl py-2 px-4 border border-zinc-600 inline-block shadow-md mt-2">
+                <div id="hourlyLocation" class="text-xs text-zinc-200 mb-1 font-bold tracking-wide">📍 Bratislava</div>
+                <div id="hourlyContext" class="text-sm font-black text-emerald-400">Pondelok 12.5. • Ráno (06:00)</div>
             </div>
 
             <div id="hourlyEmoji" class="text-7xl mb-4 drop-shadow-lg">✅</div>
@@ -614,10 +614,10 @@ async function fetchWeather(lat, lon, cityName) {
             const shareUrl = `${baseUrl}?${params.toString()}`;
             
             // Text, ktorý bude vo WhatsAppe ako popisok pod obrázkom (dáme tam rovno aj náš odkaz)
-            const textToShare = `Bára má pre teba info z pľacu! Klikni na odkaz pre zobrazenie v appke:\n${shareUrl}`;
+            const textToShare = `Bára má pre teba info z pľacu! Otvor si okno priamo v appke tu:\n👇\n${shareUrl}`;
 
             try {
-                showToast('Kreslím obrázok pre WhatsApp... 📸');
+                showToast('Pripravujem... 📸');
                 
                 // 1. Schováme tlačidlá (Zdieľať a Zavrieť), aby neboli na vygenerovanom obrázku
                 document.getElementById('shareBtn').style.display = 'none';
