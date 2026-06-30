@@ -21,7 +21,7 @@
         .flash-location { animation: locationFlash 0.6s ease-in-out 2; }
     </style>
 </head>
-<body class="p-3 md:p-5 w-[95vw] max-w-screen-xl mx-auto flex flex-col h-[100dvh] overflow-hidden">
+<body class="p-3 md:p-5 w-[95vw] max-w-screen-xl mx-auto flex flex-col h-[100dvh] overflow-y-auto">
 
     <div class="flex justify-between items-center mb-4 shrink-0 mt-2">
         <div>
@@ -77,10 +77,11 @@
                 </div>
             </div>
 
-            <div class="flex-1 flex flex-col justify-center items-center text-center py-4 min-h-0 shrink">
-                <div id="statusEmoji" class="text-[clamp(7.5rem,20vw,12rem)] mb-4 drop-shadow-2xl leading-none shrink-0">⏳</div>
-                <div id="statusText" class="text-[clamp(2.5rem,8vw,4.5rem)] font-black tracking-tighter leading-tight shrink-0">Načítavam...</div>
-                <div id="statusDesc" class="text-zinc-200 mt-2 text-[clamp(1.2rem,4vw,2rem)] shrink-0 font-medium"></div>
+            <!-- Emoji a Hlavný text -->
+            <div class="flex-1 flex flex-col justify-center items-center text-center py-2 min-h-0 shrink">
+                <div id="statusEmoji" class="text-[clamp(4.5rem,15vh,9rem)] mb-2 drop-shadow-2xl leading-none shrink">⏳</div>
+                <div id="statusText" class="text-[clamp(1.8rem,6vh,3.5rem)] font-black tracking-tighter leading-tight shrink">Načítavam...</div>
+                <div id="statusDesc" class="text-zinc-200 mt-1 text-[clamp(1rem,3vh,1.5rem)] font-medium shrink"></div>
             </div>
 
             <div class="shrink-0">
