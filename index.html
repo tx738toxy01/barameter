@@ -21,117 +21,111 @@
         .flash-location { animation: locationFlash 0.6s ease-in-out 2; }
     </style>
 </head>
-<body class="p-4 max-w-md mx-auto">
+<body class="p-3 md:p-4 max-w-md mx-auto flex flex-col h-[100dvh] overflow-hidden">
 
-    <div class="flex justify-between items-center mb-6">
+    <!-- Hlavička -->
+    <div class="flex justify-between items-center mb-3 shrink-0">
         <div>
-            <h1 class="text-4xl font-black tracking-tighter">Barameter</h1>
-            <p class="text-zinc-500 text-sm">Nezúfaj, Bara ti povie, že čo!</p>
+            <h1 class="text-3xl md:text-4xl font-black tracking-tighter">Barameter</h1>
+            <p class="text-zinc-500 text-xs md:text-sm">Nezúfaj, Bara ti povie, že čo!</p>
         </div>
-        <button onclick="showMyMapOnly()" class="px-4 py-2 glass rounded-2xl font-medium text-base text-emerald-400 hover:bg-zinc-800 transition-all shadow-md tracking-wide">
+        <button onclick="showMyMapOnly()" class="px-3 py-2 glass rounded-2xl font-medium text-sm md:text-base text-emerald-400 hover:bg-zinc-800 transition-all shadow-md tracking-wide">
             Bára, kde som?
         </button>
     </div>
 
-    <div class="relative mb-6">
+    <!-- Vyhľadávač -->
+    <div class="relative mb-3 shrink-0">
         <div class="flex gap-2">
-            <!-- Nový obal iba pre okienko a špendlík, aby sa špendlík držal vnútri -->
             <div class="relative w-full">
-                <input type="text" id="cityInput" placeholder="Zadaj mesto..." autocomplete="off" class="w-full bg-zinc-900 border border-zinc-700 text-white text-lg rounded-2xl px-5 py-3 pr-12 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all placeholder:text-zinc-600 shadow-inner">
-                
-                <!-- Červený špendlík Google Maps -->
-                <button onclick="useMyLocation()" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-red-500 hover:text-red-400 transition-colors z-10" title="Načítať počasie pre moju polohu">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                        <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
-                    </svg>
+                <input type="text" id="cityInput" placeholder="Zadaj mesto..." autocomplete="off" class="w-full bg-zinc-900 border border-zinc-700 text-white text-base rounded-2xl px-4 py-2.5 pr-10 outline-none focus:border-emerald-500 shadow-inner">
+                <button onclick="useMyLocation()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 hover:text-red-400 transition-colors z-10" title="Moja poloha">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" /></svg>
                 </button>
             </div>
-            
-            <button onclick="searchCity()" class="bg-emerald-600 hover:bg-emerald-500 px-6 rounded-2xl font-bold shrink-0">Hľadať</button>
+            <button onclick="searchCity()" class="bg-emerald-600 hover:bg-emerald-500 px-5 rounded-2xl font-bold text-sm shrink-0">Hľadať</button>
         </div>
-        
-        <!-- Autocomplete suggestions -->
-        <div id="suggestions" class="hidden absolute z-50 mt-1 w-full max-h-60 overflow-y-auto overscroll-contain bg-zinc-900 border border-zinc-700 rounded-2xl shadow-xl"></div>
+        <div id="suggestions" class="hidden absolute z-50 mt-1 w-full max-h-52 overflow-y-auto overscroll-contain bg-zinc-900 border border-zinc-700 rounded-2xl shadow-xl"></div>
     </div>
 
-    <!-- Main Status Card -->
-    <div class="space-y-4 mb-6">
+    <!-- Flexibilný obal pre všetky karty -->
+    <div class="flex-1 flex flex-col gap-3 min-h-0 pb-1">
         
-        <div id="statusCard" onclick="showTipsModal()" class="glass rounded-3xl p-6 border transition-all duration-300 cursor-pointer status-good">
+        <!-- Hlavná stavová karta (Gumená: flex-1 a flex-col) -->
+        <div id="statusCard" onclick="showTipsModal()" class="glass rounded-3xl p-5 border transition-all duration-300 cursor-pointer status-good flex-1 flex flex-col justify-between min-h-0">
             
-            <div class="flex justify-between items-start mb-4">
+            <div class="flex justify-between items-start shrink-0">
                 <div>
-                    <div class="text-3xl md:text-4xl font-black text-white mb-1 tracking-tight">Bára, a čo teraz?</div>
-                    <div class="flex items-center gap-3 mt-1">
-                        <div id="locationName" class="text-sm md:text-base font-black text-white uppercase tracking-widest bg-black/30 px-3 py-1 rounded-xl border border-white/10 transition-all origin-left inline-block">Bratislava</div>
+                    <div class="text-2xl md:text-3xl font-black text-white mb-1 tracking-tight">Bára, a čo teraz?</div>
+                    <div class="flex items-center gap-2 mt-1">
+                        <div id="locationName" class="text-xs md:text-sm font-black text-white uppercase tracking-widest bg-black/30 px-2 py-1 rounded-xl border border-white/10 transition-all origin-left inline-block">Bratislava</div>
                         <span class="text-zinc-600">•</span>
-                        <div id="currentTime" class="text-emerald-400 text-sm font-mono mt-0.5"></div>
+                        <div id="currentTime" class="text-emerald-400 text-xs font-mono mt-0.5"></div>
                     </div>
                 </div>
-                <button onclick="event.stopImmediatePropagation(); openMapModal()" class="px-3 py-1.5 glass rounded-xl font-normal text-xs text-emerald-400 hover:bg-zinc-800 transition-all text-center leading-tight shadow-md mt-1 border border-emerald-500/20 whitespace-nowrap">
+                <button onclick="event.stopImmediatePropagation(); openMapModal()" class="px-2.5 py-1.5 glass rounded-xl font-normal text-[11px] text-emerald-400 hover:bg-zinc-800 transition-all text-center leading-tight shadow-md mt-1 border border-emerald-500/20 whitespace-nowrap">
                     Bára, kde<br>to je?
                 </button>
             </div>
 
-            <div class="relative text-center py-5">
-                <!-- Východ a západ na hlavnej karte (malé minimal ikony) -->
-                <div class="absolute top-0 left-2 right-2 flex justify-between items-center text-xs opacity-80">
+            <!-- Priestor pre ikonu a status (flexibilný stred) -->
+            <div class="relative text-center flex-1 flex flex-col justify-center min-h-0 py-2">
+                <div class="absolute top-0 left-1 right-1 flex justify-between items-center text-[10px] md:text-xs opacity-80">
                     <div class="flex items-center gap-1 text-emerald-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6"/><path d="M12 2l-3 3"/><path d="M12 2l3 3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6"/><path d="M12 2l-3 3"/><path d="M12 2l3 3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
                         <span id="mainSunrise" class="font-bold tracking-wider">--:--</span>
                     </div>
                     <div class="flex items-center gap-1 text-amber-400">
                         <span id="mainSunset" class="font-bold tracking-wider">--:--</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10V2"/><path d="M12 10l-3-3"/><path d="M12 10l3-3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10V2"/><path d="M12 10l-3-3"/><path d="M12 10l3-3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
                     </div>
                 </div>
 
-                <div id="statusEmoji" class="text-7xl mb-4 drop-shadow-lg mt-5">⏳</div>
-                <div id="statusText" class="text-4xl font-black tracking-tighter leading-tight">Načítavam...</div>
-                <div id="statusDesc" class="text-zinc-300 mt-2 text-lg"></div>
+                <div id="statusEmoji" class="text-6xl md:text-7xl mb-2 md:mb-4 drop-shadow-lg mt-4">⏳</div>
+                <div id="statusText" class="text-3xl md:text-4xl font-black tracking-tighter leading-tight shrink-0">Načítavam...</div>
+                <div id="statusDesc" class="text-zinc-300 mt-1 md:mt-2 text-sm md:text-lg"></div>
             </div>
 
-            <div class="grid grid-cols-4 gap-4 text-center bg-black/20 py-5 px-4 -mx-6 rounded-3xl mb-2 shadow-inner">
-                <div class="flex flex-col items-center">
-                    <div class="text-3xl drop-shadow-md mb-2">🌡️</div>
-                    <div class="text-zinc-400 text-[11px] uppercase tracking-wider mb-1">Teplota</div>
-                    <div id="temp" class="font-black text-lg text-white">--°C</div>
+            <div class="grid grid-cols-4 gap-2 text-center bg-black/20 py-3 px-2 -mx-5 rounded-3xl mt-1 shadow-inner shrink-0">
+                <div class="flex flex-col items-center justify-center">
+                    <div class="text-2xl drop-shadow-md mb-1">🌡️</div>
+                    <div class="text-zinc-400 text-[9px] uppercase tracking-wider mb-0.5">Teplota</div>
+                    <div id="temp" class="font-black text-sm md:text-base text-white">--°C</div>
                 </div>
-                <div class="flex flex-col items-center">
-                    <div class="text-3xl drop-shadow-md mb-2">💨</div>
-                    <div class="text-zinc-400 text-[11px] uppercase tracking-wider mb-1">Vietor</div>
-                    <div id="wind" class="font-black text-lg text-white">-- km/h</div>
+                <div class="flex flex-col items-center justify-center">
+                    <div class="text-2xl drop-shadow-md mb-1">💨</div>
+                    <div class="text-zinc-400 text-[9px] uppercase tracking-wider mb-0.5">Vietor</div>
+                    <div id="wind" class="font-black text-sm md:text-base text-white">-- km/h</div>
                 </div>
-                <div class="flex flex-col items-center">
-                    <div class="text-3xl drop-shadow-md mb-2">☔</div>
-                    <div class="text-zinc-400 text-[11px] uppercase tracking-wider mb-1">Zrážky</div>
-                    <div id="rain" class="font-black text-lg text-white">--</div>
+                <div class="flex flex-col items-center justify-center">
+                    <div class="text-2xl drop-shadow-md mb-1">☔</div>
+                    <div class="text-zinc-400 text-[9px] uppercase tracking-wider mb-0.5">Zrážky</div>
+                    <div id="rain" class="font-black text-sm md:text-base text-white">--</div>
                 </div>
-                <div class="flex flex-col items-center">
-                    <div class="text-3xl drop-shadow-md mb-2">☁️</div>
-                    <div class="text-zinc-400 text-[11px] uppercase tracking-wider mb-1">Oblaky</div>
-                    <div id="clouds" class="font-black text-lg text-white">-- %</div>
+                <div class="flex flex-col items-center justify-center">
+                    <div class="text-2xl drop-shadow-md mb-1">☁️</div>
+                    <div class="text-zinc-400 text-[9px] uppercase tracking-wider mb-0.5">Oblaky</div>
+                    <div id="clouds" class="font-black text-sm md:text-base text-white">-- %</div>
                 </div>
             </div>
             
-            <!-- Oficiálna atribúcia a klikateľný odkaz -->
-            <div class="text-center mt-3 text-[10px] text-white/40 font-mono uppercase tracking-widest hover:text-white/80 transition-colors">
+            <div class="text-center mt-2 md:mt-3 text-[9px] text-white/40 font-mono uppercase tracking-widest hover:text-white/80 transition-colors shrink-0">
                 <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Weather data by <span class="font-bold text-white/60">Open-Meteo.com</span></a>
                 <span class="mx-1 text-white/20">|</span>
                 <span>Model: ICON</span>
             </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
-            <div onclick="openCalendar()" class="glass rounded-3xl p-5 border border-zinc-700/50 hover:bg-zinc-800 transition-all cursor-pointer flex flex-col justify-center items-center text-center">
-                <div class="text-4xl mb-3 drop-shadow-lg">📅</div>
-                <div class="font-bold text-[15px] leading-tight text-white">Bára, a čo<br>ďalšie dni?</div>
+        <!-- Dve spodné tlačidlá -->
+        <div class="grid grid-cols-2 gap-3 shrink-0">
+            <div onclick="openCalendar()" class="glass rounded-3xl p-3 md:p-4 border border-zinc-700/50 hover:bg-zinc-800 transition-all cursor-pointer flex flex-col justify-center items-center text-center">
+                <div class="text-3xl mb-2 drop-shadow-lg">📅</div>
+                <div class="font-bold text-[13px] md:text-[15px] leading-tight text-white">Bára, a čo<br>ďalšie dni?</div>
             </div>
 
-            <!-- 3. KARTA: Vtip -->
-            <div onclick="tellJoke()" class="glass rounded-3xl p-5 border border-zinc-700/50 hover:bg-zinc-800 transition-all cursor-pointer flex flex-col justify-center items-center text-center">
-                <div class="text-4xl mb-3 drop-shadow-lg">🎭</div>
-                <div class="font-bold text-[15px] leading-tight text-white">Bára,<br>povedz vtip!</div>
+            <div onclick="tellJoke()" class="glass rounded-3xl p-3 md:p-4 border border-zinc-700/50 hover:bg-zinc-800 transition-all cursor-pointer flex flex-col justify-center items-center text-center">
+                <div class="text-3xl mb-2 drop-shadow-lg">🎭</div>
+                <div class="font-bold text-[13px] md:text-[15px] leading-tight text-white">Bára,<br>povedz vtip!</div>
             </div>
         </div>
     </div>
@@ -245,15 +239,15 @@
             "Aký je rozdiel medzi predpoveďou počasia od SHMÚ a dispozíciou? Predpoveď počasia občas vyjde.",
             "Prečo po blesku prichádza hrom? Aj Boh musí čakať na zvuk.",
             "Vieš, prečo filmári na pľaci tak radi a často nadávajú na zlé počasie? Lebo na hercov sa nahlas nadávať nesmie.",
-            "Najkratší filmársky vtip: 'Dnes ideme presne podľa dispo.'",
-            "Na počiatku Boh stvoril kameramana. Boh si prezrel kameramana a bol spokojný. Kameraman si prezrel Boha a vraví: „Otoč hlavu, tu sa pozeraj, vyššie bradu....to čo je za svetlo?“ Boh povedal: „To je moje.“ Kameraman povedal: „Tak pozri sa, chcelo by to čistý low-key. To veľké pichnime na dimmer a stiahneme ho, nech len tak tlie, dajme jej takých 2700 Kelvinov. Potom zober nejaký Skypanel alebo LED matrac, daj to cez chimeru s voštinou, zavesme to jemne zvrchu zo strany, nech to namotivujeme od nej a nerozbijeme si to kade-tade. Z druhej strany to úplne zabijeme – prines mi dve čierne floppyny do véčka, nech z toho urobíme poriadny negatívny výkryt a líca im padajú do tmy. Na odlepenie od pozadia chcem nejakú studenú mesačku. Daj mi doozadu M18-tku s CTB-čkom, nech im to vytvorí peknú kontru a jemne lízne vlasy a rameno. A ak budú mať mŕtve oči, pichneme im k objektívu jednu malú Asteru stiahnutú na 2 % len na iskru. Môžeš to začať stavať?... A tak Boh stvoril vesmír'",
-            "Koľko hercov je potrebných na zaskrutkovanie žiarovky? Jeden. Chyti žiarovku a celý svet sa točí okolo neho.'",
-            "Koľko rekvizitárov je potrebných na zaskrutkovanie žiarovky?<br>Musí to byť žiarovka? Mám taký parádny svietnik...'",
-            "Koľko strihačov je potrebných na výmenu žiarovky?<br>Ak zmením žiarovku, budeme musieť zmeniť všetko.'",
-            "Koľko produkčných je potrebných na zaskrutkovanie žiarovky?<br>Čo je to žiarovka?'",
-            "Koľko zvukárov je potrebných na zaskrutkovanie žiarovky?<br>Čo?'",
-            "Koľko scenáristov je potrebných na výmenu žiarovky?<br>Tak moment, ja už nič meniť nebudem!'",
-            "Koľko vodičov je potrebných na výmenu žiarovky?<br>Máš nejaký problém?'",
+            "Najkratší filmársky vtip:<br>„Dnes ideme presne podľa dispo.“",
+            "Na počiatku Boh stvoril kameramana. Boh si prezrel kameramana a bol spokojný. Kameraman si prezrel Boha a vraví: „Otoč hlavu, tu sa pozeraj, vyššie bradu....to čo je za svetlo?“ Boh povedal: „To je moje.“ Kameraman povedal: „Tak pozri, chcelo by to čistý low-key. To veľké pichnime na dimmer a stiahneme ho, nech len tak tlie, dajme jej takých 2700 Kelvinov. Potom zober nejaký Skypanel alebo LED matrac, daj to cez chimeru s voštinou, zavesme to jemne zvrchu zo strany, nech to namotivujeme od nej a nerozbijeme si to kade-tade. Z druhej strany to úplne zabijeme – prines mi dve čierne floppyny do véčka, nech z toho urobíme poriadny negatívny výkryt a líca im padajú do tmy. Na odlepenie od pozadia chcem nejakú studenú mesačku. Daj mi doozadu M18-tku s CTB-čkom, nech im to vytvorí peknú kontru a jemne lízne vlasy a rameno. A ak budú mať mŕtve oči, pichneme im k objektívu jednu malú Asteru stiahnutú na 2 % len na iskru. Môžeš to začať stavať.“<br>A tak Boh stvoril vesmír",
+            "Koľko hercov je potrebných na zaskrutkovanie žiarovky? Jeden. Chyti žiarovku a celý svet sa točí okolo neho.",
+            "Koľko rekvizitárov je potrebných na zaskrutkovanie žiarovky?<br>„Musí to byť žiarovka? Mám taký parádny svietnik...“",
+            "Koľko strihačov je potrebných na výmenu žiarovky?<br>„Ak zmením žiarovku, budeme musieť zmeniť všetko.“",
+            "Koľko produkčných je potrebných na zaskrutkovanie žiarovky?<br>„Čo je to žiarovka?“",
+            "Koľko zvukárov je potrebných na zaskrutkovanie žiarovky?<br>„Čo?“",
+            "Koľko scenáristov je potrebných na výmenu žiarovky?<br>„Tak moment, ja už nič meniť nebudem!“",
+            "Koľko vodičov je potrebných na výmenu žiarovky?<br>„Máš nejaký problém?“",
             "Prečo efektári nefajčia? Trvalo by im štyri hodiny, kým by to zapálili.",
             "Koľko rekvizitárov je potrebných na výmenu žiarovky?<br>„No dovoľ! To je stavba!“",
             "Aký je rozdiel medzi štábom a psom?<br>Ľudia sa rozčuľujú, keď sa so psom zaobchádza zle.",
@@ -285,7 +279,8 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 
         function setStatus(statusClass, emoji, text, desc, statusType) {
             const card = document.getElementById('statusCard');
-            card.className = `glass rounded-3xl p-8 border mb-6 transition-all duration-300 cursor-pointer ${statusClass}`;
+            // Pridali sme sem naše nové flexibilné triedy z HTML, aby ich skript neprepísal
+            card.className = `glass rounded-3xl p-5 border transition-all duration-300 cursor-pointer flex-1 flex flex-col justify-between min-h-0 ${statusClass}`;
             
             document.getElementById('statusEmoji').innerText = emoji;
             document.getElementById('statusText').innerText = text;
@@ -1010,10 +1005,12 @@ async function fetchWeather(lat, lon, cityName) {
         // Initial load
         fetchWeather(48.1486, 17.1077, "Bratislava");
     </script>
-</body>
+
 <div class="hidden landscape:flex fixed inset-0 z-[9999] bg-zinc-950 flex-col items-center justify-center p-6 text-center">
         <div class="text-7xl mb-6 drop-shadow-lg">📱</div>
         <div class="text-3xl font-black text-white mb-3">Nespi!</div>
         <div class="text-zinc-400 text-lg">Prosím ťa, otoč si telefón späť na výšku, takto sa spolu baviť nebudeme.</div>
     </div>
+
+</body>
 </html>
