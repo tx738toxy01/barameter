@@ -344,7 +344,8 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO) {
                     cloud.style.position = 'absolute';
                     cloud.style.fontSize = `${Math.random() * 3 + 2}rem`;
                     cloud.style.opacity = (cloudCover / 100) * 0.7;
-                    cloud.style.top = `${Math.random() * 30 + 5}%`;
+                    // Mraky začnú hneď nad tabuľkou (cca 36% odspodu) a ostanú v strednej zóne
+                    cloud.style.bottom = `${Math.random() * 28 + 36}%`;
                     cloud.style.animation = `driftBg ${Math.random() * 30 + 40}s linear infinite`;
                     cloud.style.animationDelay = `-${Math.random() * 40}s`;
                     bg.appendChild(cloud);
