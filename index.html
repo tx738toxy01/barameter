@@ -32,6 +32,11 @@
             4% { background-color: transparent; }
             100% { background-color: transparent; }
         }
+@keyframes boltFlash {
+            0%, 100% { opacity: 0; }
+            5%, 25% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+            15% { opacity: 0; }
+        }
         .lightning-layer {
             position: absolute; inset: 0; z-index: 5; pointer-events: none;
             animation: lightning 6s infinite;
@@ -400,6 +405,24 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
                             cloud.appendChild(drop);
                         }
                     }
+
+                    // Ak je búrka (kód 95+), pridáme priamo pod niektoré mraky fyzický blesk
+                    if (weatherCode >= 95 && Math.random() > 0.5) {
+                        const bolt = document.createElement('div');
+                        bolt.innerText = '⚡';
+                        bolt.style.position = 'absolute';
+                        bolt.style.fontSize = `${Math.random() * 1.5 + 1.5}rem`; // Rôzne veľké blesky
+                        bolt.style.left = '50%';
+                        bolt.style.top = '65%'; // Trčí zospodu mraku
+                        bolt.style.transform = 'translateX(-50%)';
+                        bolt.style.zIndex = '1';
+                        bolt.style.filter = 'drop-shadow(0 0 10px rgba(253,224,71,0.8))';
+                        // Blesk preblikne každé 2 až 6 sekúnd
+                        bolt.style.animation = `boltFlash ${Math.random() * 4 + 2}s infinite`;
+                        bolt.style.animationDelay = `${Math.random() * 5}s`;
+                        cloud.appendChild(bolt);
+                    }
+
                     bg.appendChild(cloud);
                 }
             }
