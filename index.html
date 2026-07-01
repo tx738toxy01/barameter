@@ -23,6 +23,7 @@
         @keyframes rainDrop { 0% { transform: translateY(-10px) translateX(0); opacity: 1; } 100% { transform: translateY(100vh) translateX(-20px); opacity: 0; } }
         .anim-bg-layer { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; border-radius: inherit; opacity: 0.6; }
         .content-layer { position: relative; z-index: 10; }
+.text-outline { text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000; }
     </style>
 </head>
 <body class="p-3 md:p-5 max-w-[95vw] lg:max-w-screen-md mx-auto flex flex-col h-[100dvh] overflow-hidden">
@@ -74,10 +75,10 @@
                 <div class="flex justify-between items-center text-sm md:text-base opacity-80 mt-3 px-1">
                     <div class="flex items-center gap-1.5 text-emerald-400">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6"/><path d="M12 2l-3 3"/><path d="M12 2l3 3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
-                        <span id="mainSunrise" class="font-bold tracking-wider">--:--</span>
+                        <span id="mainSunrise" class="font-bold tracking-wider text-outline">--:--</span>
                     </div>
                     <div class="flex items-center gap-1.5 text-amber-400">
-                        <span id="mainSunset" class="font-bold tracking-wider">--:--</span>
+                        <span id="mainSunset" class="font-bold tracking-wider text-outline">--:--</span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10V2"/><path d="M12 10l-3-3"/><path d="M12 10l3-3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
                     </div>
                 </div>
@@ -85,8 +86,8 @@
 
             <div class="flex flex-col items-center text-center py-2 shrink">
                 <div id="statusEmoji" class="text-[clamp(5rem,18vmin,10rem)] mb-2 drop-shadow-xl leading-none shrink-0">⏳</div>
-                <div id="statusText" class="text-[clamp(2rem,7vmin,4rem)] font-black tracking-tighter leading-tight shrink-0">Načítavam...</div>
-                <div id="statusDesc" class="text-zinc-200 mt-1 text-[clamp(1rem,3.5vmin,1.5rem)] font-medium shrink-0"></div>
+                <div id="statusText" class="text-[clamp(2rem,7vmin,4rem)] font-black tracking-tighter leading-tight shrink-0 text-outline">Načítavam...</div>
+                <div id="statusDesc" class="text-zinc-200 mt-1 text-[clamp(1rem,3.5vmin,1.5rem)] font-medium shrink-0 text-outline"></div>
             </div>
 
             <!-- 3. Spodná mriežka s počasím (Zväčšené ikonky) -->
@@ -234,6 +235,7 @@
         let currentOwmData = null;
         let forecast16Data = null;
         let currentModel = 'icon_seamless';
+        let currentTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
         // Táto funkcia sa zavolá, keď v roletke vyberieš iný model
         function changeModel(newModel) {
@@ -279,7 +281,11 @@
         function updateTime() {
             const el = document.getElementById('currentTime');
             const now = new Date();
-            el.innerText = now.toLocaleTimeString('sk-SK', { hour: '2-digit', minute: '2-digit' });
+            try {
+                el.innerText = now.toLocaleTimeString('sk-SK', { timeZone: currentTimezone, hour: '2-digit', minute: '2-digit' });
+            } catch(e) {
+                el.innerText = now.toLocaleTimeString('sk-SK', { hour: '2-digit', minute: '2-digit' });
+            }
         }
         setInterval(updateTime, 30000);
         updateTime();
@@ -297,15 +303,18 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO) {
             const bg = document.getElementById('weatherAnimBg');
             bg.innerHTML = ''; 
 
-            const now = new Date();
+            // Oklameme objekt Date, aby si myslel, že aktuálny čas je čas v hľadanom meste
+            const nowStr = new Date().toLocaleString('sv-SE', { timeZone: currentTimezone });
+            const nowLocal = new Date(nowStr.replace(' ', 'T'));
+            
             const sunR = new Date(sunriseISO);
             const sunS = new Date(sunsetISO);
-            const isDay = now >= sunR && now <= sunS;
+            const isDay = nowLocal >= sunR && nowLocal <= sunS;
             
             // Bárin výpočet fázy mesiaca (0.0 = nov, 0.5 = spln)
             const getMoonEmoji = () => {
                 const lp = 2551442.8; // Dĺžka lunárneho mesiaca v sekundách
-                const phase = ((now.getTime() / 1000) - 947182440) % lp;
+                const phase = ((Date.now() / 1000) - 947182440) % lp;
                 const n = (phase / lp);
                 if (n < 0.05) return '🌑'; if (n < 0.25) return '🌒';
                 if (n < 0.3) return '🌓';  if (n < 0.5) return '🌔';
@@ -324,14 +333,17 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO) {
             // Výpočet percenta cesty od východu po západ
             let start = isDay ? sunR : sunS;
             let end = isDay ? sunS : new Date(sunR.getTime() + 86400000); 
-            if (!isDay && now < sunR) { start = new Date(sunS.getTime() - 86400000); end = sunR; }
+            if (!isDay && nowLocal < sunR) { start = new Date(sunS.getTime() - 86400000); end = sunR; }
             
-            let progress = (now - start) / (end - start);
+            let progress = (nowLocal - start) / (end - start);
             progress = Math.max(0, Math.min(1, progress)); // Istota medzi 0 a 1
             
             astro.style.left = `calc(${progress * 100}% - 2rem)`; // X-os
             const archHeight = Math.sin(progress * Math.PI) * 70 + 10; // Y-os (parabola, max výška 80%)
             astro.style.bottom = `${archHeight}%`;
+
+// Ak je cloudCover 100, (1 - 100/100) = 0 (úplne zmizne)
+            astro.style.opacity = 1 - (cloudCover / 100);
             
             bg.appendChild(astro);
 
@@ -492,6 +504,10 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO) {
 
                 forecast16Data = { current: dataIcon.current, hourly: dataAuto.hourly, daily: dataAuto.daily };
                 const current = forecast16Data.current;
+                
+                // Uložíme zónu mesta a prekreslíme hodiny hore
+                currentTimezone = dataAuto.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+                updateTime();
 
                 function mapToOwmCode(c) {
                     if (c === 0) return 800;
