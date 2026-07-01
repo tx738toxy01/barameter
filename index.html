@@ -19,6 +19,10 @@
             50% { color: #34d399; transform: scale(1.05); text-shadow: 0 0 15px rgba(52, 211, 153, 0.8); border-color: #34d399; }
         }
         .flash-location { animation: locationFlash 0.6s ease-in-out 2; }
+@keyframes driftBg { from { transform: translateX(110vw); } to { transform: translateX(-50vw); } }
+        @keyframes rainDrop { 0% { transform: translateY(-10px) translateX(0); opacity: 1; } 100% { transform: translateY(100vh) translateX(-20px); opacity: 0; } }
+        .anim-bg-layer { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; border-radius: inherit; opacity: 0.6; }
+        .content-layer { position: relative; z-index: 10; }
     </style>
 </head>
 <body class="p-3 md:p-5 max-w-[95vw] lg:max-w-screen-md mx-auto flex flex-col h-[100dvh] overflow-hidden">
@@ -49,8 +53,10 @@
     <div class="flex-1 flex flex-col gap-3 min-h-0 pb-2">
         
         <div id="statusCard" onclick="showTipsModal()" class="glass rounded-[2rem] p-5 md:p-6 border transition-all duration-300 cursor-pointer status-good flex-1 flex flex-col justify-between min-h-0 shadow-lg overflow-y-auto">
-            
-            <div class="shrink-0">
+
+<div id="weatherAnimBg" class="anim-bg-layer"></div> 
+           
+            <div class="shrink-0 content-layer">
                 <div class="flex justify-between items-start">
                     <div>
                         <div class="text-3xl md:text-4xl font-black text-white mb-1.5 tracking-tight">Bára, a čo teraz?</div>
@@ -84,7 +90,7 @@
             </div>
 
             <!-- 3. Spodná mriežka s počasím (Zväčšené ikonky) -->
-            <div class="shrink-0 w-full mt-2 mb-4">
+            <div class="shrink-0 w-full mt-2 mb-4 content-layer">
                 <div class="grid grid-cols-4 gap-2 text-center bg-black/25 py-4 px-2 -mx-5 md:-mx-6 rounded-[2rem] shadow-inner">
                     <div class="flex flex-col items-center justify-center">
                         <div class="text-[clamp(2.5rem,8vmin,4rem)] drop-shadow-md mb-2">🌡️</div>
@@ -110,7 +116,7 @@
             </div>
             
             <!-- 4. Open-Meteo Footer s interaktívnym prepínačom -->
-            <div class="shrink-0">
+            <div class="shrink-0 content-layer">
                 <div class="flex justify-center items-center text-[10px] md:text-xs text-white/40 font-mono uppercase tracking-widest">
                     <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" onclick="event.stopImmediatePropagation()" class="hover:text-white/80 transition-colors">Data by <span class="font-bold text-white/60">Open-Meteo</span></a>
                     <span class="mx-2 text-white/20">|</span>
@@ -287,6 +293,81 @@
             currentStatusType = statusType;
         }
 
+function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO) {
+            const bg = document.getElementById('weatherAnimBg');
+            bg.innerHTML = ''; 
+
+            const now = new Date();
+            const sunR = new Date(sunriseISO);
+            const sunS = new Date(sunsetISO);
+            const isDay = now >= sunR && now <= sunS;
+            
+            // Bárin výpočet fázy mesiaca (0.0 = nov, 0.5 = spln)
+            const getMoonEmoji = () => {
+                const lp = 2551442.8; // Dĺžka lunárneho mesiaca v sekundách
+                const phase = ((now.getTime() / 1000) - 947182440) % lp;
+                const n = (phase / lp);
+                if (n < 0.05) return '🌑'; if (n < 0.25) return '🌒';
+                if (n < 0.3) return '🌓';  if (n < 0.5) return '🌔';
+                if (n < 0.55) return '🌕'; if (n < 0.75) return '🌖';
+                if (n < 0.8) return '🌗';  return '🌘';
+            };
+
+            // 1. Slnko / Mesiac (Cesta po oblúku)
+            const astro = document.createElement('div');
+            astro.style.position = 'absolute';
+            astro.style.fontSize = '4rem';
+            astro.style.transition = 'all 1s ease';
+            astro.style.filter = isDay ? 'drop-shadow(0 0 20px rgba(253,224,71,0.8))' : 'drop-shadow(0 0 15px rgba(255,255,255,0.4))';
+            astro.innerText = isDay ? '☀️' : getMoonEmoji();
+            
+            // Výpočet percenta cesty od východu po západ
+            let start = isDay ? sunR : sunS;
+            let end = isDay ? sunS : new Date(sunR.getTime() + 86400000); 
+            if (!isDay && now < sunR) { start = new Date(sunS.getTime() - 86400000); end = sunR; }
+            
+            let progress = (now - start) / (end - start);
+            progress = Math.max(0, Math.min(1, progress)); // Istota medzi 0 a 1
+            
+            astro.style.left = `calc(${progress * 100}% - 2rem)`; // X-os
+            const archHeight = Math.sin(progress * Math.PI) * 70 + 10; // Y-os (parabola, max výška 80%)
+            astro.style.bottom = `${archHeight}%`;
+            
+            bg.appendChild(astro);
+
+            // 2. Oblaky (Hustota podľa percent)
+            if (cloudCover > 5) {
+                const cloudCount = Math.floor(cloudCover / 15) + 1; // max ~7 oblakov
+                for(let i=0; i<cloudCount; i++) {
+                    const cloud = document.createElement('div');
+                    cloud.innerText = '☁️';
+                    cloud.style.position = 'absolute';
+                    cloud.style.fontSize = `${Math.random() * 3 + 2}rem`;
+                    cloud.style.opacity = (cloudCover / 100) * 0.7;
+                    cloud.style.top = `${Math.random() * 30 + 5}%`;
+                    cloud.style.animation = `driftBg ${Math.random() * 30 + 40}s linear infinite`;
+                    cloud.style.animationDelay = `-${Math.random() * 40}s`;
+                    bg.appendChild(cloud);
+                }
+            }
+
+            // 3. Dážď (Jemné čiary, ak prší)
+            if (isRain) {
+                for(let i=0; i<15; i++) {
+                    const drop = document.createElement('div');
+                    drop.style.position = 'absolute';
+                    drop.style.width = '2px';
+                    drop.style.height = '20px';
+                    drop.style.background = 'linear-gradient(transparent, rgba(255,255,255,0.6))';
+                    drop.style.left = `${Math.random() * 100}%`;
+                    drop.style.top = '-20px';
+                    drop.style.animation = `rainDrop ${Math.random() * 0.4 + 0.6}s linear infinite`;
+                    drop.style.animationDelay = `${Math.random()}s`;
+                    bg.appendChild(drop);
+                }
+            }
+        }
+
         async function showTipsModal() {
             const modal = document.getElementById('tipsModal');
             const content = document.getElementById('modalTipsContent');
@@ -446,6 +527,10 @@
                 if (code >= 95 || wind > 35) setStatus("status-bad", "❌", "Zmotaj káble!", "Búrka / Silný vietor", "bad");
                 else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82) || wind > 20) setStatus("status-warn", "⚠️", "Ježíš, dávaj pozor!", "Zrážky / Vietor", "warn");
                 else setStatus("status-good", "✅", "Nekukaj a toč!", "Ideálne podmienky", "good");
+
+// Spustenie animácií na pozadí
+                const isRainNow = (code >= 51 && code <= 67) || (code >= 80 && code <= 82) || code >= 95;
+                updateWeatherAnimations(clouds, isRainNow, dataAuto.daily.sunrise[0], dataAuto.daily.sunset[0]);
 
                 showToast(`Lokácia ${currentCity} načítaná ✅`);
 
