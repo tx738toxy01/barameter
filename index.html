@@ -390,6 +390,7 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
                     bg.appendChild(cloud);
                 }
             }
+        } // <--- Táto zátvorka tu chýbala a všetko blokovala!
 
         async function showTipsModal() {
             const modal = document.getElementById('tipsModal');
