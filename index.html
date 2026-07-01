@@ -348,18 +348,23 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO) {
             bg.appendChild(astro);
 
             // 2. Oblaky (Hustota podľa percent)
-            if (cloudCover > 5) {
-                const cloudCount = Math.floor(cloudCover / 15) + 1; // max ~7 oblakov
+            if (cloudCover > 0) {
+                // Pre 100% oblačnosť zaplníme plochu (cca 35 mrakov). Pre 50% ich bude polovička.
+                const cloudCount = Math.floor((cloudCover / 100) * 35); 
                 for(let i=0; i<cloudCount; i++) {
                     const cloud = document.createElement('div');
                     cloud.innerText = '☁️';
                     cloud.style.position = 'absolute';
-                    cloud.style.fontSize = `${Math.random() * 3 + 2}rem`;
-                    cloud.style.opacity = (cloudCover / 100) * 0.7;
-                    // Mraky začnú hneď nad tabuľkou (cca 36% odspodu) a ostanú v strednej zóne
+                    // Mraky urobíme trochu väčšie, aby lepšie vypĺňali priestor
+                    cloud.style.fontSize = `${Math.random() * 4 + 3.5}rem`; 
+                    // Pri 100% budú mraky takmer nepriehľadné (husté)
+                    cloud.style.opacity = Math.min(0.95, (cloudCover / 100) + 0.15); 
                     cloud.style.bottom = `${Math.random() * 28 + 36}%`;
-                    cloud.style.animation = `driftBg ${Math.random() * 30 + 40}s linear infinite`;
-                    cloud.style.animationDelay = `-${Math.random() * 40}s`;
+                    
+                    // Rôzne rýchlosti pre lepší 3D dojem
+                    cloud.style.animation = `driftBg ${Math.random() * 25 + 30}s linear infinite`;
+                    // Rozhádžeme ich po ploche vďaka negatívnemu delayu
+                    cloud.style.animationDelay = `-${Math.random() * 60}s`;
                     bg.appendChild(cloud);
                 }
             }
