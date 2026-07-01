@@ -24,6 +24,8 @@
         .anim-bg-layer { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; border-radius: inherit; opacity: 0.6; }
         .content-layer { position: relative; z-index: 10; }
 .text-outline { text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000; }
+
+#statusEmoji, #statusText, #statusDesc, #hourlyEmoji, #hourlyTitle, #hourlyDesc { opacity: 1 !important; }
     </style>
 </head>
 <body class="p-3 md:p-5 max-w-[95vw] lg:max-w-screen-md mx-auto flex flex-col h-[100dvh] overflow-hidden">
@@ -299,7 +301,7 @@
             currentStatusType = statusType;
         }
 
-function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO) {
+function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, windSpeed) {
             const bg = document.getElementById('weatherAnimBg');
             bg.innerHTML = ''; 
 
@@ -361,8 +363,10 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO) {
                     cloud.style.opacity = Math.min(0.95, (cloudCover / 100) + 0.15); 
                     cloud.style.bottom = `${Math.random() * 28 + 36}%`;
                     
-                    // Rôzne rýchlosti pre lepší 3D dojem
-                    cloud.style.animation = `driftBg ${Math.random() * 25 + 30}s linear infinite`;
+                    // Dynamická rýchlosť podľa vetra
+                    let baseDuration = 60 - windSpeed;
+                    if (baseDuration < 4) baseDuration = 4;
+                    cloud.style.animation = `driftBg ${baseDuration + Math.random() * (baseDuration * 0.3)}s linear infinite`;
                     // Rozhádžeme ich po ploche vďaka negatívnemu delayu
                     cloud.style.animationDelay = `-${Math.random() * 60}s`;
                     bg.appendChild(cloud);
@@ -552,7 +556,7 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO) {
 
 // Spustenie animácií na pozadí
                 const isRainNow = (code >= 51 && code <= 67) || (code >= 80 && code <= 82) || code >= 95;
-                updateWeatherAnimations(clouds, isRainNow, dataAuto.daily.sunrise[0], dataAuto.daily.sunset[0]);
+                updateWeatherAnimations(clouds, isRainNow, dataAuto.daily.sunrise[0], dataAuto.daily.sunset[0], wind);
 
                 showToast(`Lokácia ${currentCity} načítaná ✅`);
 
