@@ -76,12 +76,12 @@
 
                 <div class="flex justify-between items-center text-sm md:text-base opacity-80 mt-3 px-1">
                     <div class="flex items-center gap-1.5 text-emerald-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6"/><path d="M12 2l-3 3"/><path d="M12 2l3 3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
+                        <svg class="drop-shadow-[0_1px_1px_rgba(0,0,0,1)]" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6"/><path d="M12 2l-3 3"/><path d="M12 2l3 3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
                         <span id="mainSunrise" class="font-bold tracking-wider text-outline">--:--</span>
                     </div>
                     <div class="flex items-center gap-1.5 text-amber-400">
                         <span id="mainSunset" class="font-bold tracking-wider text-outline">--:--</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10V2"/><path d="M12 10l-3-3"/><path d="M12 10l3-3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
+                        <svg class="drop-shadow-[0_1px_1px_rgba(0,0,0,1)]" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10V2"/><path d="M12 10l-3-3"/><path d="M12 10l3-3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
                     </div>
                 </div>
             </div>
@@ -340,8 +340,8 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
             let progress = (nowLocal - start) / (end - start);
             progress = Math.max(0, Math.min(1, progress)); // Istota medzi 0 a 1
             
-            astro.style.left = `calc(${progress * 100}% - 2rem)`; // X-os
-            const archHeight = Math.sin(progress * Math.PI) * 70 + 10; // Y-os (parabola, max výška 80%)
+            astro.style.left = `calc(${progress * 100}% - 2rem)`; 
+            const archHeight = Math.sin(progress * Math.PI) * 60 + 10; // Maximálna výška znížená na polovicu
             astro.style.bottom = `${archHeight}%`;
 
 // Ak je cloudCover 100, (1 - 100/100) = 0 (úplne zmizne)
@@ -349,45 +349,47 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
             
             bg.appendChild(astro);
 
-            // 2. Oblaky (Hustota podľa percent)
+            // 2. a 3. Oblaky s realistickým dažďom
             if (cloudCover > 0) {
-                // Pre 100% oblačnosť zaplníme plochu (cca 35 mrakov). Pre 50% ich bude polovička.
                 const cloudCount = Math.floor((cloudCover / 100) * 35); 
                 for(let i=0; i<cloudCount; i++) {
                     const cloud = document.createElement('div');
-                    cloud.innerText = '☁️';
                     cloud.style.position = 'absolute';
-                    // Mraky urobíme trochu väčšie, aby lepšie vypĺňali priestor
                     cloud.style.fontSize = `${Math.random() * 4 + 3.5}rem`; 
-                    // Pri 100% budú mraky takmer nepriehľadné (husté)
                     cloud.style.opacity = Math.min(0.95, (cloudCover / 100) + 0.15); 
                     cloud.style.bottom = `${Math.random() * 28 + 36}%`;
                     
-                    // Výrazná dynamická rýchlosť: čím silnejší vietor, tým kratšia animácia
                     let baseDuration = Math.max(3, 50 - (windSpeed * 1.5));
                     cloud.style.animation = `driftBg ${baseDuration + Math.random() * (baseDuration * 0.4)}s linear infinite`;
-                    // Rozhádžeme ich po ploche vďaka negatívnemu delayu
-                    cloud.style.animationDelay = `-${Math.random() * 60}s`;
+                    cloud.style.animationDelay = `-${Math.random() * 80}s`;
+                    
+                    // Samotná ikona oblaku
+                    const cloudIcon = document.createElement('div');
+                    cloudIcon.innerText = '☁️';
+                    cloudIcon.style.position = 'relative';
+                    cloudIcon.style.zIndex = '2';
+                    cloud.appendChild(cloudIcon);
+
+                    // Ak prší, pridáme kvapky, ktoré fyzicky "padajú" z tohto oblaku
+                    if (isRain && Math.random() > 0.3) { 
+                        const dropCount = Math.floor(Math.random() * 3) + 1;
+                        for(let d=0; d<dropCount; d++) {
+                            const drop = document.createElement('div');
+                            drop.style.position = 'absolute';
+                            drop.style.width = '2px';
+                            drop.style.height = '30px';
+                            drop.style.background = 'linear-gradient(transparent, rgba(255,255,255,0.7))';
+                            drop.style.left = `${Math.random() * 60 + 20}%`; // Zo stredu oblaku
+                            drop.style.top = '60%'; // Spod oblaku
+                            drop.style.zIndex = '1';
+                            drop.style.animation = `rainDrop ${Math.random() * 0.4 + 0.6}s linear infinite`;
+                            drop.style.animationDelay = `${Math.random()}s`;
+                            cloud.appendChild(drop);
+                        }
+                    }
                     bg.appendChild(cloud);
                 }
             }
-
-            // 3. Dážď (Jemné čiary, ak prší)
-            if (isRain) {
-                for(let i=0; i<15; i++) {
-                    const drop = document.createElement('div');
-                    drop.style.position = 'absolute';
-                    drop.style.width = '2px';
-                    drop.style.height = '20px';
-                    drop.style.background = 'linear-gradient(transparent, rgba(255,255,255,0.6))';
-                    drop.style.left = `${Math.random() * 100}%`;
-                    drop.style.top = '-20px';
-                    drop.style.animation = `rainDrop ${Math.random() * 0.4 + 0.6}s linear infinite`;
-                    drop.style.animationDelay = `${Math.random()}s`;
-                    bg.appendChild(drop);
-                }
-            }
-        }
 
         async function showTipsModal() {
             const modal = document.getElementById('tipsModal');
@@ -885,7 +887,8 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
 
             debounceTimer = setTimeout(async () => {
                 try {
-                    const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=15&language=sk`);
+                    // Načítame až 40 výsledkov
+                    const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=40&language=sk`);
                     const data = await res.json();
 
                     suggestionsBox.innerHTML = '';
@@ -897,7 +900,12 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
                     const zoradeneVysledky = data.results.map(city => {
                         city.distance = calculateDistance(currentLat, currentLon, city.latitude, city.longitude);
                         return city;
-                    }).sort((a, b) => a.distance - b.distance).slice(0, 5);
+                    }).sort((a, b) => {
+                        // Magický Bárin vzorec: Vzdialenosť je "zlá" (pridáva body), populácia je "dobrá" (odčítava body).
+                        let scoreA = a.distance - (a.population || 0) / 100;
+                        let scoreB = b.distance - (b.population || 0) / 100;
+                        return scoreA - scoreB;
+                    }); // Zrušený .slice(0, 5) -> Vypíše to všetko a vieš skrolovať!
 
                     zoradeneVysledky.forEach(city => {
                         const div = document.createElement('div');
