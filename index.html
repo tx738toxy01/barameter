@@ -23,6 +23,19 @@
         @keyframes rainDrop { 0% { transform: translateY(-10px) translateX(0); opacity: 1; } 100% { transform: translateY(100vh) translateX(-20px); opacity: 0; } }
         .anim-bg-layer { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; border-radius: inherit; opacity: 0.6; }
         .content-layer { position: relative; z-index: 10; }
+        
+        @keyframes lightning {
+            0% { background-color: transparent; }
+            1% { background-color: rgba(255, 255, 255, 0.9); }
+            2% { background-color: transparent; }
+            3% { background-color: rgba(255, 255, 255, 0.6); }
+            4% { background-color: transparent; }
+            100% { background-color: transparent; }
+        }
+        .lightning-layer {
+            position: absolute; inset: 0; z-index: 5; pointer-events: none;
+            animation: lightning 6s infinite;
+        }
 .text-outline { text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000; }
 
 #statusEmoji, #statusText, #statusDesc, #hourlyEmoji, #hourlyTitle, #hourlyDesc { opacity: 1 !important; }
@@ -301,7 +314,7 @@
             currentStatusType = statusType;
         }
 
-function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, windSpeed = 0) {
+function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, windSpeed = 0, weatherCode = 0) {
             const bg = document.getElementById('weatherAnimBg');
             bg.innerHTML = ''; 
 
@@ -390,7 +403,16 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
                     bg.appendChild(cloud);
                 }
             }
-        } // <--- Táto zátvorka tu chýbala a všetko blokovala!
+
+            // 4. Blesky (iba ak je kód počasia 95 a viac - búrka)
+            if (weatherCode >= 95) {
+                const lightning = document.createElement('div');
+                lightning.className = 'lightning-layer';
+                // Jemný náhodný posun, aby to neblýskalo vždy hneď po načítaní v rovnakom čase
+                lightning.style.animationDelay = `-${Math.random() * 4}s`;
+                bg.appendChild(lightning);
+            }
+        }
 
         async function showTipsModal() {
             const modal = document.getElementById('tipsModal');
@@ -558,7 +580,7 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
 
 // Spustenie animácií na pozadí
                 const isRainNow = (code >= 51 && code <= 67) || (code >= 80 && code <= 82) || code >= 95;
-                updateWeatherAnimations(clouds, isRainNow, dataAuto.daily.sunrise[0], dataAuto.daily.sunset[0], wind);
+                updateWeatherAnimations(clouds, isRainNow, dataAuto.daily.sunrise[0], dataAuto.daily.sunset[0], wind, code);
 
                 showToast(`Lokácia ${currentCity} načítaná ✅`);
 
