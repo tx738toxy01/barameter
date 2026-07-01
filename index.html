@@ -21,7 +21,7 @@
         .flash-location { animation: locationFlash 0.6s ease-in-out 2; }
 @keyframes driftBg { from { transform: translateX(110vw); } to { transform: translateX(-50vw); } }
         @keyframes rainDrop { 0% { transform: translateY(-10px) translateX(0); opacity: 1; } 100% { transform: translateY(100vh) translateX(-20px); opacity: 0; } }
-        .anim-bg-layer { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; border-radius: inherit; opacity: 0.6; }
+        .anim-bg-layer { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; border-radius: inherit; opacity: 0.8; }
         .content-layer { position: relative; z-index: 10; }
         
         @keyframes lightning {
@@ -347,7 +347,7 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
             astro.style.position = 'absolute';
             astro.style.fontSize = '4rem';
             astro.style.transition = 'all 1s ease';
-            astro.style.filter = isDay ? 'drop-shadow(0 0 20px rgba(253,224,71,0.8))' : 'drop-shadow(0 0 15px rgba(255,255,255,0.4))';
+            astro.style.filter = isDay ? 'drop-shadow(0 0 20px rgba(253,224,71,0.8))' : 'grayscale(1) brightness(1.2) drop-shadow(0 0 25px rgba(255,255,255,1))';
             astro.innerText = isDay ? '☀️' : getMoonEmoji();
             
             // Výpočet percenta cesty od východu po západ
