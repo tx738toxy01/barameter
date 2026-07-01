@@ -53,7 +53,7 @@
             <h1 class="text-4xl md:text-5xl font-black tracking-tighter">Barameter</h1>
             <p class="text-zinc-500 text-sm md:text-base mt-0.5">Nezúfaj, Bara ti povie, že čo!</p>
         </div>
-        <button onclick="showMyMapOnly()" class="px-4 py-2.5 glass rounded-2xl font-medium text-sm md:text-base text-emerald-400 hover:bg-zinc-800 transition-all shadow-md tracking-wide">
+        <button onclick="showMyMapOnly()" class="px-4 py-2.5 bg-black/40 backdrop-blur-md border border-emerald-500/30 rounded-2xl font-bold text-sm md:text-base text-white hover:bg-black/60 hover:border-emerald-400 transition-all shadow-md tracking-wide">
             Bára, kde som?
         </button>
     </div>
@@ -87,7 +87,7 @@
                             <div id="currentTime" class="text-emerald-400 text-sm font-mono mt-0.5"></div>
                         </div>
                     </div>
-                    <button onclick="event.stopImmediatePropagation(); openMapModal()" class="px-3 py-2 glass rounded-xl font-normal text-xs md:text-sm text-emerald-400 hover:bg-zinc-800 transition-all text-center leading-tight shadow-md border border-emerald-500/20 whitespace-nowrap">
+                    <button onclick="event.stopImmediatePropagation(); openMapModal()" class="px-3 py-2 bg-black/40 backdrop-blur-md border border-emerald-500/30 rounded-xl font-bold text-xs md:text-sm text-white hover:bg-black/60 hover:border-emerald-400 transition-all text-center leading-tight shadow-md whitespace-nowrap">
                         Bára, kde<br>to je?
                     </button>
                 </div>
@@ -546,7 +546,8 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
             void locEl.offsetWidth;
             locEl.classList.add('flash-location');
             
-            showToast(`Načítavam lokáciu ${currentCity}... ⏳`);
+            // Pridali sme 'true', čiže toast tu zamrzne a čaká na dokončenie
+            showToast(`Načítavam lokáciu ${currentCity}... ⏳`, true);
             
             try {
                 // Všimni si, že namiesto pevného slova 'icon_seamless' tam je teraz premenná ${currentModel}
@@ -827,26 +828,30 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
         }
 
         let toastTimeout;
-        function showToast(msg) {
+        function showToast(msg, persist = false) {
             const toast = document.getElementById('toastMsg');
             toast.innerText = msg;
             toast.classList.remove('hidden');
             setTimeout(() => toast.classList.remove('opacity-0'), 10);
             
             clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => {
-                toast.classList.add('opacity-0');
-                setTimeout(() => toast.classList.add('hidden'), 300);
-            }, 2500);
+            // Odpočítavanie sa spustí len vtedy, ak sme nezadali, že má ostať svietiť
+            if (!persist) {
+                toastTimeout = setTimeout(() => {
+                    toast.classList.add('opacity-0');
+                    setTimeout(() => toast.classList.add('hidden'), 300);
+                }, 2000); // Trošku som to zrýchlila na 2 sekundy pre svižnejší pocit
+            }
         }
 
         function showMyMapOnly() {
             if (!navigator.geolocation) return alert("Geolokácia nie je podporovaná");
-            showToast("Zisťujem polohu pre mapu... 📍");
+            showToast("Zisťujem polohu pre mapu... 📍", true); // Zamknuté
             navigator.geolocation.getCurrentPosition(p => {
                 document.getElementById('mapModalTitle').innerHTML = '<span class="text-2xl">🗺️</span> Tu si!';
                 document.getElementById('mapIframe').src = `https://maps.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}&z=14&output=embed`;
                 document.getElementById('mapModal').classList.replace('hidden', 'flex');
+                showToast("Mapa načítaná ✅"); // Odoknuté, po 2s zmizne
             }, () => {
                 showToast("Nepodarilo sa zistiť polohu pre mapu ❌");
             });
@@ -854,7 +859,7 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
 
         function useMyLocation() {
             if (!navigator.geolocation) return alert("Geolokácia nie je podporovaná");
-            showToast("Zisťujem tvoju polohu... 📍");
+            showToast("Zisťujem tvoju polohu... 📍", true);
             const cityInputEl = document.getElementById('cityInput');
             cityInputEl.value = "Moja poloha";
             cityInputEl.blur();
