@@ -86,7 +86,7 @@
                 </div>
             </div>
 
-            <div class="flex flex-col items-center text-center py-2 shrink">
+            <div class="flex flex-col items-center text-center py-2 shrink content-layer">
                 <div id="statusEmoji" class="text-[clamp(5rem,18vmin,10rem)] mb-2 drop-shadow-xl leading-none shrink-0">⏳</div>
                 <div id="statusText" class="text-[clamp(2rem,7vmin,4rem)] font-black tracking-tighter leading-tight shrink-0 text-outline">Načítavam...</div>
                 <div id="statusDesc" class="text-zinc-200 mt-1 text-[clamp(1rem,3.5vmin,1.5rem)] font-medium shrink-0 text-outline"></div>
@@ -301,7 +301,7 @@
             currentStatusType = statusType;
         }
 
-function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, windSpeed) {
+function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, windSpeed = 0) {
             const bg = document.getElementById('weatherAnimBg');
             bg.innerHTML = ''; 
 
@@ -363,10 +363,9 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
                     cloud.style.opacity = Math.min(0.95, (cloudCover / 100) + 0.15); 
                     cloud.style.bottom = `${Math.random() * 28 + 36}%`;
                     
-                    // Dynamická rýchlosť podľa vetra
-                    let baseDuration = 60 - windSpeed;
-                    if (baseDuration < 4) baseDuration = 4;
-                    cloud.style.animation = `driftBg ${baseDuration + Math.random() * (baseDuration * 0.3)}s linear infinite`;
+                    // Výrazná dynamická rýchlosť: čím silnejší vietor, tým kratšia animácia
+                    let baseDuration = Math.max(3, 50 - (windSpeed * 1.5));
+                    cloud.style.animation = `driftBg ${baseDuration + Math.random() * (baseDuration * 0.4)}s linear infinite`;
                     // Rozhádžeme ich po ploche vďaka negatívnemu delayu
                     cloud.style.animationDelay = `-${Math.random() * 60}s`;
                     bg.appendChild(cloud);
