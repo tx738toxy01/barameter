@@ -759,27 +759,23 @@ async function shareMainStatus() {
         showToast('Pripravujem... 📸');
 
         const card = document.getElementById('statusCard');
-
-        // 1. Záchrana pôvodného stavu
-        const originalHeight = card.style.height;
-        const originalFlex = card.style.flex;
         
-        // 2. Zmrazenie veľkosti v reálnom čase na displeji
-        card.style.height = card.offsetHeight + 'px';
-        card.style.flex = 'none';
+        // Zistíme presnú polohu a veľkosť tabule na displeji
+        const rect = card.getBoundingClientRect();
 
-        // 3. Počkáme 100 ms, aby to prehliadač stihol zaregistrovať
+        // Počkáme tvojich 100ms pre istotu, aby bolo všetko usadené
         await new Promise(resolve => setTimeout(resolve, 100));
 
-        // 4. CVAK
-        const canvas = await html2canvas(card, { 
+        // Nefotíme samotnú tabuľu, fotíme CELÝ dokument (takže sa nič nespučí) 
+        // a vyrežeme z neho presne tie súradnice, kde je zelená tabuľa.
+        const canvas = await html2canvas(document.body, { 
             backgroundColor: '#18181b', 
-            scale: 2 
+            scale: 2,
+            x: rect.left + window.scrollX,
+            y: rect.top + window.scrollY,
+            width: rect.width,
+            height: rect.height
         });
-
-        // 5. Okamžitý návrat do normálu
-        card.style.height = originalHeight;
-        card.style.flex = originalFlex;
 
         canvas.toBlob(async (blob) => {
             if (!blob) return showToast('Chyba pri tvorbe obrázka ❌');
@@ -796,10 +792,6 @@ async function shareMainStatus() {
         }, 'image/png');
 
     } catch (err) {
-        // Záchranné odomknutie pri chybe
-        const card = document.getElementById('statusCard');
-        card.style.height = '';
-        card.style.flex = '';
         showToast('Zdieľanie sa nepodarilo ❌');
     }
 }
