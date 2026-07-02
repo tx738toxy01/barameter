@@ -8,6 +8,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤦🏻‍♀️</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
     <style>
         body { background-color: #0a0a0b; color: white; font-family: system-ui, -apple-system, sans-serif; }
         .glass { background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); }
@@ -757,41 +758,28 @@ async function shareMainStatus() {
 
     try {
         showToast('Pripravujem... 📸');
-
         const card = document.getElementById('statusCard');
-        
-        // Zistíme presnú polohu a veľkosť tabule na displeji
-        const rect = card.getBoundingClientRect();
 
-        // Počkáme tvojich 100ms pre istotu, aby bolo všetko usadené
-        await new Promise(resolve => setTimeout(resolve, 100));
-
-        // Nefotíme samotnú tabuľu, fotíme CELÝ dokument (takže sa nič nespučí) 
-        // a vyrežeme z neho presne tie súradnice, kde je zelená tabuľa.
-        const canvas = await html2canvas(document.body, { 
-            backgroundColor: '#18181b', 
-            scale: 2,
-            x: rect.left + window.scrollX,
-            y: rect.top + window.scrollY,
-            width: rect.width,
-            height: rect.height
+        // Nová knižnica urobí presný snapshot bez potreby hackovať CSS
+        const dataUrl = await htmlToImage.toPng(card, { 
+            backgroundColor: '#18181b',
+            pixelRatio: 2
         });
 
-        canvas.toBlob(async (blob) => {
-            if (!blob) return showToast('Chyba pri tvorbe obrázka ❌');
-            const file = new File([blob], 'barameter-aktualne.png', { type: 'image/png' });
+        const res = await fetch(dataUrl);
+        const blob = await res.blob();
+        const file = new File([blob], 'barameter-aktualne.png', { type: 'image/png' });
 
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                await navigator.share({ files: [file], title: 'Aktuálna Bárina predpoveď', text: textToShare });
-            } else if (navigator.share) {
-                await navigator.share({ title: 'Aktuálna Bárina predpoveď', text: textToShare });
-            } else {
-                navigator.clipboard.writeText(textToShare);
-                showToast('Odkaz skopírovaný do schránky! 📋');
-            }
-        }, 'image/png');
-
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({ files: [file], title: 'Aktuálna Bárina predpoveď', text: textToShare });
+        } else if (navigator.share) {
+            await navigator.share({ title: 'Aktuálna Bárina predpoveď', text: textToShare });
+        } else {
+            navigator.clipboard.writeText(textToShare);
+            showToast('Odkaz skopírovaný do schránky! 📋');
+        }
     } catch (err) {
+        console.error(err);
         showToast('Zdieľanie sa nepodarilo ❌');
     }
 }
