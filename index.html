@@ -7,7 +7,6 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤦🏻‍♀️</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
     <style>
         body { background-color: #0a0a0b; color: white; font-family: system-ui, -apple-system, sans-serif; }
@@ -88,15 +87,14 @@
                             <div id="currentTime" class="text-emerald-400 text-sm font-mono mt-0.5"></div>
                         </div>
                     </div>
-                    <div id="mainShareButtons" class="flex flex-col gap-2 items-end z-20">
-    <button onclick="event.stopImmediatePropagation(); shareMainStatus()" class="px-3 py-1.5 bg-black/40 backdrop-blur-md border border-emerald-500/30 rounded-xl font-bold text-xs md:text-sm text-white hover:bg-black/60 hover:border-emerald-400 transition-all shadow-md flex items-center gap-1.5">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path fill-rule="evenodd" d="M15.75 4.5a3 3 0 11.825 2.066l-8.421 4.679a3.002 3.002 0 010 1.51l8.421 4.679a3 3 0 11-.729 1.31l-8.421-4.678a3 3 0 110-4.132l8.421-4.679a3 3 0 01-.096-.755z" clip-rule="evenodd" /></svg>
-        Zdieľať
-    </button>
-    <button onclick="event.stopImmediatePropagation(); openMapModal()" class="px-3 py-2 bg-black/40 backdrop-blur-md border border-emerald-500/30 rounded-xl font-bold text-xs md:text-sm text-white hover:bg-black/60 hover:border-emerald-400 transition-all text-center leading-tight shadow-md whitespace-nowrap">
-        Bára, kde<br>to je?
-    </button>
-</div>
+                    <div class="flex items-center gap-1 z-20">
+                        <button onclick="event.stopImmediatePropagation(); shareWindow('statusCard')" class="text-white hover:text-emerald-400 transition-colors p-2 no-share" title="Zdieľať">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path fill-rule="evenodd" d="M15.75 4.5a3 3 0 11.825 2.066l-8.421 4.679a3.002 3.002 0 010 1.51l8.421 4.679a3 3 0 11-.729 1.31l-8.421-4.678a3 3 0 110-4.132l8.421-4.679a3 3 0 01-.096-.755z" clip-rule="evenodd" /></svg>
+                        </button>
+                        <button onclick="event.stopImmediatePropagation(); openMapModal()" class="px-3 py-2 bg-black/40 backdrop-blur-md border border-emerald-500/30 rounded-xl font-bold text-xs md:text-sm text-white hover:bg-black/60 hover:border-emerald-400 transition-all text-center leading-tight shadow-md whitespace-nowrap no-share">
+                            Bára, kde<br>to je?
+                        </button>
+                    </div>
                 </div>
 
                 <div class="flex justify-between items-center text-sm md:text-base opacity-80 mt-3 px-1">
@@ -193,37 +191,50 @@
     </div>
 
     <div id="calendarModal" onclick="if(event.target === this) hideCalendar()" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-        <div class="bg-zinc-900 rounded-3xl w-full max-w-md max-h-[85vh] overflow-y-auto border border-zinc-700 shadow-2xl">
+        <div id="calendarWrap" class="bg-zinc-900 rounded-3xl w-full max-w-md max-h-[85vh] overflow-y-auto border border-zinc-700 shadow-2xl">
             <div class="sticky top-0 bg-zinc-900/95 backdrop-blur px-6 py-4 flex justify-between items-center border-b border-zinc-700 z-10">
                 <div id="calendarTitle" class="font-bold text-lg text-white">Výhľad na 16 dní</div>
-                <button onclick="hideCalendar()" class="text-3xl text-zinc-400 hover:text-white">×</button>
+                <div class="flex items-center gap-2 no-share">
+                    <button onclick="shareWindow('calendarWrap')" class="text-white hover:text-emerald-400 transition-colors p-1" title="Zdieľať">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path fill-rule="evenodd" d="M15.75 4.5a3 3 0 11.825 2.066l-8.421 4.679a3.002 3.002 0 010 1.51l8.421 4.679a3 3 0 11-.729 1.31l-8.421-4.678a3 3 0 110-4.132l8.421-4.679a3 3 0 01-.096-.755z" clip-rule="evenodd" /></svg>
+                    </button>
+                    <button onclick="hideCalendar()" class="text-3xl text-zinc-400 hover:text-white leading-none">×</button>
+                </div>
             </div>
             <div id="calendarGrid" class="p-5 grid grid-cols-4 gap-3"></div>
         </div>
     </div>
 
     <div id="dayDetailModal" onclick="if(event.target === this) hideDayDetail()" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[60] p-4">
-        <div class="bg-zinc-900 rounded-3xl w-full max-w-sm max-h-[85vh] overflow-y-auto border border-zinc-700 shadow-2xl">
+        <div id="dayDetailWrap" class="bg-zinc-900 rounded-3xl w-full max-w-sm max-h-[85vh] overflow-y-auto border border-zinc-700 shadow-2xl">
             <div class="sticky top-0 bg-zinc-900/95 backdrop-blur px-5 py-4 flex justify-between items-center border-b border-zinc-700 z-10">
-                <button onclick="hideDayDetail()" class="text-zinc-400 hover:text-white text-sm font-bold flex items-center gap-1"><span>←</span> Späť</button>
-                <div id="dayDetailTitle" class="font-bold text-lg text-emerald-400">Detail dňa</div>
+                <button onclick="hideDayDetail()" class="text-zinc-400 hover:text-white text-sm font-bold flex items-center gap-1 no-share"><span>←</span> Späť</button>
+                <div class="flex items-center gap-3">
+                    <div id="dayDetailTitle" class="font-bold text-lg text-emerald-400">Detail dňa</div>
+                    <button onclick="shareWindow('dayDetailWrap')" class="text-white hover:text-emerald-400 transition-colors p-1 no-share" title="Zdieľať">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path fill-rule="evenodd" d="M15.75 4.5a3 3 0 11.825 2.066l-8.421 4.679a3.002 3.002 0 010 1.51l8.421 4.679a3 3 0 11-.729 1.31l-8.421-4.678a3 3 0 110-4.132l8.421-4.679a3 3 0 01-.096-.755z" clip-rule="evenodd" /></svg>
+                    </button>
+                </div>
             </div>
             <div id="dayDetailContent" class="p-5 space-y-3"></div>
         </div>
     </div>
 
     <div id="jokeModal" onclick="if(event.target === this) this.classList.replace('flex','hidden')" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-        <div class="bg-zinc-900 rounded-3xl p-8 text-center max-w-sm w-full border border-zinc-700 shadow-2xl">
-            <div class="text-6xl mb-4">🤣</div>
+        <div id="jokeWrap" class="relative bg-zinc-900 rounded-3xl p-8 text-center max-w-sm w-full border border-zinc-700 shadow-2xl">
+            <button onclick="shareWindow('jokeWrap')" class="absolute top-4 right-4 text-white hover:text-emerald-400 transition-colors p-1 no-share" title="Zdieľať">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path fill-rule="evenodd" d="M15.75 4.5a3 3 0 11.825 2.066l-8.421 4.679a3.002 3.002 0 010 1.51l8.421 4.679a3 3 0 11-.729 1.31l-8.421-4.678a3 3 0 110-4.132l8.421-4.679a3 3 0 01-.096-.755z" clip-rule="evenodd" /></svg>
+            </button>
+            <div class="text-6xl mb-4 mt-2">🤣</div>
             <div id="jokeContent" class="text-lg font-medium text-emerald-400 mb-6 max-h-[50vh] overflow-y-auto px-2 overscroll-contain text-left"></div>
-            <button onclick="document.getElementById('jokeModal').classList.replace('flex','hidden')" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-2xl transition-all mt-2 shadow-md">Bára, dík!</button>
+            <button onclick="document.getElementById('jokeModal').classList.replace('flex','hidden')" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-2xl transition-all mt-2 shadow-md no-share">Bára, dík!</button>
         </div>
     </div>
 
     <div id="hourlyStatusModal" onclick="if(event.target === this) this.classList.replace('flex','hidden')" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[80] p-4">
         <div id="hourlyModalContent" class="relative bg-zinc-900 rounded-3xl p-8 text-center max-w-sm w-full border border-zinc-700 shadow-2xl">
-            <button id="shareBtn" onclick="shareHourlyStatus()" class="absolute top-4 right-4 text-zinc-400 hover:text-white p-2 bg-zinc-800 hover:bg-zinc-700 rounded-full transition-all border border-zinc-700 shadow-sm" title="Zdieľať Bárin tip">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M15.75 4.5a3 3 0 11.825 2.066l-8.421 4.679a3.002 3.002 0 010 1.51l8.421 4.679a3 3 0 11-.729 1.31l-8.421-4.678a3 3 0 110-4.132l8.421-4.679a3 3 0 01-.096-.755z" clip-rule="evenodd" /></svg>
+            <button id="shareBtn" onclick="shareWindow('hourlyModalContent')" class="absolute top-4 right-4 text-white hover:text-emerald-400 transition-colors p-1 no-share" title="Zdieľať">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path fill-rule="evenodd" d="M15.75 4.5a3 3 0 11.825 2.066l-8.421 4.679a3.002 3.002 0 010 1.51l8.421 4.679a3 3 0 11-.729 1.31l-8.421-4.678a3 3 0 110-4.132l8.421-4.679a3 3 0 01-.096-.755z" clip-rule="evenodd" /></svg>
             </button>
             <div class="mb-6 mt-2">
                 <div id="hourlyLocation" class="text-sm font-bold tracking-widest uppercase mb-1" style="color: #a1a1aa;">📍 Bratislava</div>
@@ -234,7 +245,7 @@
             <div id="hourlyEmoji" class="text-7xl mb-4 drop-shadow-lg">✅</div>
             <div id="hourlyTitle" class="text-3xl font-black text-white mb-2 tracking-tight">Nekukaj a toč!</div>
             <div id="hourlyDesc" class="text-zinc-400 text-lg mb-6">Ideálne podmienky</div>
-            <button id="closeModalBtn" onclick="document.getElementById('hourlyStatusModal').classList.replace('flex','hidden')" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-2xl transition-all shadow-md mt-2">Rozumiem, Bára</button>
+            <button id="closeModalBtn" onclick="document.getElementById('hourlyStatusModal').classList.replace('flex','hidden')" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-2xl transition-all shadow-md mt-2 no-share">Rozumiem, Bára</button>
         </div>
     </div>
 
@@ -717,72 +728,45 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
             document.getElementById('hourlyStatusModal').classList.replace('hidden', 'flex');
         }
 
-        async function shareHourlyStatus() {
+async function shareWindow(elementId) {
             const shareUrl = window.location.origin + window.location.pathname;
-            const textToShare = `Neveríš? Mne je to jedno. Kukni sa sám:\n👇\n${shareUrl}`;
+            const textToShare = `Bárina predpoveď 🎬. Kukni sem:\n👇\n${shareUrl}`;
 
             try {
                 showToast('Pripravujem... 📸');
-                document.getElementById('shareBtn').style.display = 'none';
-                document.getElementById('closeModalBtn').style.display = 'none';
+                const targetEl = document.getElementById(elementId);
+                
+                const hideElements = targetEl.querySelectorAll('.no-share');
+                hideElements.forEach(el => el.style.opacity = '0');
 
-                const modalContent = document.getElementById('hourlyModalContent');
-                const canvas = await html2canvas(modalContent, { backgroundColor: '#18181b', scale: 2 });
+                const dataUrl = await htmlToImage.toPng(targetEl, { 
+                    backgroundColor: '#18181b',
+                    pixelRatio: 2
+                });
 
-                document.getElementById('shareBtn').style.display = 'block';
-                document.getElementById('closeModalBtn').style.display = 'block';
+                hideElements.forEach(el => el.style.opacity = '1');
 
-                canvas.toBlob(async (blob) => {
-                    if (!blob) return showToast('Chyba pri tvorbe obrázka ❌');
-                    const file = new File([blob], 'barameter-info.png', { type: 'image/png' });
+                const res = await fetch(dataUrl);
+                const blob = await res.blob();
+                const file = new File([blob], 'barameter-zaznam.png', { type: 'image/png' });
 
-                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                        await navigator.share({ files: [file], title: 'Bárina predpoveď', text: textToShare });
-                    } else if (navigator.share) {
-                        await navigator.share({ title: 'Bárina predpoveď', text: textToShare });
-                    } else {
-                        navigator.clipboard.writeText(textToShare);
-                        showToast('Odkaz skopírovaný do schránky! 📋');
-                    }
-                }, 'image/png');
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({ files: [file], title: 'Bárina predpoveď', text: textToShare });
+                } else if (navigator.share) {
+                    await navigator.share({ title: 'Bárina predpoveď', text: textToShare });
+                } else {
+                    navigator.clipboard.writeText(textToShare);
+                    showToast('Odkaz skopírovaný do schránky! 📋');
+                }
             } catch (err) {
-                document.getElementById('shareBtn').style.display = 'block';
-                document.getElementById('closeModalBtn').style.display = 'block';
+                console.error(err);
+                const targetEl = document.getElementById(elementId);
+                if(targetEl) {
+                    targetEl.querySelectorAll('.no-share').forEach(el => el.style.opacity = '1');
+                }
                 showToast('Zdieľanie sa nepodarilo ❌');
             }
         }
-
-async function shareMainStatus() {
-    const shareUrl = window.location.origin + window.location.pathname;
-    const textToShare = `Aktuálne podmienky na pľaci: ${currentCity}. Neveríš? Mne je to jedno. Kukni sa sám:\n👇\n${shareUrl}`;
-
-    try {
-        showToast('Pripravujem... 📸');
-        const card = document.getElementById('statusCard');
-
-        // Nová knižnica urobí presný snapshot bez potreby hackovať CSS
-        const dataUrl = await htmlToImage.toPng(card, { 
-            backgroundColor: '#18181b',
-            pixelRatio: 2
-        });
-
-        const res = await fetch(dataUrl);
-        const blob = await res.blob();
-        const file = new File([blob], 'barameter-aktualne.png', { type: 'image/png' });
-
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            await navigator.share({ files: [file], title: 'Aktuálna Bárina predpoveď', text: textToShare });
-        } else if (navigator.share) {
-            await navigator.share({ title: 'Aktuálna Bárina predpoveď', text: textToShare });
-        } else {
-            navigator.clipboard.writeText(textToShare);
-            showToast('Odkaz skopírovaný do schránky! 📋');
-        }
-    } catch (err) {
-        console.error(err);
-        showToast('Zdieľanie sa nepodarilo ❌');
-    }
-}
 
         function openDayDetail(dayIndex, dayName, dayNum) {
             document.getElementById('dayDetailTitle').innerHTML = `
