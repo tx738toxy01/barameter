@@ -87,12 +87,12 @@
                             <div id="currentTime" class="text-emerald-400 text-sm font-mono mt-0.5"></div>
                         </div>
                     </div>
-                    <div class="flex items-center gap-1 z-20">
-                        <button onclick="event.stopImmediatePropagation(); shareWindow('statusCard')" class="text-white hover:text-emerald-400 transition-colors p-2 no-share" title="Zdieľať">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path fill-rule="evenodd" d="M15.75 4.5a3 3 0 11.825 2.066l-8.421 4.679a3.002 3.002 0 010 1.51l8.421 4.679a3 3 0 11-.729 1.31l-8.421-4.678a3 3 0 110-4.132l8.421-4.679a3 3 0 01-.096-.755z" clip-rule="evenodd" /></svg>
-                        </button>
+                    <div class="flex items-center gap-2 z-20">
                         <button onclick="event.stopImmediatePropagation(); openMapModal()" class="px-3 py-2 bg-black/40 backdrop-blur-md border border-emerald-500/30 rounded-xl font-bold text-xs md:text-sm text-white hover:bg-black/60 hover:border-emerald-400 transition-all text-center leading-tight shadow-md whitespace-nowrap no-share">
                             Bára, kde<br>to je?
+                        </button>
+                        <button onclick="event.stopImmediatePropagation(); shareWindow('statusCard')" class="text-white hover:text-emerald-400 transition-colors p-1 no-share" title="Zdieľať">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path fill-rule="evenodd" d="M15.75 4.5a3 3 0 11.825 2.066l-8.421 4.679a3.002 3.002 0 010 1.51l8.421 4.679a3 3 0 11-.729 1.31l-8.421-4.678a3 3 0 110-4.132l8.421-4.679a3 3 0 01-.096-.755z" clip-rule="evenodd" /></svg>
                         </button>
                     </div>
                 </div>
@@ -148,16 +148,16 @@
                     <span class="mx-2 text-white/20">|</span>
                     
                     <!-- Tu je ten prepínač -->
-                    <div class="relative inline-flex items-center hover:text-white/80 transition-colors cursor-pointer">
+                    <div class="relative inline-flex items-center bg-black/20 hover:bg-black/40 border border-white/10 rounded-xl px-3 py-1.5 transition-colors cursor-pointer">
                         <span>Model:</span>
-                        <select id="modelSelect" onclick="event.stopImmediatePropagation()" onchange="changeModel(this.value)" class="bg-transparent appearance-none text-emerald-400 font-bold outline-none cursor-pointer pl-1.5 pr-4 py-1 relative z-10">
+                        <select id="modelSelect" onclick="event.stopImmediatePropagation()" onchange="changeModel(this.value)" class="bg-transparent appearance-none text-emerald-400 font-bold outline-none cursor-pointer pl-2 pr-5 relative z-10">
                             <option value="icon_seamless" class="bg-zinc-900 text-white">ICON (EU)</option>
                             <option value="metno_seamless" class="bg-zinc-900 text-white">YR.NO (Nórsko)</option>
                             <option value="ecmwf_ifs04" class="bg-zinc-900 text-white">ECMWF (Svet)</option>
                             <option value="gfs_seamless" class="bg-zinc-900 text-white">GFS (USA)</option>
                             <option value="best_match" class="bg-zinc-900 text-white">AUTO (Mix)</option>
                         </select>
-                        <span class="absolute right-0 text-[8px] pointer-events-none text-emerald-400">▼</span>
+                        <span class="absolute right-3 text-[8px] pointer-events-none text-emerald-400">▼</span>
                     </div>
                 </div>
             </div>
@@ -177,16 +177,17 @@
     </div>
 
     <div id="tipsModal" onclick="hideTipsModal()" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-        <div onclick="event.stopImmediatePropagation()" class="glass rounded-3xl p-8 max-w-sm w-full mx-4 border border-zinc-700">
+        <div id="tipsWrap" onclick="event.stopImmediatePropagation()" class="relative glass rounded-3xl p-8 max-w-sm w-full mx-4 border border-zinc-700">
+            <button onclick="shareWindow('tipsWrap')" class="absolute top-6 right-6 text-white hover:text-emerald-400 transition-colors p-1 no-share" title="Zdieľať">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path fill-rule="evenodd" d="M15.75 4.5a3 3 0 11.825 2.066l-8.421 4.679a3.002 3.002 0 010 1.51l8.421 4.679a3 3 0 11-.729 1.31l-8.421-4.678a3 3 0 110-4.132l8.421-4.679a3 3 0 01-.096-.755z" clip-rule="evenodd" /></svg>
+            </button>
             <div class="flex justify-between items-start mb-4">
                 <div>
-                    <div class="font-bold text-xl">Detaily a tipy</div>
+                    <div class="font-bold text-xl pr-8">Detaily a tipy</div>
                     <div class="text-[9px] text-emerald-500/60 uppercase tracking-widest mt-1 font-mono">Model: ICON Seamless</div>
                 </div>
-                <button onclick="hideTipsModal()" class="text-3xl text-zinc-400 hover:text-white leading-none">×</button>
             </div>
             <div id="modalTipsContent" class="text-base"></div>
-            <button onclick="hideTipsModal()" class="mt-8 w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl font-medium">Zavrieť</button>
         </div>
     </div>
 
@@ -198,7 +199,6 @@
                     <button onclick="shareWindow('calendarWrap')" class="text-white hover:text-emerald-400 transition-colors p-1" title="Zdieľať">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path fill-rule="evenodd" d="M15.75 4.5a3 3 0 11.825 2.066l-8.421 4.679a3.002 3.002 0 010 1.51l8.421 4.679a3 3 0 11-.729 1.31l-8.421-4.678a3 3 0 110-4.132l8.421-4.679a3 3 0 01-.096-.755z" clip-rule="evenodd" /></svg>
                     </button>
-                    <button onclick="hideCalendar()" class="text-3xl text-zinc-400 hover:text-white leading-none">×</button>
                 </div>
             </div>
             <div id="calendarGrid" class="p-5 grid grid-cols-4 gap-3"></div>
