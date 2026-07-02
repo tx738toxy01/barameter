@@ -143,21 +143,19 @@
             
             <!-- 4. Open-Meteo Footer s interaktívnym prepínačom -->
             <div class="shrink-0 content-layer">
-                <div class="flex justify-center items-center text-[10px] md:text-xs text-white/40 font-mono uppercase tracking-widest">
-                    <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" onclick="event.stopImmediatePropagation()" class="hover:text-white/80 transition-colors">Data by <span class="font-bold text-white/60">Open-Meteo</span></a>
-                    <span class="mx-2 text-white/20">|</span>
+                <div class="flex justify-between items-center text-[10px] md:text-xs text-white/40 font-mono uppercase tracking-widest w-full">
+                    <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" onclick="event.stopImmediatePropagation()" class="hover:text-white/80 transition-colors whitespace-nowrap">Data by <span class="font-bold text-white/60">Open-Meteo</span></a>
                     
-                    <!-- Tu je ten prepínač -->
-                    <div class="relative inline-flex items-center bg-black/20 hover:bg-black/40 border border-white/10 rounded-xl px-3 py-1.5 transition-colors cursor-pointer">
+                    <div class="relative inline-flex items-center bg-black/20 hover:bg-black/40 border border-white/10 rounded-xl px-2 py-1.5 transition-colors cursor-pointer whitespace-nowrap">
                         <span>Model:</span>
-                        <select id="modelSelect" onclick="event.stopImmediatePropagation()" onchange="changeModel(this.value)" class="bg-transparent appearance-none text-emerald-400 font-bold outline-none cursor-pointer pl-2 pr-5 relative z-10">
+                        <select id="modelSelect" onclick="event.stopImmediatePropagation()" onchange="changeModel(this.value)" class="bg-transparent appearance-none text-emerald-400 font-bold outline-none cursor-pointer pl-1.5 pr-4 relative z-10">
                             <option value="icon_seamless" class="bg-zinc-900 text-white">ICON (EU)</option>
                             <option value="metno_seamless" class="bg-zinc-900 text-white">YR.NO (Nórsko)</option>
                             <option value="ecmwf_ifs04" class="bg-zinc-900 text-white">ECMWF (Svet)</option>
                             <option value="gfs_seamless" class="bg-zinc-900 text-white">GFS (USA)</option>
                             <option value="best_match" class="bg-zinc-900 text-white">AUTO (Mix)</option>
                         </select>
-                        <span class="absolute right-3 text-[8px] pointer-events-none text-emerald-400">▼</span>
+                        <span class="absolute right-2 text-[8px] pointer-events-none text-emerald-400">▼</span>
                     </div>
                 </div>
             </div>
