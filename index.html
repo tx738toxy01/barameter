@@ -87,9 +87,15 @@
                             <div id="currentTime" class="text-emerald-400 text-sm font-mono mt-0.5"></div>
                         </div>
                     </div>
-                    <button onclick="event.stopImmediatePropagation(); openMapModal()" class="px-3 py-2 bg-black/40 backdrop-blur-md border border-emerald-500/30 rounded-xl font-bold text-xs md:text-sm text-white hover:bg-black/60 hover:border-emerald-400 transition-all text-center leading-tight shadow-md whitespace-nowrap">
-                        Bára, kde<br>to je?
-                    </button>
+                    <div id="mainShareButtons" class="flex flex-col gap-2 items-end z-20">
+    <button onclick="event.stopImmediatePropagation(); shareMainStatus()" class="px-3 py-1.5 bg-black/40 backdrop-blur-md border border-emerald-500/30 rounded-xl font-bold text-xs md:text-sm text-white hover:bg-black/60 hover:border-emerald-400 transition-all shadow-md flex items-center gap-1.5">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path fill-rule="evenodd" d="M15.75 4.5a3 3 0 11.825 2.066l-8.421 4.679a3.002 3.002 0 010 1.51l8.421 4.679a3 3 0 11-.729 1.31l-8.421-4.678a3 3 0 110-4.132l8.421-4.679a3 3 0 01-.096-.755z" clip-rule="evenodd" /></svg>
+        Zdieľať
+    </button>
+    <button onclick="event.stopImmediatePropagation(); openMapModal()" class="px-3 py-2 bg-black/40 backdrop-blur-md border border-emerald-500/30 rounded-xl font-bold text-xs md:text-sm text-white hover:bg-black/60 hover:border-emerald-400 transition-all text-center leading-tight shadow-md whitespace-nowrap">
+        Bára, kde<br>to je?
+    </button>
+</div>
                 </div>
 
                 <div class="flex justify-between items-center text-sm md:text-base opacity-80 mt-3 px-1">
@@ -744,6 +750,43 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
                 showToast('Zdieľanie sa nepodarilo ❌');
             }
         }
+
+async function shareMainStatus() {
+    const shareUrl = window.location.origin + window.location.pathname;
+    const textToShare = `Aktuálne podmienky na pľaci: ${currentCity}. Neveríš? Mne je to jedno. Kukni sa sám:\n👇\n${shareUrl}`;
+
+    try {
+        showToast('Pripravujem... 📸');
+        
+        // Zneviditeľníme tlačidlá pred vytvorením screenshotu, aby nerušili obrázok
+        const btns = document.getElementById('mainShareButtons');
+        if (btns) btns.style.opacity = '0';
+
+        const cardContent = document.getElementById('statusCard');
+        const canvas = await html2canvas(cardContent, { backgroundColor: '#18181b', scale: 2 });
+
+        // Vrátime tlačidlá hneď späť do pôvodného stavu
+        if (btns) btns.style.opacity = '1';
+
+        canvas.toBlob(async (blob) => {
+            if (!blob) return showToast('Chyba pri tvorbe obrázka ❌');
+            const file = new File([blob], 'barameter-aktualne.png', { type: 'image/png' });
+
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({ files: [file], title: 'Aktuálna Bárina predpoveď', text: textToShare });
+            } else if (navigator.share) {
+                await navigator.share({ title: 'Aktuálna Bárina predpoveď', text: textToShare });
+            } else {
+                navigator.clipboard.writeText(textToShare);
+                showToast('Odkaz skopírovaný do schránky! 📋');
+            }
+        }, 'image/png');
+    } catch (err) {
+        const btns = document.getElementById('mainShareButtons');
+        if (btns) btns.style.opacity = '1';
+        showToast('Zdieľanie sa nepodarilo ❌');
+    }
+}
 
         function openDayDetail(dayIndex, dayName, dayNum) {
             document.getElementById('dayDetailTitle').innerHTML = `
