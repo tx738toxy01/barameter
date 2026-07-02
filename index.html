@@ -757,41 +757,18 @@ async function shareMainStatus() {
 
     try {
         showToast('Pripravujem... 📸');
-        
-        // 1. Schováme tlačidlá
-        const btns = document.getElementById('mainShareButtons');
-        if (btns) btns.style.display = 'none';
-
         const cardContent = document.getElementById('statusCard');
         
-        // 2. Extrémny fix: Zistíme presné reálne rozmery prvku
-        const rect = cardContent.getBoundingClientRect();
-        
-        // Zapamätáme si pôvodné hodnoty
-        const originalHeight = cardContent.style.height;
-        const originalWidth = cardContent.style.width;
-        const originalOverflow = cardContent.style.overflow;
-
-        // Vnútime presné pixely priamo do štýlu a zakážeme scrollovanie
-        cardContent.style.height = rect.height + 'px';
-        cardContent.style.width = rect.width + 'px';
-        cardContent.style.overflow = 'hidden';
-
-        // 3. Vygenerujeme obrázok a povieme knižnici, aké veľké bolo okno
         const canvas = await html2canvas(cardContent, { 
             backgroundColor: '#18181b', 
             scale: 2,
-            width: rect.width,
-            height: rect.height,
-            windowWidth: window.innerWidth,
-            windowHeight: window.innerHeight
+            // Toto upraví iba "virtuálnu" kópiu pre screenshot, aby nebol spučený. Tvoj web to vôbec nezmení.
+            onclone: (clonedDoc) => {
+                const clonedCard = clonedDoc.getElementById('statusCard');
+                clonedCard.style.flex = 'none';
+                clonedCard.style.height = cardContent.offsetHeight + 'px';
+            }
         });
-
-        // 4. Vrátime všetko do normálu
-        cardContent.style.height = originalHeight;
-        cardContent.style.width = originalWidth;
-        cardContent.style.overflow = originalOverflow;
-        if (btns) btns.style.display = 'flex';
 
         canvas.toBlob(async (blob) => {
             if (!blob) return showToast('Chyba pri tvorbe obrázka ❌');
@@ -807,13 +784,6 @@ async function shareMainStatus() {
             }
         }, 'image/png');
     } catch (err) {
-        // Obnova pri chybe
-        const btns = document.getElementById('mainShareButtons');
-        if (btns) btns.style.display = 'flex';
-        const cardContent = document.getElementById('statusCard');
-        cardContent.style.height = '';
-        cardContent.style.width = '';
-        cardContent.style.overflow = '';
         showToast('Zdieľanie sa nepodarilo ❌');
     }
 }
