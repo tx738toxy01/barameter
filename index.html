@@ -758,15 +758,25 @@ async function shareMainStatus() {
     try {
         showToast('Pripravujem... 📸');
         
-        // Zneviditeľníme tlačidlá pred vytvorením screenshotu, aby nerušili obrázok
+        // 1. Schováme tlačidlá (použijeme display:none, aby tam neostalo prázdne miesto)
         const btns = document.getElementById('mainShareButtons');
-        if (btns) btns.style.opacity = '0';
+        if (btns) btns.style.display = 'none';
 
         const cardContent = document.getElementById('statusCard');
-        const canvas = await html2canvas(cardContent, { backgroundColor: '#18181b', scale: 2 });
+        
+        // 2. FIX PROTI SPUČENIU: Zapamätáme si pôvodný štýl a vnútime mu pevnú výšku v pixeloch
+        const originalHeight = cardContent.style.height;
+        cardContent.style.height = cardContent.offsetHeight + 'px';
 
-        // Vrátime tlačidlá hneď späť do pôvodného stavu
-        if (btns) btns.style.opacity = '1';
+        // 3. Vytvoríme obrázok z fixovanej výšky
+        const canvas = await html2canvas(cardContent, { 
+            backgroundColor: '#18181b', 
+            scale: 2 
+        });
+
+        // 4. Vrátime výšku aj tlačidlá do pôvodného stavu
+        cardContent.style.height = originalHeight;
+        if (btns) btns.style.display = 'flex';
 
         canvas.toBlob(async (blob) => {
             if (!blob) return showToast('Chyba pri tvorbe obrázka ❌');
@@ -782,8 +792,11 @@ async function shareMainStatus() {
             }
         }, 'image/png');
     } catch (err) {
+        // Ak nastane chyba, musíme to tiež vrátiť do pôvodného stavu
         const btns = document.getElementById('mainShareButtons');
-        if (btns) btns.style.opacity = '1';
+        if (btns) btns.style.display = 'flex';
+        const cardContent = document.getElementById('statusCard');
+        cardContent.style.height = '';
         showToast('Zdieľanie sa nepodarilo ❌');
     }
 }
