@@ -757,18 +757,29 @@ async function shareMainStatus() {
 
     try {
         showToast('Pripravujem... 📸');
-        const cardContent = document.getElementById('statusCard');
+
+        const card = document.getElementById('statusCard');
+
+        // 1. Záchrana pôvodného stavu
+        const originalHeight = card.style.height;
+        const originalFlex = card.style.flex;
         
-        const canvas = await html2canvas(cardContent, { 
+        // 2. Zmrazenie veľkosti v reálnom čase na displeji
+        card.style.height = card.offsetHeight + 'px';
+        card.style.flex = 'none';
+
+        // 3. Počkáme 100 ms, aby to prehliadač stihol zaregistrovať
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        // 4. CVAK
+        const canvas = await html2canvas(card, { 
             backgroundColor: '#18181b', 
-            scale: 2,
-            // Toto upraví iba "virtuálnu" kópiu pre screenshot, aby nebol spučený. Tvoj web to vôbec nezmení.
-            onclone: (clonedDoc) => {
-                const clonedCard = clonedDoc.getElementById('statusCard');
-                clonedCard.style.flex = 'none';
-                clonedCard.style.height = cardContent.offsetHeight + 'px';
-            }
+            scale: 2 
         });
+
+        // 5. Okamžitý návrat do normálu
+        card.style.height = originalHeight;
+        card.style.flex = originalFlex;
 
         canvas.toBlob(async (blob) => {
             if (!blob) return showToast('Chyba pri tvorbe obrázka ❌');
@@ -783,7 +794,12 @@ async function shareMainStatus() {
                 showToast('Odkaz skopírovaný do schránky! 📋');
             }
         }, 'image/png');
+
     } catch (err) {
+        // Záchranné odomknutie pri chybe
+        const card = document.getElementById('statusCard');
+        card.style.height = '';
+        card.style.flex = '';
         showToast('Zdieľanie sa nepodarilo ❌');
     }
 }
