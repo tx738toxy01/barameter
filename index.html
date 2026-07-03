@@ -78,7 +78,7 @@
             <div id="weatherAnimBg" class="anim-bg-layer"></div> 
                    
             <!-- Vrchná časť (Bára text a emoji) - kliknutie otvorí tipy -->
-            <div onclick="openExtendedTips()" class="cursor-pointer flex flex-col justify-between flex-1 min-h-0 group/status z-10 select-none">
+            <div onclick="openExtendedTips()" class="cursor-pointer flex flex-col flex-1 min-h-0 group/status z-10 select-none">
                 <div class="shrink-0 content-layer">
                     <div class="flex justify-between items-start">
                         <div>
@@ -111,7 +111,7 @@
                     </div>
                 </div> 
                 
-                <div class="flex flex-col items-center text-center py-2 shrink content-layer mt-2 mb-4">
+                <div class="flex flex-col items-center justify-center text-center py-2 shrink content-layer my-auto">
                     <div id="statusEmoji" class="text-[clamp(5rem,18vmin,10rem)] mb-2 drop-shadow-xl leading-none shrink-0">⏳</div>
                     <div id="statusText" class="text-[clamp(2rem,7vmin,4rem)] font-black tracking-tighter leading-tight shrink-0 text-outline">Načítavam...</div>
                     <div id="statusDesc" class="text-zinc-200 mt-1 text-[clamp(1rem,3.5vmin,1.5rem)] font-medium shrink-0 text-outline"></div>
@@ -119,7 +119,7 @@
             </div>
     
             <!-- Spodná časť (ikony a výber modelu) - kliknutie otvorí detail počasia -->
-            <div onclick="event.stopImmediatePropagation(); showTipsModal()" class="shrink-0 w-full mt-6 mb-1 content-layer bg-black/20 hover:bg-black/35 border border-white/5 rounded-[2rem] p-4 shadow-inner cursor-pointer transition-all group/weather z-20">
+            <div onclick="event.stopImmediatePropagation(); showTipsModal()" class="shrink-0 w-full mt-auto mb-0 content-layer bg-black/20 hover:bg-black/35 border border-white/5 rounded-[2rem] p-4 shadow-inner cursor-pointer transition-all group/weather z-20">
                 <div class="grid grid-cols-4 gap-2 text-center">
                     <div class="flex flex-col items-center justify-center">
                         <div class="text-[clamp(2.5rem,8vmin,4rem)] drop-shadow-md mb-2">🌡️</div>
