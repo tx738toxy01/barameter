@@ -73,49 +73,54 @@
 
     <div class="flex-1 flex flex-col gap-3 min-h-0 pb-2">
         
-        <div id="statusCard" onclick="showTipsModal()" class="glass rounded-[2rem] p-5 md:p-6 border transition-all duration-300 cursor-pointer status-good flex-1 flex flex-col justify-between min-h-0 shadow-lg overflow-y-auto">
+        <div id="statusCard" class="glass rounded-[2rem] p-5 md:p-6 border transition-all duration-300 status-good flex-1 flex flex-col justify-between min-h-0 shadow-lg overflow-hidden relative">
 
-<div id="weatherAnimBg" class="anim-bg-layer"></div> 
-           
-            <div class="shrink-0 content-layer">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <div class="text-3xl md:text-4xl font-black text-white mb-1.5 tracking-tight">Bára, a čo teraz?</div>
-                        <div class="flex items-center gap-2 mt-1">
-                            <div id="locationName" class="text-sm font-black text-white uppercase tracking-widest bg-black/30 px-2.5 py-1 rounded-xl border border-white/10 transition-all origin-left inline-block">Bratislava</div>
-                            <span class="text-zinc-600">•</span>
-                            <div onclick="event.stopImmediatePropagation(); openSunPhases()" id="currentTime" class="text-emerald-300 hover:text-white bg-black/40 hover:bg-black/60 border border-emerald-500/40 px-2.5 py-0.5 rounded-xl text-sm font-mono mt-0.5 text-outline cursor-pointer transition-all shadow-sm" title="Svetelné fázy dňa"></div>
+            <div id="weatherAnimBg" class="anim-bg-layer"></div> 
+                   
+            <!-- Vrchná časť (Bára text a emoji) - kliknutie otvorí tipy -->
+            <div onclick="openExtendedTips()" class="cursor-pointer flex flex-col justify-between flex-1 min-h-0 group/status z-10 select-none">
+                <div class="shrink-0 content-layer">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="text-3xl md:text-4xl font-black text-white mb-1.5 tracking-tight group-hover/status:text-emerald-300 transition-colors">Bára, a čo teraz?</div>
+                            <div class="flex items-center gap-2 mt-1">
+                                <div id="locationName" class="text-sm font-black text-white uppercase tracking-widest bg-black/30 px-2.5 py-1 rounded-xl border border-white/10 transition-all origin-left inline-block">Bratislava</div>
+                                <span class="text-zinc-600">•</span>
+                                <div onclick="event.stopImmediatePropagation(); openSunPhases()" id="currentTime" class="text-emerald-300 hover:text-white bg-black/40 hover:bg-black/60 border border-emerald-500/40 px-2.5 py-0.5 rounded-xl text-sm font-mono mt-0.5 text-outline cursor-pointer transition-all shadow-sm" title="Svetelné fázy dňa"></div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 z-20">
+                            <button onclick="event.stopImmediatePropagation(); openMapModal()" class="px-3 py-2 bg-black/40 backdrop-blur-md border border-emerald-500/30 rounded-xl font-bold text-xs md:text-sm text-white hover:bg-black/60 hover:border-emerald-400 transition-all text-center leading-tight shadow-md whitespace-nowrap no-share">
+                                Bára, kde<br>to je?
+                            </button>
+                            <button onclick="event.stopImmediatePropagation(); shareWindow('statusCard')" class="text-white hover:text-emerald-400 transition-colors p-1 no-share" title="Zdieľať">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path fill-rule="evenodd" d="M15.75 4.5a3 3 0 11.825 2.066l-8.421 4.679a3.002 3.002 0 010 1.51l8.421 4.679a3 3 0 11-.729 1.31l-8.421-4.678a3 3 0 110-4.132l8.421-4.679a3 3 0 01-.096-.755z" clip-rule="evenodd" /></svg>
+                            </button>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2 z-20">
-                        <button onclick="event.stopImmediatePropagation(); openMapModal()" class="px-3 py-2 bg-black/40 backdrop-blur-md border border-emerald-500/30 rounded-xl font-bold text-xs md:text-sm text-white hover:bg-black/60 hover:border-emerald-400 transition-all text-center leading-tight shadow-md whitespace-nowrap no-share">
-                            Bára, kde<br>to je?
-                        </button>
-                        <button onclick="event.stopImmediatePropagation(); shareWindow('statusCard')" class="text-white hover:text-emerald-400 transition-colors p-1 no-share" title="Zdieľať">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path fill-rule="evenodd" d="M15.75 4.5a3 3 0 11.825 2.066l-8.421 4.679a3.002 3.002 0 010 1.51l8.421 4.679a3 3 0 11-.729 1.31l-8.421-4.678a3 3 0 110-4.132l8.421-4.679a3 3 0 01-.096-.755z" clip-rule="evenodd" /></svg>
-                        </button>
+    
+                    <div class="flex justify-between items-center text-sm md:text-base mt-3 px-1">
+                        <div onclick="event.stopImmediatePropagation(); openSunPhases()" class="flex items-center gap-1.5 text-emerald-300 cursor-pointer bg-black/30 hover:bg-black/50 border border-emerald-500/30 px-3 py-1.5 rounded-xl transition-all shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6"/><path d="M12 2l-3 3"/><path d="M12 2l3 3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
+                            <span id="mainSunrise" class="font-bold tracking-wider text-outline">--:--</span>
+                        </div>
+                        <div onclick="event.stopImmediatePropagation(); openSunPhases()" class="flex items-center gap-1.5 text-amber-300 cursor-pointer bg-black/30 hover:bg-black/50 border border-amber-500/30 px-3 py-1.5 rounded-xl transition-all shadow-sm">
+                            <span id="mainSunset" class="font-bold tracking-wider text-outline">--:--</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10V2"/><path d="M12 10l-3-3"/><path d="M12 10l3-3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
+                        </div>
                     </div>
+                </div> 
+                
+                <div class="flex flex-col items-center text-center py-2 shrink content-layer mt-2 mb-2">
+                    <div id="statusEmoji" class="text-[clamp(5rem,18vmin,10rem)] mb-2 drop-shadow-xl leading-none shrink-0">⏳</div>
+                    <div id="statusText" class="text-[clamp(2rem,7vmin,4rem)] font-black tracking-tighter leading-tight shrink-0 text-outline">Načítavam...</div>
+                    <div id="statusDesc" class="text-zinc-200 mt-1 text-[clamp(1rem,3.5vmin,1.5rem)] font-medium shrink-0 text-outline"></div>
                 </div>
-
-                <div class="flex justify-between items-center text-sm md:text-base mt-3 px-1">
-    <div onclick="event.stopImmediatePropagation(); openSunPhases()" class="flex items-center gap-1.5 text-emerald-300 cursor-pointer bg-black/30 hover:bg-black/50 border border-emerald-500/30 px-3 py-1.5 rounded-xl transition-all shadow-sm">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6"/><path d="M12 2l-3 3"/><path d="M12 2l3 3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
-        <span id="mainSunrise" class="font-bold tracking-wider text-outline">--:--</span>
-    </div>
-    <div onclick="event.stopImmediatePropagation(); openSunPhases()" class="flex items-center gap-1.5 text-amber-300 cursor-pointer bg-black/30 hover:bg-black/50 border border-amber-500/30 px-3 py-1.5 rounded-xl transition-all shadow-sm">
-        <span id="mainSunset" class="font-bold tracking-wider text-outline">--:--</span>
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10V2"/><path d="M12 10l-3-3"/><path d="M12 10l3-3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
-    </div>
-    </div>
-</div> <div class="flex flex-col items-center text-center py-2 shrink content-layer">
-                <div id="statusEmoji" class="text-[clamp(5rem,18vmin,10rem)] mb-2 drop-shadow-xl leading-none shrink-0">⏳</div>
-                <div id="statusText" class="text-[clamp(2rem,7vmin,4rem)] font-black tracking-tighter leading-tight shrink-0 text-outline">Načítavam...</div>
-                <div id="statusDesc" class="text-zinc-200 mt-1 text-[clamp(1rem,3.5vmin,1.5rem)] font-medium shrink-0 text-outline"></div>
             </div>
-
-            <!-- 3. Spodná mriežka s počasím (Zväčšené ikonky) -->
-            <div class="shrink-0 w-full mt-2 mb-4 content-layer">
-                <div class="grid grid-cols-4 gap-2 text-center bg-black/25 py-4 px-2 -mx-5 md:-mx-6 rounded-[2rem] shadow-inner">
+    
+            <!-- Spodná časť (ikony a výber modelu) - kliknutie otvorí detail počasia -->
+            <div onclick="event.stopImmediatePropagation(); showTipsModal()" class="shrink-0 w-full mt-2 mb-1 content-layer bg-black/20 hover:bg-black/35 border border-white/5 rounded-[2rem] p-4 shadow-inner cursor-pointer transition-all group/weather z-20">
+                <div class="grid grid-cols-4 gap-2 text-center">
                     <div class="flex flex-col items-center justify-center">
                         <div class="text-[clamp(2.5rem,8vmin,4rem)] drop-shadow-md mb-2">🌡️</div>
                         <div class="text-zinc-400 text-[clamp(10px,2vmin,14px)] uppercase tracking-wider mb-0.5 font-bold">Teplota</div>
@@ -137,7 +142,24 @@
                         <div id="clouds" class="font-black text-[clamp(1.2rem,4vmin,1.8rem)] text-white whitespace-nowrap">-- %</div>
                     </div>
                 </div>
+                
+                <div class="flex justify-between items-center text-[10px] md:text-xs text-white/40 font-mono uppercase tracking-widest w-full border-t border-white/10 pt-3 mt-3">
+                    <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" onclick="event.stopImmediatePropagation()" class="hover:text-white/80 transition-colors whitespace-nowrap">Data by <span class="font-bold text-white/60">Open-Meteo</span></a>
+                    
+                    <div class="relative inline-flex items-center bg-black/40 hover:bg-black/60 border border-emerald-500/40 hover:border-emerald-400 rounded-xl px-2.5 py-1.5 transition-all cursor-pointer text-white font-sans shadow-sm" onclick="event.stopImmediatePropagation()">
+                        <span class="text-zinc-400 mr-1 font-mono uppercase text-[9px]">Model:</span>
+                        <select id="modelSelect" onchange="changeModel(this.value)" class="bg-transparent appearance-none text-emerald-400 font-bold outline-none cursor-pointer pr-4 relative z-10">
+                            <option value="icon_seamless" class="bg-zinc-900 text-white">ICON (EU)</option>
+                            <option value="metno_seamless" class="bg-zinc-900 text-white">YR.NO (Nórsko)</option>
+                            <option value="ecmwf_ifs04" class="bg-zinc-900 text-white">ECMWF (Svet)</option>
+                            <option value="gfs_seamless" class="bg-zinc-900 text-white">GFS (USA)</option>
+                            <option value="best_match" class="bg-zinc-900 text-white">AUTO (Mix)</option>
+                        </select>
+                        <span class="absolute right-2 text-[8px] pointer-events-none text-emerald-400">▼</span>
+                    </div>
+                </div>
             </div>
+        </div>
             
             <!-- 4. Open-Meteo Footer s interaktívnym prepínačom -->
             <div class="shrink-0 content-layer">
@@ -183,7 +205,7 @@
             </button>
             <div class="flex justify-between items-start mb-4">
                 <div>
-                    <div class="font-bold text-xl pr-8">Detaily a tipy</div>
+                    <div class="font-bold text-xl pr-8">Detailné počasie</div>
                     <div class="text-[9px] text-emerald-500/60 uppercase tracking-widest mt-1 mb-3 font-mono">Model: ICON Seamless</div>
                     <div class="flex items-center gap-3">
                         <div id="detailCurrentTime" class="text-sm font-mono text-zinc-300 font-bold">--:--</div>
@@ -622,13 +644,13 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
         async function showTipsModal() {
             const modal = document.getElementById('tipsModal');
             const content = document.getElementById('modalTipsContent');
-            content.innerHTML = '<div class="text-center py-8 text-zinc-400">Načítavam dáta a počítam vzdialenosť... ⏳</div>';
+            content.innerHTML = '<div class="text-center py-8 text-zinc-400">Načítavam dáta... ⏳</div>';
             modal.classList.remove('hidden');
             modal.classList.add('flex');
             
             let html = '';
-            if (currentOwmData) {
-                let stName = currentOwmData.name || "Neznáma stanica";
+            if (currentOwmData && forecast16Data) {
+                let stName = currentOwmData.name || "Tvoja poloha";
                 let distanceBadge = '';
                 if (stName !== "Neznáma stanica" && stName !== currentCity) {
                     try {
@@ -636,7 +658,7 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
                         const geoData = await geoRes.json();
                         if (geoData.results && geoData.results[0]) {
                             let distanceKm = calculateDistance(currentLat, currentLon, geoData.results[0].latitude, geoData.results[0].longitude).toFixed(1);
-                            if (distanceKm > 0.1) distanceBadge = `<div class="text-xs text-emerald-500 font-medium bg-emerald-500/10 px-2 py-0.5 rounded-full">~ ${distanceKm} km ďaleko</div>`;
+                            if (distanceKm > 0.1) distanceBadge = `<div class="text-xs text-emerald-500 font-medium bg-emerald-500/10 px-2 py-0.5 rounded-full">~ ${distanceKm} km</div>`;
                         }
                     } catch (e) {}
                 }
@@ -661,10 +683,12 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
                 else if (owmCode === 801 || owmCode === 802) owmIcon = isNightOWM ? '☁️' : '🌤️';
                 else if (owmCode >= 803) owmIcon = '☁️';
 
+                const c = forecast16Data.current;
+
                 html += `
-                    <div class="mb-5 pb-5 border-b border-zinc-700/50">
+                    <div class="mb-2 pb-2">
                         <div class="flex justify-between items-baseline mb-1">
-                            <div class="text-xs text-zinc-500 uppercase tracking-wider">Dáta z meteostanice</div>
+                            <div class="text-xs text-zinc-500 uppercase tracking-wider">Meteostanica</div>
                             ${distanceBadge}
                         </div>
                         <div class="text-2xl font-black text-white mb-4">${stName}</div>
@@ -677,27 +701,26 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
                             </div>
                         </div>
                         
-                        <div class="grid grid-cols-2 gap-y-3 text-sm px-2">
-                            <div class="text-zinc-500">Pocitovo:</div> <div class="text-right font-bold">${wFeels} °C</div>
-                            <div class="text-zinc-500">Vietor:</div> <div class="text-right font-bold">${wSpd} km/h</div>
-                            <div class="text-zinc-500">Vlhkosť:</div> <div class="text-right font-bold">${wHum} %</div>
-                            <div class="text-zinc-500">Tlak:</div> <div class="text-right font-bold">${wPress} hPa</div>
+                        <!-- Zosumarizované všetky dostupné meteo informácie -->
+                        <div class="grid grid-cols-2 gap-y-2.5 text-sm px-2 mt-2 border-t border-zinc-800 pt-3">
+                            <div class="text-zinc-500">Pocitová teplota:</div> <div class="text-right font-bold text-white">${wFeels} °C</div>
+                            <div class="text-zinc-500">Rýchlosť vetra:</div> <div class="text-right font-bold text-white">${wSpd} km/h</div>
+                            <div class="text-zinc-500">Vlhkosť vzduchu:</div> <div class="text-right font-bold text-white">${wHum} %</div>
+                            <div class="text-zinc-500">Tlak vzduchu:</div> <div class="text-right font-bold text-white">${wPress} hPa</div>
+                            <div class="text-zinc-500">Celková oblačnosť:</div> <div class="text-right font-bold text-white">${c.cloudcover} %</div>
+                            <div class="text-zinc-500">Kód počasia (WMO):</div> <div class="text-right font-mono font-bold text-emerald-400">${c.weathercode}</div>
+                            <div class="text-zinc-500">Denná fáza:</div> <div class="text-right font-bold text-white">${c.is_day ? 'Deň ☀️' : 'Noc 🌙'}</div>
                         </div>
                     </div>
                 `;
+            } else {
+                html = '<div class="text-center py-8 text-zinc-500">Dáta nie sú k dispozícii.</div>';
             }
-
-            html += `
-                <button onclick="openExtendedTips()" class="w-full py-4 mt-2 bg-emerald-600/20 hover:bg-emerald-500/30 border border-emerald-500/50 text-emerald-400 font-bold rounded-2xl transition-all shadow-md flex items-center justify-center gap-3 no-share">
-                    <span class="text-2xl drop-shadow-md">🎬</span> 
-                    <span>Vyčerpávajúce tipy pre štáb</span>
-                </button>
-            `;
             content.innerHTML = html;
         }
 
 function openExtendedTips() {
-            if (!forecast16Data || !forecast16Data.current) return;
+            if (!forecast16Data || !forecast16Data.current) return showToast("Čakám na stiahnutie dát... ⏳");
             
             const c = forecast16Data.current;
             const temp = c.temperature_2m;
