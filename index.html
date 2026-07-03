@@ -111,49 +111,49 @@
                 </div> 
                 
                 <div class="flex flex-col items-center justify-center text-center py-1 flex-1 min-h-0 content-layer my-auto justify-items-center">
-                    <div id="statusEmoji" class="text-[clamp(3.5rem,11vh,6.5rem)] mb-1 drop-shadow-xl leading-none shrink-0 transition-all">⏳</div>
-                    <div id="statusText" class="text-[clamp(1.5rem,4.5vh,2.75rem)] font-black tracking-tighter leading-tight shrink-0 text-outline transition-all">Načítavam...</div>
-                    <div id="statusDesc" class="text-zinc-200 mt-0.5 text-[clamp(0.85rem,2.2vh,1.25rem)] font-medium shrink-0 text-outline transition-all"></div>
+                    <div id="statusEmoji" class="text-[clamp(2rem,9vh,6.5rem)] mb-1 drop-shadow-xl leading-none shrink-0 transition-all">⏳</div>
+                    <div id="statusText" class="text-[clamp(1.1rem,3.5vh,2.75rem)] font-black tracking-tighter leading-tight shrink-0 text-outline transition-all">Načítavam...</div>
+                    <div id="statusDesc" class="text-zinc-200 mt-0.5 text-[clamp(0.7rem,1.8vh,1.25rem)] font-medium shrink-0 text-outline transition-all"></div>
                 </div>
             </div>
     
-            <div onclick="event.stopImmediatePropagation(); showTipsModal()" class="shrink-0 w-full mt-auto mb-0 content-layer bg-black/20 hover:bg-black/35 border border-white/5 rounded-[2rem] p-4 shadow-inner cursor-pointer transition-all group/weather z-20">
-                <div class="grid grid-cols-4 gap-2 text-center">
+            <div onclick="event.stopImmediatePropagation(); showTipsModal()" class="shrink-0 w-full mt-auto mb-0 content-layer bg-black/20 hover:bg-black/35 border border-white/5 rounded-[2rem] p-2.5 sm:p-4 shadow-inner cursor-pointer transition-all group/weather z-20">
+                <div class="grid grid-cols-4 gap-1 sm:gap-2 text-center">
                     <div class="flex flex-col items-center justify-center">
-                        <div class="text-[clamp(1.8rem,5.5vh,3rem)] drop-shadow-md mb-1 transition-all">🌡️</div>
-                        <div class="text-zinc-400 text-[clamp(9px,1.3vh,11px)] uppercase tracking-wider mb-0.5 font-bold leading-none">Teplota</div>
-                        <div id="temp" class="font-black text-[clamp(1rem,2.5vh,1.4rem)] text-white whitespace-nowrap">--°C</div>
+                        <div class="text-[clamp(1.3rem,4vh,3rem)] drop-shadow-md mb-0.5 sm:mb-1 transition-all">🌡️</div>
+                        <div class="text-zinc-400 text-[clamp(8px,1vh,11px)] uppercase tracking-wider mb-0.5 font-bold leading-none">Teplota</div>
+                        <div id="temp" class="font-black text-[clamp(0.85rem,2vh,1.4rem)] text-white whitespace-nowrap">--°C</div>
                     </div>
                     <div class="flex flex-col items-center justify-center">
-                        <div class="text-[clamp(1.8rem,5.5vh,3rem)] drop-shadow-md mb-1 transition-all">💨</div>
-                        <div class="text-zinc-400 text-[clamp(9px,1.3vh,11px)] uppercase tracking-wider mb-0.5 font-bold leading-none">Vietor</div>
-                        <div id="wind" class="font-black text-[clamp(1rem,2.5vh,1.4rem)] text-white whitespace-nowrap">-- km/h</div>
+                        <div class="text-[clamp(1.3rem,4vh,3rem)] drop-shadow-md mb-0.5 sm:mb-1 transition-all">💨</div>
+                        <div class="text-zinc-400 text-[clamp(8px,1vh,11px)] uppercase tracking-wider mb-0.5 font-bold leading-none">Vietor</div>
+                        <div id="wind" class="font-black text-[clamp(0.85rem,2vh,1.4rem)] text-white whitespace-nowrap">-- km/h</div>
                     </div>
                     <div class="flex flex-col items-center justify-center">
-                        <div class="text-[clamp(1.8rem,5.5vh,3rem)] drop-shadow-md mb-1 transition-all">☔</div>
-                        <div class="text-zinc-400 text-[clamp(9px,1.3vh,11px)] uppercase tracking-wider mb-0.5 font-bold leading-none">Zrážky</div>
-                        <div id="rain" class="font-black text-[clamp(1rem,2.5vh,1.4rem)] text-white whitespace-nowrap">--</div>
+                        <div class="text-[clamp(1.3rem,4vh,3rem)] drop-shadow-md mb-0.5 sm:mb-1 transition-all">☔</div>
+                        <div class="text-zinc-400 text-[clamp(8px,1vh,11px)] uppercase tracking-wider mb-0.5 font-bold leading-none">Zrážky</div>
+                        <div id="rain" class="font-black text-[clamp(0.85rem,2vh,1.4rem)] text-white whitespace-nowrap">--</div>
                     </div>
                     <div class="flex flex-col items-center justify-center">
-                        <div class="text-[clamp(1.8rem,5.5vh,3rem)] drop-shadow-md mb-1 transition-all">☁️</div>
-                        <div class="text-zinc-400 text-[clamp(9px,1.3vh,11px)] uppercase tracking-wider mb-0.5 font-bold leading-none">Oblaky</div>
-                        <div id="clouds" class="font-black text-[clamp(1rem,2.5vh,1.4rem)] text-white whitespace-nowrap">-- %</div>
+                        <div class="text-[clamp(1.3rem,4vh,3rem)] drop-shadow-md mb-0.5 sm:mb-1 transition-all">☁️</div>
+                        <div class="text-zinc-400 text-[clamp(8px,1vh,11px)] uppercase tracking-wider mb-0.5 font-bold leading-none">Oblaky</div>
+                        <div id="clouds" class="font-black text-[clamp(0.85rem,2vh,1.4rem)] text-white whitespace-nowrap">-- %</div>
                     </div>
                 </div>
                 
-                <div class="flex justify-between items-center text-[10px] md:text-xs text-white/40 font-mono uppercase tracking-widest w-full border-t border-white/10 pt-3 mt-3">
+                <div class="flex justify-between items-center text-[9px] sm:text-[10px] md:text-xs text-white/40 font-mono uppercase tracking-widest w-full border-t border-white/10 pt-2 mt-2 sm:pt-3 sm:mt-3">
                     <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" onclick="event.stopImmediatePropagation()" class="hover:text-white/80 transition-colors whitespace-nowrap">Data by <span class="font-bold text-white/60">Open-Meteo</span></a>
                     
-                    <div class="relative inline-flex items-center bg-black/40 hover:bg-black/60 border border-emerald-500/40 hover:border-emerald-400 rounded-xl px-2.5 py-1.5 transition-all cursor-pointer text-white font-sans shadow-sm" onclick="event.stopImmediatePropagation()">
-                        <span class="text-zinc-400 mr-1 font-mono uppercase text-[9px]">Model:</span>
-                        <select id="modelSelect" onchange="changeModel(this.value)" class="bg-transparent appearance-none text-emerald-400 font-bold outline-none cursor-pointer pr-4 relative z-10">
+                    <div class="relative inline-flex items-center bg-black/40 hover:bg-black/60 border border-emerald-500/40 hover:border-emerald-400 rounded-lg sm:rounded-xl px-2 py-1 sm:px-2.5 sm:py-1.5 transition-all cursor-pointer text-white font-sans shadow-sm" onclick="event.stopImmediatePropagation()">
+                        <span class="text-zinc-400 mr-1 font-mono uppercase text-[8px] sm:text-[9px]">Model:</span>
+                        <select id="modelSelect" onchange="changeModel(this.value)" class="bg-transparent appearance-none text-emerald-400 font-bold outline-none cursor-pointer pr-4 relative z-10 text-[9px] sm:text-xs">
                             <option value="icon_seamless" class="bg-zinc-900 text-white">ICON (EU)</option>
                             <option value="metno_seamless" class="bg-zinc-900 text-white">YR.NO (Nórsko)</option>
                             <option value="ecmwf_ifs04" class="bg-zinc-900 text-white">ECMWF (Svet)</option>
                             <option value="gfs_seamless" class="bg-zinc-900 text-white">GFS (USA)</option>
                             <option value="best_match" class="bg-zinc-900 text-white">AUTO (Mix)</option>
                         </select>
-                        <span class="absolute right-2 text-[8px] pointer-events-none text-emerald-400">▼</span>
+                        <span class="absolute right-1 sm:right-2 text-[7px] sm:text-[8px] pointer-events-none text-emerald-400">▼</span>
                     </div>
                 </div>
             </div> </div> <div class="grid grid-cols-2 gap-2 sm:gap-3 shrink-0 mt-1">
