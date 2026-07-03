@@ -716,8 +716,8 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
             for (let i = 0; i < 16; i++) {
                 const div = document.createElement('div');
                 
-                // Ak deň reálne existuje v stiahnutých dátach
-                if (forecast16Data.daily.time && forecast16Data.daily.time[i]) {
+                // Kontrola, či existuje nielen čas, ale reálne aj dáta pre teplotu (Open-Meteo pre chýbajúce dni vráti null)
+                if (forecast16Data.daily.time && forecast16Data.daily.time[i] && forecast16Data.daily.temperature_2m_max[i] !== null && forecast16Data.daily.temperature_2m_max[i] !== undefined) {
                     const dateObj = new Date(forecast16Data.daily.time[i]);
                     const dayName = daysSk[dateObj.getDay()];
                     const dayNum = dateObj.getDate() + '.' + (dateObj.getMonth() + 1) + '.';
@@ -733,11 +733,9 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
                         <div class="text-sm font-bold text-white">${tempMax}°</div>
                     `;
                 } else {
-                    // Úplne čisté a elegantné prázdne okienko
+                    // Úplne prázdne okienko (nič... nič... nič...)
                     div.className = 'bg-zinc-800/10 border border-zinc-800/30 rounded-2xl p-3 flex flex-col items-center justify-center cursor-not-allowed h-full min-h-[110px]';
-                    div.innerHTML = `
-                        <div class="text-zinc-700/50 text-3xl font-black">-</div>
-                    `;
+                    div.innerHTML = ``;
                 }
                 grid.appendChild(div);
             }
