@@ -188,7 +188,7 @@
             </div>
             <div class="flex justify-between items-start mb-4">
                 <div>
-                    <div class="font-bold text-xl pr-8">Detailné počasie</div>
+                    <div class="font-bold text-xl pr-8">Aktuálne počasie</div>
                     <div class="text-[9px] text-emerald-500/60 uppercase tracking-widest mt-1 mb-3 font-mono">Model: ICON Seamless</div>
                     <div class="flex items-center gap-3">
                         <div id="detailCurrentTime" class="text-sm font-mono text-zinc-300 font-bold">--:--</div>
@@ -235,11 +235,9 @@
 
     <div id="dayDetailModal" onclick="if(event.target === this) hideDayDetail()" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[60] p-4">
         <div id="dayDetailWrap" class="bg-zinc-900 rounded-3xl w-full max-w-sm max-h-[85vh] overflow-y-auto border border-zinc-700 shadow-2xl">
-            <div class="sticky top-0 bg-zinc-900/95 backdrop-blur px-5 py-4 flex justify-between items-center border-b border-zinc-700 z-10">
-                <button onclick="hideDayDetail()" class="text-zinc-400 hover:text-white text-sm font-bold flex items-center gap-1 no-share"><span>←</span> Späť</button>
-                <div class="flex items-center gap-3">
-                    <div id="dayDetailTitle" class="font-bold text-lg text-emerald-400">Detail dňa</div>
-                    <div class="flex items-center gap-2 no-share">
+            <div class="sticky top-0 bg-zinc-900/95 backdrop-blur px-5 py-4 flex justify-between items-start border-b border-zinc-700 z-10">
+                <div id="dayDetailTitle" class="font-bold text-lg text-emerald-400">Detail dňa</div>
+                <div class="flex items-center gap-2 no-share shrink-0 ml-4">
                         <button onclick="shareWindow('dayDetailWrap')" class="text-white hover:text-emerald-400 transition-colors p-1" title="Zdieľať">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path fill-rule="evenodd" d="M15.75 4.5a3 3 0 11.825 2.066l-8.421 4.679a3.002 3.002 0 010 1.51l8.421 4.679a3 3 0 11-.729 1.31l-8.421-4.678a3 3 0 110-4.132l8.421-4.679a3 3 0 01-.096-.755z" clip-rule="evenodd" /></svg>
                         </button>
@@ -285,7 +283,9 @@
             <div id="hourlyEmoji" class="text-7xl mb-4 drop-shadow-lg">✅</div>
             <div id="hourlyTitle" class="text-3xl font-black text-white mb-2 tracking-tight">Nekukaj a toč!</div>
             <div id="hourlyDesc" class="text-zinc-400 text-lg mb-6">Ideálne podmienky</div>
-            <button id="closeModalBtn" onclick="document.getElementById('hourlyStatusModal').classList.replace('flex','hidden')" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-2xl transition-all shadow-md mt-2 no-share">Bára, dík!</button>
+            <div id="hourlyModalActions" class="space-y-3">
+                <button onclick="document.getElementById('hourlyStatusModal').classList.replace('flex','hidden')" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-2xl transition-all shadow-md no-share">Bára, dík!</button>
+            </div>
         </div>
     </div>
 
@@ -310,9 +310,12 @@
 <!-- Okno Svetelné fázy dňa -->
     <div id="sunPhasesModal" onclick="if(event.target === this) hideSunPhases()" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[90] p-4">
         <div class="bg-zinc-900 rounded-3xl w-full max-w-md flex flex-col border border-zinc-700 shadow-2xl relative overflow-hidden">
-            <div class="bg-zinc-900/95 backdrop-blur px-6 py-4 flex justify-between items-center border-b border-zinc-700 z-10">
-                <div class="font-bold text-lg text-white">Svetelné fázy dňa</div>
-                <button onclick="hideSunPhases()" class="text-3xl text-zinc-400 hover:text-white leading-none">×</button>
+            <div class="bg-zinc-900/95 backdrop-blur px-6 py-4 flex justify-between items-start border-b border-zinc-700 z-10">
+                <div>
+                    <div class="font-bold text-lg text-white leading-tight">Svetelné fázy dňa</div>
+                    <div id="sunPhasesDate" class="text-xs text-zinc-400 font-mono mt-0.5 capitalize"></div>
+                </div>
+                <button onclick="hideSunPhases()" class="text-3xl text-zinc-400 hover:text-white leading-none mt-0.5">×</button>
             </div>
             <div id="sunPhasesContent" class="p-6 space-y-3 overflow-y-auto max-h-[70vh]">
                 <!-- Sem sa vygeneruje zoznam fáz cez JS -->
@@ -401,6 +404,7 @@
         function openSunPhases() {
             const phases = updateSunPhaseUI();
             if (!phases) return showToast("Zatiaľ nemám dáta o slnku", false);
+            document.getElementById('sunPhasesDate').innerText = new Date().toLocaleDateString('sk-SK', { weekday: 'long', day: 'numeric', month: 'long' });
 
             const formatT = (date) => date.toLocaleTimeString('sk-SK', {hour: '2-digit', minute:'2-digit'});
             const content = document.getElementById('sunPhasesContent');
@@ -693,16 +697,16 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
 
                 const c = forecast16Data.current;
 
-                // Formátovanie nových profi dát
-                const uv = c.uv_index !== undefined ? c.uv_index.toFixed(1) : '--';
-                const dew = c.dew_point_2m !== undefined ? Math.round(c.dew_point_2m) : '--';
-                const vis = c.visibility !== undefined ? (c.visibility / 1000).toFixed(1) + ' km' : '--';
-                const gusts = c.wind_gusts_10m !== undefined ? Math.round(c.wind_gusts_10m) : '--';
-                const precip = c.precipitation !== undefined ? c.precipitation.toFixed(1) + ' mm' : '--';
+                // Formátovanie nových profi dát s prísnou kontrolou
+                const uv = (typeof c.uv_index === 'number') ? c.uv_index.toFixed(1) : '--';
+                const dew = (typeof c.dew_point_2m === 'number') ? Math.round(c.dew_point_2m) : '--';
+                const vis = (typeof c.visibility === 'number') ? (c.visibility / 1000).toFixed(1) + ' km' : '--';
+                const gusts = (typeof c.wind_gusts_10m === 'number') ? Math.round(c.wind_gusts_10m) : '--';
+                const precip = (typeof c.precipitation === 'number') ? c.precipitation.toFixed(1) + ' mm' : '--';
                 
                 // Prepočet stupňov na svetové strany
                 let windDir = '--';
-                if (c.wind_direction_10m !== undefined) {
+                if (typeof c.wind_direction_10m === 'number') {
                     const dirs = ['S (Sever)', 'SV (Severovýchod)', 'V (Východ)', 'JV (Juhovýchod)', 'J (Juh)', 'JZ (Juhozápad)', 'Z (Západ)', 'SZ (Severozápad)'];
                     windDir = dirs[Math.round(c.wind_direction_10m / 45) % 8];
                 }
@@ -760,20 +764,23 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
             content.innerHTML = html;
         }
 
-function openExtendedTips() {
+function openExtendedTips(overrideScenarioIdx = null) {
             if (!forecast16Data || !forecast16Data.current) return showToast("Čakám na stiahnutie dát... ⏳");
             
-            const c = forecast16Data.current;
-            const temp = c.temperature_2m;
-            const wind = c.windspeed_10m;
-            const cloud = c.cloudcover;
-            const code = c.weathercode;
-            const hum = currentOwmData ? currentOwmData.main.humidity : 50;
-
             let scenarioIdx = 1; 
-            
-            // Bárina hierarchia scenárov
-            if (code >= 95) scenarioIdx = 7; // Koniec sveta (Búrka)
+
+            if (overrideScenarioIdx !== null) {
+                scenarioIdx = overrideScenarioIdx;
+            } else {
+                const c = forecast16Data.current;
+                const temp = c.temperature_2m;
+                const wind = c.windspeed_10m;
+                const cloud = c.cloudcover;
+                const code = c.weathercode;
+                const hum = currentOwmData ? currentOwmData.main.humidity : 50;
+
+                // Bárina hierarchia scenárov pre aktuálne počasie
+                if (code >= 95) scenarioIdx = 7; // Koniec sveta (Búrka)
             else if (code >= 71 && code <= 86) scenarioIdx = 10; // Biela tma (Sneh)
             else if (code === 45 || code === 48) scenarioIdx = 8; // Hmla
             else if (wind >= 20) scenarioIdx = 5; // Vetrisko
@@ -1095,35 +1102,39 @@ function openExtendedTips() {
             let scenarioTitle = "";
             let mainEmoji = "✅";
             let mainText = "Nekukaj a toč!";
+            let sIdx = 1;
             
-            // Jednoduchý odhad dňa/noci pre hodinový výhľad (21:00 je noc)
             let isDay = (hour > 5 && hour < 20) ? 1 : 0; 
 
-            // ❌ Zmotaj káble!
-            if (code >= 95) { scenarioTitle = "⛈️ Koniec sveta (Búrka a lejak)"; mainEmoji = "❌"; mainText = "Zmotaj káble!"; }
-            else if (wind > 35) { scenarioTitle = "💨 Vetrisko (Extrém)"; mainEmoji = "❌"; mainText = "Zmotaj káble!"; }
-            
-            // ⚠️ Ježíš, dávaj pozor!
-            else if (code >= 71 && code <= 86) { scenarioTitle = "❄️ Biela tma (Sneh a sneženie)"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; }
-            else if (code === 45 || code === 48) { scenarioTitle = "🌫️ Hmla ako v Londýne"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; }
-            else if (wind >= 20) { scenarioTitle = "💨 Vetrisko (Fučí celkom dosť)"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; }
-            else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) { scenarioTitle = "🌦️ Uplakaný deň (Mrholenie a prehánky)"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; }
-            else if (temp < 5) { scenarioTitle = "🥶 Doba ľadová (Kosa a mráz)"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; }
-            
-            // ✅ Nekukaj a toč!
+            if (code >= 95) { scenarioTitle = "⛈️ Koniec sveta (Búrka a lejak)"; mainEmoji = "❌"; mainText = "Zmotaj káble!"; sIdx = 7; }
+            else if (wind > 35) { scenarioTitle = "💨 Vetrisko (Extrém)"; mainEmoji = "❌"; mainText = "Zmotaj káble!"; sIdx = 5; }
+            else if (code >= 71 && code <= 86) { scenarioTitle = "❄️ Biela tma (Sneh a sneženie)"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; sIdx = 10; }
+            else if (code === 45 || code === 48) { scenarioTitle = "🌫️ Hmla ako v Londýne"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; sIdx = 8; }
+            else if (wind >= 20) { scenarioTitle = "💨 Vetrisko (Fučí celkom dosť)"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; sIdx = 5; }
+            else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) { scenarioTitle = "🌦️ Uplakaný deň (Mrholenie a prehánky)"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; sIdx = 6; }
+            else if (temp < 5) { scenarioTitle = "🥶 Doba ľadová (Kosa a mráz)"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; sIdx = 4; }
             else if (isDay === 0) { 
-                if (cloud >= 80) { scenarioTitle = "☁️ Zamračená noc (Tma ako v rohu)"; mainEmoji = "✅"; mainText = "Nekukaj a toč!"; }
-                else { scenarioTitle = "🌙 Nočná šichta (Jasná noc)"; mainEmoji = "✅"; mainText = "Nekukaj a toč!"; }
+                if (cloud >= 80) { scenarioTitle = "☁️ Zamračená noc (Tma ako v rohu)"; mainEmoji = "✅"; mainText = "Nekukaj a toč!"; sIdx = 12; }
+                else { scenarioTitle = "🌙 Nočná šichta (Jasná noc)"; mainEmoji = "✅"; mainText = "Nekukaj a toč!"; sIdx = 11; }
             }
-            else if (temp >= 25 && cloud < 30) { scenarioTitle = "☀️ Peklo zhora (Ostré slnko a výpek)"; mainEmoji = "✅"; mainText = "Nekukaj a toč!"; }
-            else if (cloud >= 90) { scenarioTitle = "☁️ Plechová obloha (Plochá nuda)"; mainEmoji = "✅"; mainText = "Nekukaj a toč!"; }
-            else { scenarioTitle = "🌤️ Ideál (Zlatá stredná cesta)"; mainEmoji = "✅"; mainText = "Nekukaj a toč!"; }
+            else if (temp >= 25 && cloud < 30) { scenarioTitle = "☀️ Peklo zhora (Ostré slnko a výpek)"; mainEmoji = "✅"; mainText = "Nekukaj a toč!"; sIdx = 2; }
+            else if (cloud >= 90) { scenarioTitle = "☁️ Plechová obloha (Plochá nuda)"; mainEmoji = "✅"; mainText = "Nekukaj a toč!"; sIdx = 3; }
+            else { scenarioTitle = "🌤️ Ideál (Zlatá stredná cesta)"; mainEmoji = "✅"; mainText = "Nekukaj a toč!"; sIdx = 1; }
 
             document.getElementById('hourlyLocation').innerText = `📍 ${currentCity}`;
             document.getElementById('hourlyContext').innerText = `${dayName} ${dayNum} • ${timeLabel}`;
             document.getElementById('hourlyEmoji').innerText = mainEmoji;
             document.getElementById('hourlyTitle').innerText = mainText;
             document.getElementById('hourlyDesc').innerText = scenarioTitle;
+            
+            // Vygenerovanie tlačidiel pre hodinovú predpoveď
+            document.getElementById('hourlyModalActions').innerHTML = `
+                <button onclick="document.getElementById('hourlyStatusModal').classList.replace('flex','hidden'); openExtendedTips(${sIdx});" class="w-full py-3 bg-emerald-600/20 hover:bg-emerald-500/30 border border-emerald-500/50 text-emerald-400 font-bold rounded-2xl transition-all shadow-md flex items-center justify-center gap-3 no-share">
+                    <span class="text-xl drop-shadow-md">🎬</span> Zobraziť tipy pre štáb
+                </button>
+                <button onclick="document.getElementById('hourlyStatusModal').classList.replace('flex','hidden')" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-2xl transition-all shadow-md no-share">Bára, dík!</button>
+            `;
+
             document.getElementById('hourlyStatusModal').classList.replace('hidden', 'flex');
         }
 
@@ -1169,8 +1180,8 @@ async function shareWindow(elementId) {
 
         function openDayDetail(dayIndex, dayName, dayNum) {
             document.getElementById('dayDetailTitle').innerHTML = `
-                <div class="text-right">
-                    <div>${currentCity} | ${dayName} ${dayNum}</div>
+                <div class="text-left">
+                    <div class="text-white">${currentCity} | ${dayName} ${dayNum}</div>
                     <div class="text-[9px] text-emerald-500/60 uppercase tracking-widest mt-0.5 font-mono">Model: ${modelNames[calendarModel] || calendarModel}</div>
                 </div>
             `;
