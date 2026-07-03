@@ -765,35 +765,35 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
         }
 
 function openExtendedTips(overrideScenarioIdx = null) {
-            if (!forecast16Data || !forecast16Data.current) return showToast("Čakám na stiahnutie dát... ⏳");
-            
-            let scenarioIdx = 1; 
+    if (!forecast16Data || !forecast16Data.current) return showToast("Čakám na stiahnutie dát... ⏳");
+    
+    let scenarioIdx = 1; 
 
-            if (overrideScenarioIdx !== null) {
-                scenarioIdx = overrideScenarioIdx;
-            } else {
-                const c = forecast16Data.current;
-                const temp = c.temperature_2m;
-                const wind = c.windspeed_10m;
-                const cloud = c.cloudcover;
-                const code = c.weathercode;
-                const hum = currentOwmData ? currentOwmData.main.humidity : 50;
+    if (overrideScenarioIdx !== null) {
+        scenarioIdx = overrideScenarioIdx;
+    } else {
+        const c = forecast16Data.current;
+        const temp = c.temperature_2m;
+        const wind = c.windspeed_10m;
+        const cloud = c.cloudcover;
+        const code = c.weathercode;
+        const hum = currentOwmData ? currentOwmData.main.humidity : 50;
 
-                // Bárina hierarchia scenárov pre aktuálne počasie
-                if (code >= 95) scenarioIdx = 7; // Koniec sveta (Búrka)
-            else if (code >= 71 && code <= 86) scenarioIdx = 10; // Biela tma (Sneh)
-            else if (code === 45 || code === 48) scenarioIdx = 8; // Hmla
-            else if (wind >= 20) scenarioIdx = 5; // Vetrisko
-            else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) scenarioIdx = 6; // Uplakaný deň (Dážď)
-            else if (c.is_day === 0) scenarioIdx = cloud >= 80 ? 12 : 11; // Noc (Zamračená alebo jasná)
-            else if (temp >= 25 && cloud < 30) scenarioIdx = 2; // Peklo zhora (Ostré slnko a teplo)
-            else if (temp >= 22 && hum >= 70) scenarioIdx = 9; // Skleník (Dusno a vlhko)
-            else if (temp < 5) scenarioIdx = 4; // Doba ľadová (Mráz)
-            else if (cloud >= 90) scenarioIdx = 3; // Plechová obloha
-            else scenarioIdx = 1; // Ideál
-        }
+        // Bárina hierarchia scenárov pre aktuálne počasie
+        if (code >= 95) scenarioIdx = 7; // Koniec sveta (Búrka)
+        else if (code >= 71 && code <= 86) scenarioIdx = 10; // Biela tma (Sneh)
+        else if (code === 45 || code === 48) scenarioIdx = 8; // Hmla
+        else if (wind >= 20) scenarioIdx = 5; // Vetrisko
+        else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) scenarioIdx = 6; // Uplakaný deň (Dážď)
+        else if (c.is_day === 0) scenarioIdx = cloud >= 80 ? 12 : 11; // Noc (Zamračená alebo jasná)
+        else if (temp >= 25 && cloud < 30) scenarioIdx = 2; // Peklo zhora (Ostré slnko a teplo)
+        else if (temp >= 22 && hum >= 70) scenarioIdx = 9; // Skleník (Dusno a vlhko)
+        else if (temp < 5) scenarioIdx = 4; // Doba ľadová (Mráz)
+        else if (cloud >= 90) scenarioIdx = 3; // Plechová obloha
+        else scenarioIdx = 1; // Ideál
+    } // <--- TÁTO ZÁTVORKA BOLA KAMEŇ ÚRAZU
 
-            const scenarios = {
+    const scenarios = {
                 1: { title: "🌤️ Ideál (Zlatá stredná cesta)", 
                      kamera: "Krásne difúzne svetlo vďaka obláčikom. Kresba v tieňoch je jemná, pleťovka vyzerá super. Stačí odrážať a jemne modlovať. Slnko sa ale môže skrývať a vykukovať, takže bacha na zmeny expozície uprostred klapky a kontinuitu.",
                      zvuk: "Zvyčajne bez extrémov. Príjemné podmienky, treba si len ustrážiť bežné ruchy prostredia.",
