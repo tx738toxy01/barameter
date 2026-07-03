@@ -191,8 +191,21 @@
 
     <div id="calendarModal" onclick="if(event.target === this) hideCalendar()" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
         <div id="calendarWrap" class="bg-zinc-900 rounded-3xl w-full max-w-md max-h-[85vh] overflow-y-auto border border-zinc-700 shadow-2xl">
-            <div class="sticky top-0 bg-zinc-900/95 backdrop-blur px-6 py-4 flex justify-between items-center border-b border-zinc-700 z-10">
-                <div id="calendarTitle" class="font-bold text-lg text-white">Výhľad na 16 dní</div>
+            <div class="sticky top-0 bg-zinc-900/95 backdrop-blur px-6 py-4 flex justify-between items-start border-b border-zinc-700 z-10">
+                <div>
+                    <div id="calendarTitleText" class="font-bold text-lg text-white leading-tight">Výhľad na 16 dní</div>
+                    <div class="relative inline-flex items-center mt-1">
+                        <span class="text-[9px] text-zinc-400 font-mono uppercase tracking-widest mr-1">Model:</span>
+                        <select id="calendarModelSelect" onchange="changeCalendarModel(this.value)" class="bg-transparent appearance-none text-emerald-400 font-bold text-[10px] uppercase outline-none cursor-pointer pr-3 relative z-10">
+                            <option value="icon_seamless" class="bg-zinc-900 text-white">ICON (EU)</option>
+                            <option value="metno_seamless" class="bg-zinc-900 text-white">YR.NO (Nórsko)</option>
+                            <option value="ecmwf_ifs04" class="bg-zinc-900 text-white">ECMWF (Svet)</option>
+                            <option value="gfs_seamless" class="bg-zinc-900 text-white">GFS (USA)</option>
+                            <option value="best_match" selected class="bg-zinc-900 text-white">AUTO (Mix)</option>
+                        </select>
+                        <span class="absolute right-0 text-[8px] pointer-events-none text-emerald-400 mt-0.5">▼</span>
+                    </div>
+                </div>
                 <div class="flex items-center gap-2 no-share">
                     <button onclick="shareWindow('calendarWrap')" class="text-white hover:text-emerald-400 transition-colors p-1" title="Zdieľať">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path fill-rule="evenodd" d="M15.75 4.5a3 3 0 11.825 2.066l-8.421 4.679a3.002 3.002 0 010 1.51l8.421 4.679a3 3 0 11-.729 1.31l-8.421-4.678a3 3 0 110-4.132l8.421-4.679a3 3 0 01-.096-.755z" clip-rule="evenodd" /></svg>
@@ -270,14 +283,32 @@
         let currentStatusType = "good";
         let currentOwmData = null;
         let forecast16Data = null;
-        let currentModel = 'icon_seamless';
+        let mainModel = 'icon_seamless';
+        let calendarModel = 'best_match';
+        const modelNames = { icon_seamless: 'ICON', metno_seamless: 'YR.NO', ecmwf_ifs04: 'ECMWF', gfs_seamless: 'GFS', best_match: 'AUTO' };
         let currentTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-        // Táto funkcia sa zavolá, keď v roletke vyberieš iný model
         function changeModel(newModel) {
-            currentModel = newModel;
-            // Znovu stiahneme počasie pre aktuálnu polohu, ale s novým modelom
+            mainModel = newModel;
             fetchWeather(currentLat, currentLon, currentCity);
+        }
+
+        async function changeCalendarModel(newModel) {
+            calendarModel = newModel;
+            showToast("Prepínam model... ⏳", true);
+            try {
+                const autoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${currentLat}&longitude=${currentLon}&hourly=temperature_2m,windspeed_10m,cloudcover,weathercode&daily=weathercode,temperature_2m_max,sunrise,sunset&forecast_days=16&models=${calendarModel}&timezone=auto`;
+                const resAuto = await fetch(autoUrl);
+                const dataAuto = await resAuto.json();
+                
+                forecast16Data.hourly = dataAuto.hourly;
+                forecast16Data.daily = dataAuto.daily;
+                
+                openCalendar(); 
+                showToast("Kalendár aktualizovaný ✅");
+            } catch(e) {
+                showToast("Chyba pri prepínaní ❌");
+            }
         }
 
         const skVtipy = [
@@ -566,10 +597,8 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
             showToast(`Načítavam lokáciu ${currentCity}... ⏳`, true);
             
             try {
-                // Všimni si, že namiesto pevného slova 'icon_seamless' tam je teraz premenná ${currentModel}
-                const iconUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,surface_pressure,weathercode,windspeed_10m,cloudcover&models=${currentModel}&timezone=auto`;
-                
-                const autoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,windspeed_10m,cloudcover,weathercode&daily=weathercode,temperature_2m_max,sunrise,sunset&forecast_days=16&models=${currentModel}&timezone=auto`;
+                const iconUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,surface_pressure,weathercode,windspeed_10m,cloudcover&models=${mainModel}&timezone=auto`;
+                const autoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,windspeed_10m,cloudcover,weathercode&daily=weathercode,temperature_2m_max,sunrise,sunset&forecast_days=16&models=${calendarModel}&timezone=auto`;
 
                 const [resIcon, resAuto] = await Promise.all([fetch(iconUrl), fetch(autoUrl)]);
                 const dataIcon = await resIcon.json();
@@ -674,33 +703,41 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
         function openCalendar() {
             if (!forecast16Data) return alert("Počkaj chvíľu, kalendár sa ešte sťahuje...");
             
-            document.getElementById('calendarTitle').innerHTML = `
-                16 dní: ${currentCity} 
-                <span class="ml-2 text-[9px] bg-black/40 text-zinc-400 px-2 py-1 rounded-md align-middle uppercase tracking-widest border border-zinc-700/50 font-mono">
-                    Model: Auto
-                </span>
-            `;
+            document.getElementById('calendarTitleText').innerText = `16 dní: ${currentCity}`;
             
             const grid = document.getElementById('calendarGrid');
             grid.innerHTML = '';
             const daysSk = ['Ne', 'Po', 'Ut', 'St', 'Št', 'Pi', 'So'];
 
             for (let i = 0; i < 16; i++) {
-                const dateObj = new Date(forecast16Data.daily.time[i]);
-                const dayName = daysSk[dateObj.getDay()];
-                const dayNum = dateObj.getDate() + '.' + (dateObj.getMonth() + 1) + '.';
-                const icon = getOmIcon(forecast16Data.daily.weathercode[i]);
-                const tempMax = Math.round(forecast16Data.daily.temperature_2m_max[i]);
-
                 const div = document.createElement('div');
-                div.className = 'bg-zinc-800/50 hover:bg-zinc-700 border border-zinc-700/50 rounded-2xl p-3 flex flex-col items-center justify-center cursor-pointer transition-all';
-                div.onclick = () => openDayDetail(i, dayName, dayNum);
-                div.innerHTML = `
-                    <div class="text-xs text-zinc-400 font-bold">${dayName}</div>
-                    <div class="text-xs font-medium text-zinc-300 mb-2">${dayNum}</div>
-                    <div class="text-3xl mb-1">${icon}</div>
-                    <div class="text-sm font-bold text-white">${tempMax}°</div>
-                `;
+                
+                // Ak deň reálne existuje v stiahnutých dátach
+                if (forecast16Data.daily.time && forecast16Data.daily.time[i]) {
+                    const dateObj = new Date(forecast16Data.daily.time[i]);
+                    const dayName = daysSk[dateObj.getDay()];
+                    const dayNum = dateObj.getDate() + '.' + (dateObj.getMonth() + 1) + '.';
+                    const icon = getOmIcon(forecast16Data.daily.weathercode[i]);
+                    const tempMax = Math.round(forecast16Data.daily.temperature_2m_max[i]);
+
+                    div.className = 'bg-zinc-800/50 hover:bg-zinc-700 border border-zinc-700/50 rounded-2xl p-3 flex flex-col items-center justify-center cursor-pointer transition-all';
+                    div.onclick = () => openDayDetail(i, dayName, dayNum);
+                    div.innerHTML = `
+                        <div class="text-xs text-zinc-400 font-bold">${dayName}</div>
+                        <div class="text-xs font-medium text-zinc-300 mb-2">${dayNum}</div>
+                        <div class="text-3xl mb-1">${icon}</div>
+                        <div class="text-sm font-bold text-white">${tempMax}°</div>
+                    `;
+                } else {
+                    // Ak pre tento deň už model nemá dáta (prázdne okienko)
+                    div.className = 'bg-zinc-800/20 border border-zinc-800/50 rounded-2xl p-3 flex flex-col items-center justify-center opacity-50 cursor-not-allowed';
+                    div.innerHTML = `
+                        <div class="text-xs text-zinc-600 font-bold mb-2">--</div>
+                        <div class="text-xs font-medium text-zinc-600 mb-2">--.--.</div>
+                        <div class="text-3xl mb-1 grayscale opacity-20">☁️</div>
+                        <div class="text-sm font-bold text-zinc-700">--°</div>
+                    `;
+                }
                 grid.appendChild(div);
             }
             document.getElementById('calendarModal').classList.replace('hidden', 'flex');
@@ -770,7 +807,7 @@ async function shareWindow(elementId) {
             document.getElementById('dayDetailTitle').innerHTML = `
                 <div class="text-right">
                     <div>${currentCity} | ${dayName} ${dayNum}</div>
-                    <div class="text-[9px] text-emerald-500/60 uppercase tracking-widest mt-0.5 font-mono">Model: Auto</div>
+                    <div class="text-[9px] text-emerald-500/60 uppercase tracking-widest mt-0.5 font-mono">Model: ${modelNames[calendarModel] || calendarModel}</div>
                 </div>
             `;
             const content = document.getElementById('dayDetailContent');
