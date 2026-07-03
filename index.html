@@ -46,7 +46,7 @@
 #statusEmoji, #statusText, #statusDesc, #hourlyEmoji, #hourlyTitle, #hourlyDesc { opacity: 1 !important; }
     </style>
 </head>
-<body class="p-3 md:p-5 max-w-[95vw] lg:max-w-screen-md mx-auto flex flex-col h-[100dvh] overflow-hidden">
+<body class="p-2 sm:p-4 max-w-[95vw] lg:max-w-screen-md mx-auto flex flex-col h-[100dvh] overflow-hidden select-none bg-[#0a0a0b] text-white font-sans">
 
     <div class="flex justify-between items-center mb-3 mt-1 shrink-0">
         <div>
@@ -73,11 +73,10 @@
 
     <div class="flex-1 flex flex-col gap-3 min-h-0 pb-2">
         
-        <div id="statusCard" class="glass rounded-[2rem] p-5 md:p-6 border transition-all duration-300 status-good flex-1 flex flex-col justify-between min-h-0 shadow-lg overflow-hidden relative">
+        <div id="statusCard" class="glass rounded-[2rem] p-4 sm:p-5 border transition-all duration-300 cursor-pointer flex-1 flex flex-col justify-between min-h-0 shadow-lg overflow-hidden relative status-good">
 
             <div id="weatherAnimBg" class="anim-bg-layer"></div> 
                    
-            <!-- Vrchná časť (Bára text a emoji) - kliknutie otvorí tipy -->
             <div onclick="openExtendedTips()" class="cursor-pointer flex flex-col flex-1 min-h-0 group/status z-10 select-none">
                 <div class="shrink-0 content-layer">
                     <div class="flex justify-between items-start">
@@ -111,35 +110,34 @@
                     </div>
                 </div> 
                 
-                <div class="flex flex-col items-center justify-center text-center py-2 shrink content-layer my-auto">
-                    <div id="statusEmoji" class="text-[clamp(5rem,18vmin,10rem)] mb-2 drop-shadow-xl leading-none shrink-0">⏳</div>
-                    <div id="statusText" class="text-[clamp(2rem,7vmin,4rem)] font-black tracking-tighter leading-tight shrink-0 text-outline">Načítavam...</div>
-                    <div id="statusDesc" class="text-zinc-200 mt-1 text-[clamp(1rem,3.5vmin,1.5rem)] font-medium shrink-0 text-outline"></div>
+                <div class="flex flex-col items-center justify-center text-center py-1 flex-1 min-h-0 content-layer my-auto justify-items-center">
+                    <div id="statusEmoji" class="text-[clamp(3.5rem,11vh,6.5rem)] mb-1 drop-shadow-xl leading-none shrink-0 transition-all">⏳</div>
+                    <div id="statusText" class="text-[clamp(1.5rem,4.5vh,2.75rem)] font-black tracking-tighter leading-tight shrink-0 text-outline transition-all">Načítavam...</div>
+                    <div id="statusDesc" class="text-zinc-200 mt-0.5 text-[clamp(0.85rem,2.2vh,1.25rem)] font-medium shrink-0 text-outline transition-all"></div>
                 </div>
             </div>
     
-            <!-- Spodná časť (ikony a výber modelu) - kliknutie otvorí detail počasia -->
             <div onclick="event.stopImmediatePropagation(); showTipsModal()" class="shrink-0 w-full mt-auto mb-0 content-layer bg-black/20 hover:bg-black/35 border border-white/5 rounded-[2rem] p-4 shadow-inner cursor-pointer transition-all group/weather z-20">
                 <div class="grid grid-cols-4 gap-2 text-center">
                     <div class="flex flex-col items-center justify-center">
-                        <div class="text-[clamp(2.5rem,8vmin,4rem)] drop-shadow-md mb-2">🌡️</div>
-                        <div class="text-zinc-400 text-[clamp(10px,2vmin,14px)] uppercase tracking-wider mb-0.5 font-bold">Teplota</div>
-                        <div id="temp" class="font-black text-[clamp(1.2rem,4vmin,1.8rem)] text-white whitespace-nowrap">--°C</div>
+                        <div class="text-[clamp(1.8rem,5.5vh,3rem)] drop-shadow-md mb-1 transition-all">🌡️</div>
+                        <div class="text-zinc-400 text-[clamp(9px,1.3vh,11px)] uppercase tracking-wider mb-0.5 font-bold leading-none">Teplota</div>
+                        <div id="temp" class="font-black text-[clamp(1rem,2.5vh,1.4rem)] text-white whitespace-nowrap">--°C</div>
                     </div>
                     <div class="flex flex-col items-center justify-center">
-                        <div class="text-[clamp(2.5rem,8vmin,4rem)] drop-shadow-md mb-2">💨</div>
-                        <div class="text-zinc-400 text-[clamp(10px,2vmin,14px)] uppercase tracking-wider mb-0.5 font-bold">Vietor</div>
-                        <div id="wind" class="font-black text-[clamp(1.2rem,4vmin,1.8rem)] text-white whitespace-nowrap">-- km/h</div>
+                        <div class="text-[clamp(1.8rem,5.5vh,3rem)] drop-shadow-md mb-1 transition-all">💨</div>
+                        <div class="text-zinc-400 text-[clamp(9px,1.3vh,11px)] uppercase tracking-wider mb-0.5 font-bold leading-none">Vietor</div>
+                        <div id="wind" class="font-black text-[clamp(1rem,2.5vh,1.4rem)] text-white whitespace-nowrap">-- km/h</div>
                     </div>
                     <div class="flex flex-col items-center justify-center">
-                        <div class="text-[clamp(2.5rem,8vmin,4rem)] drop-shadow-md mb-2">☔</div>
-                        <div class="text-zinc-400 text-[clamp(10px,2vmin,14px)] uppercase tracking-wider mb-0.5 font-bold">Zrážky</div>
-                        <div id="rain" class="font-black text-[clamp(1.2rem,4vmin,1.8rem)] text-white whitespace-nowrap">--</div>
+                        <div class="text-[clamp(1.8rem,5.5vh,3rem)] drop-shadow-md mb-1 transition-all">☔</div>
+                        <div class="text-zinc-400 text-[clamp(9px,1.3vh,11px)] uppercase tracking-wider mb-0.5 font-bold leading-none">Zrážky</div>
+                        <div id="rain" class="font-black text-[clamp(1rem,2.5vh,1.4rem)] text-white whitespace-nowrap">--</div>
                     </div>
                     <div class="flex flex-col items-center justify-center">
-                        <div class="text-[clamp(2.5rem,8vmin,4rem)] drop-shadow-md mb-2">☁️</div>
-                        <div class="text-zinc-400 text-[clamp(10px,2vmin,14px)] uppercase tracking-wider mb-0.5 font-bold">Oblaky</div>
-                        <div id="clouds" class="font-black text-[clamp(1.2rem,4vmin,1.8rem)] text-white whitespace-nowrap">-- %</div>
+                        <div class="text-[clamp(1.8rem,5.5vh,3rem)] drop-shadow-md mb-1 transition-all">☁️</div>
+                        <div class="text-zinc-400 text-[clamp(9px,1.3vh,11px)] uppercase tracking-wider mb-0.5 font-bold leading-none">Oblaky</div>
+                        <div id="clouds" class="font-black text-[clamp(1rem,2.5vh,1.4rem)] text-white whitespace-nowrap">-- %</div>
                     </div>
                 </div>
                 
@@ -158,22 +156,19 @@
                         <span class="absolute right-2 text-[8px] pointer-events-none text-emerald-400">▼</span>
                     </div>
                 </div>
-            </div> <!-- Ukončenie spodného panelu s počasím -->
-        </div> <!-- Ukončenie celého zeleného okna statusCard -->
-            
-        <div class="grid grid-cols-2 gap-3 shrink-0 mt-1">
-            <div onclick="openCalendar()" class="glass rounded-[1.5rem] p-4 border border-zinc-700/50 hover:bg-zinc-800 transition-all cursor-pointer flex flex-col justify-center items-center text-center group">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 md:w-11 md:h-11 mb-2.5 text-emerald-400 drop-shadow-lg group-hover:scale-110 transition-transform">
+            </div> </div> <div class="grid grid-cols-2 gap-2 sm:gap-3 shrink-0 mt-1">
+            <div onclick="openCalendar()" class="glass rounded-[1.5rem] p-[2vh] border border-zinc-700/50 hover:bg-zinc-800 transition-all cursor-pointer flex flex-col justify-center items-center text-center group">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[4.5vh] h-[4.5vh] max-w-[36px] max-h-[36px] mb-1.5 text-emerald-400 drop-shadow-lg group-hover:scale-110 transition-transform">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
                 </svg>
-                <div class="font-bold text-sm md:text-lg leading-tight text-white">Bára, a čo<br>ďalšie dni?</div>
+                <div class="font-bold text-[clamp(0.8rem,1.8vh,1.05rem)] leading-tight text-white">Bára, a čo<br>ďalšie dni?</div>
             </div>
 
-            <div onclick="tellJoke()" class="glass rounded-[1.5rem] p-4 border border-zinc-700/50 hover:bg-zinc-800 transition-all cursor-pointer flex flex-col justify-center items-center text-center group">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 md:w-11 md:h-11 mb-2.5 text-amber-400 drop-shadow-lg group-hover:scale-110 transition-transform">
+            <div onclick="tellJoke()" class="glass rounded-[1.5rem] p-[2vh] border border-zinc-700/50 hover:bg-zinc-800 transition-all cursor-pointer flex flex-col justify-center items-center text-center group">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[4.5vh] h-[4.5vh] max-w-[36px] max-h-[36px] mb-1.5 text-amber-400 drop-shadow-lg group-hover:scale-110 transition-transform">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm3.604 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75z" />
                 </svg>
-                <div class="font-bold text-sm md:text-lg leading-tight text-white">Bára,<br>povedz vtip!</div>
+                <div class="font-bold text-[clamp(0.8rem,1.8vh,1.05rem)] leading-tight text-white">Bára,<br>povedz vtip!</div>
             </div>
         </div>
     </div>
@@ -306,8 +301,7 @@
         </div>
     </div>
 
-<!-- Okno Svetelné fázy dňa -->
-    <div id="sunPhasesModal" onclick="if(event.target === this) hideSunPhases()" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[90] p-4">
+<div id="sunPhasesModal" onclick="if(event.target === this) hideSunPhases()" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[90] p-4">
         <div class="bg-zinc-900 rounded-3xl w-full max-w-md flex flex-col border border-zinc-700 shadow-2xl relative overflow-hidden">
             <div class="bg-zinc-900/95 backdrop-blur px-6 py-4 flex justify-between items-start border-b border-zinc-700 z-10">
                 <div>
@@ -317,8 +311,7 @@
                 <button onclick="hideSunPhases()" class="text-3xl text-zinc-400 hover:text-white leading-none mt-0.5">×</button>
             </div>
             <div id="sunPhasesContent" class="p-6 space-y-3 overflow-y-auto max-h-[70vh]">
-                <!-- Sem sa vygeneruje zoznam fáz cez JS -->
-            </div>
+                </div>
             <div class="p-6 pt-0 shrink-0">
                 <button onclick="hideSunPhases()" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-2xl transition-all shadow-md no-share">Bára, dík!</button>
             </div>
@@ -355,7 +348,7 @@
         let calendarModel = 'best_match';
         const modelNames = { icon_seamless: 'ICON', metno_seamless: 'YR.NO', ecmwf_ifs04: 'ECMWF', gfs_seamless: 'GFS', best_match: 'AUTO' };
         let currentTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        let sunPhasesInterval; // Pridali sme premennú pre slnko
+        let sunPhasesInterval; 
 
         // Bárin výpočet slnečných fáz
         function updateSunPhaseUI() {
@@ -521,13 +514,12 @@
                 if (detailEl) detailEl.innerText = now.toLocaleTimeString('sk-SK', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
             }
         }
-        // Skrátený interval z 30000 (30s) na 1000 (1s), aby sekundy tikali
         setInterval(updateTime, 1000);
         updateTime();
 
         function setStatus(statusClass, emoji, text, desc, statusType) {
             const card = document.getElementById('statusCard');
-            card.className = `glass rounded-[2rem] p-5 md:p-6 border transition-all duration-300 cursor-pointer flex-1 flex flex-col justify-between min-h-0 shadow-lg overflow-y-auto ${statusClass}`;
+            card.className = `glass rounded-[2rem] p-4 sm:p-5 border transition-all duration-300 cursor-pointer flex-1 flex flex-col justify-between min-h-0 shadow-lg overflow-hidden relative ${statusClass}`;
             document.getElementById('statusEmoji').innerText = emoji;
             document.getElementById('statusText').innerText = text;
             document.getElementById('statusDesc').innerText = desc;
@@ -538,7 +530,6 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
             const bg = document.getElementById('weatherAnimBg');
             bg.innerHTML = ''; 
 
-            // Oklameme objekt Date, aby si myslel, že aktuálny čas je čas v hľadanom meste
             const nowStr = new Date().toLocaleString('sv-SE', { timeZone: currentTimezone });
             const nowLocal = new Date(nowStr.replace(' ', 'T'));
             
@@ -546,9 +537,8 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
             const sunS = new Date(sunsetISO);
             const isDay = nowLocal >= sunR && nowLocal <= sunS;
             
-            // Bárin výpočet fázy mesiaca (0.0 = nov, 0.5 = spln)
             const getMoonEmoji = () => {
-                const lp = 2551442.8; // Dĺžka lunárneho mesiaca v sekundách
+                const lp = 2551442.8; 
                 const phase = ((Date.now() / 1000) - 947182440) % lp;
                 const n = (phase / lp);
                 if (n < 0.05) return '🌑'; if (n < 0.25) return '🌒';
@@ -557,32 +547,28 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
                 if (n < 0.8) return '🌗';  return '🌘';
             };
 
-            // 1. Slnko / Mesiac (Cesta po oblúku)
             const astro = document.createElement('div');
             astro.style.position = 'absolute';
-            astro.style.fontSize = '4rem';
+            astro.style.fontSize = 'clamp(2.5rem, 7.5vh, 4.5rem)';
             astro.style.transition = 'all 1s ease';
             astro.style.filter = isDay ? 'drop-shadow(0 0 20px rgba(253,224,71,0.8))' : 'grayscale(1) brightness(1.2) drop-shadow(0 0 25px rgba(255,255,255,1))';
             astro.innerText = isDay ? '☀️' : getMoonEmoji();
             
-            // Výpočet percenta cesty od východu po západ
             let start = isDay ? sunR : sunS;
             let end = isDay ? sunS : new Date(sunR.getTime() + 86400000); 
             if (!isDay && nowLocal < sunR) { start = new Date(sunS.getTime() - 86400000); end = sunR; }
             
             let progress = (nowLocal - start) / (end - start);
-            progress = Math.max(0, Math.min(1, progress)); // Istota medzi 0 a 1
+            progress = Math.max(0, Math.min(1, progress)); 
             
             astro.style.left = `calc(${progress * 100}% - 2rem)`; 
-            const archHeight = Math.sin(progress * Math.PI) * 60 + 10; // Maximálna výška znížená na polovicu
+            const archHeight = Math.sin(progress * Math.PI) * 60 + 10; 
             astro.style.bottom = `${archHeight}%`;
 
-// Ak je cloudCover 100, (1 - 100/100) = 0 (úplne zmizne)
             astro.style.opacity = 1 - (cloudCover / 100);
             
             bg.appendChild(astro);
 
-            // 2. a 3. Oblaky s realistickým dažďom
             if (cloudCover > 0) {
                 const cloudCount = Math.floor((cloudCover / 100) * 35); 
                 for(let i=0; i<cloudCount; i++) {
@@ -596,14 +582,12 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
                     cloud.style.animation = `driftBg ${baseDuration + Math.random() * (baseDuration * 0.4)}s linear infinite`;
                     cloud.style.animationDelay = `-${Math.random() * 80}s`;
                     
-                    // Samotná ikona oblaku
                     const cloudIcon = document.createElement('div');
                     cloudIcon.innerText = '☁️';
                     cloudIcon.style.position = 'relative';
                     cloudIcon.style.zIndex = '2';
                     cloud.appendChild(cloudIcon);
 
-                    // Ak prší, pridáme kvapky, ktoré fyzicky "padajú" z tohto oblaku
                     if (isRain && Math.random() > 0.3) { 
                         const dropCount = Math.floor(Math.random() * 3) + 1;
                         for(let d=0; d<dropCount; d++) {
@@ -612,8 +596,8 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
                             drop.style.width = '2px';
                             drop.style.height = '30px';
                             drop.style.background = 'linear-gradient(transparent, rgba(255,255,255,0.7))';
-                            drop.style.left = `${Math.random() * 60 + 20}%`; // Zo stredu oblaku
-                            drop.style.top = '60%'; // Spod oblaku
+                            drop.style.left = `${Math.random() * 60 + 20}%`; 
+                            drop.style.top = '60%'; 
                             drop.style.zIndex = '1';
                             drop.style.animation = `rainDrop ${Math.random() * 0.4 + 0.6}s linear infinite`;
                             drop.style.animationDelay = `${Math.random()}s`;
@@ -621,18 +605,16 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
                         }
                     }
 
-                    // Ak je búrka (kód 95+), pridáme priamo pod niektoré mraky fyzický blesk
                     if (weatherCode >= 95 && Math.random() > 0.5) {
                         const bolt = document.createElement('div');
                         bolt.innerText = '⚡';
                         bolt.style.position = 'absolute';
-                        bolt.style.fontSize = `${Math.random() * 1.5 + 1.5}rem`; // Rôzne veľké blesky
+                        bolt.style.fontSize = `${Math.random() * 1.5 + 1.5}rem`; 
                         bolt.style.left = '50%';
-                        bolt.style.top = '65%'; // Trčí zospodu mraku
+                        bolt.style.top = '65%'; 
                         bolt.style.transform = 'translateX(-50%)';
                         bolt.style.zIndex = '1';
                         bolt.style.filter = 'drop-shadow(0 0 10px rgba(253,224,71,0.8))';
-                        // Blesk preblikne každé 2 až 6 sekúnd
                         bolt.style.animation = `boltFlash ${Math.random() * 4 + 2}s infinite`;
                         bolt.style.animationDelay = `${Math.random() * 5}s`;
                         cloud.appendChild(bolt);
@@ -642,11 +624,9 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
                 }
             }
 
-            // 4. Blesky (iba ak je kód počasia 95 a viac - búrka)
             if (weatherCode >= 95) {
                 const lightning = document.createElement('div');
                 lightning.className = 'lightning-layer';
-                // Jemný náhodný posun, aby to neblýskalo vždy hneď po načítaní v rovnakom čase
                 lightning.style.animationDelay = `-${Math.random() * 4}s`;
                 bg.appendChild(lightning);
             }
@@ -696,14 +676,12 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
 
                 const c = forecast16Data.current;
 
-                // Formátovanie nových profi dát s prísnou kontrolou
                 const uv = (typeof c.uv_index === 'number') ? c.uv_index.toFixed(1) : '--';
                 const dew = (typeof c.dew_point_2m === 'number') ? Math.round(c.dew_point_2m) : '--';
                 const vis = (typeof c.visibility === 'number') ? (c.visibility / 1000).toFixed(1) + ' km' : '--';
                 const gusts = (typeof c.wind_gusts_10m === 'number') ? Math.round(c.wind_gusts_10m) : '--';
                 const precip = (typeof c.precipitation === 'number') ? c.precipitation.toFixed(1) + ' mm' : '--';
                 
-                // Prepočet stupňov na svetové strany
                 let windDir = '--';
                 if (typeof c.wind_direction_10m === 'number') {
                     const dirs = ['S (Sever)', 'SV (Severovýchod)', 'V (Východ)', 'JV (Juhovýchod)', 'J (Juh)', 'JZ (Juhozápad)', 'Z (Západ)', 'SZ (Severozápad)'];
@@ -726,7 +704,6 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
                             </div>
                         </div>
                         
-                        <!-- Zosumarizované všetky dostupné meteo informácie -->
                         <div class="grid grid-cols-2 gap-y-2.5 text-sm px-2 mt-2 border-t border-zinc-800 pt-3">
                             <div class="text-zinc-500">Pocitová teplota:</div> <div class="text-right font-bold text-white">${wFeels} °C</div>
                             <div class="text-zinc-500">Rosný bod (Dew pt.):</div> <div class="text-right font-bold text-blue-300">${dew} °C</div>
@@ -790,7 +767,7 @@ function openExtendedTips(overrideScenarioIdx = null) {
         else if (temp < 5) scenarioIdx = 4; // Doba ľadová (Mráz)
         else if (cloud >= 90) scenarioIdx = 3; // Plechová obloha
         else scenarioIdx = 1; // Ideál
-    } // <--- TÁTO ZÁTVORKA BOLA KAMEŇ ÚRAZU
+    } 
 
     const scenarios = {
                 1: { title: "🌤️ Ideál (Zlatá stredná cesta)", 
@@ -895,7 +872,6 @@ function openExtendedTips(overrideScenarioIdx = null) {
                 </div>
             `;
             
-            // Zatvoríme staré okno s počasím a vyvoláme to nové, veľké profi okno
             hideTipsModal();
             document.getElementById('extendedTipsModal').classList.replace('hidden', 'flex');
         }
@@ -921,7 +897,6 @@ function openExtendedTips(overrideScenarioIdx = null) {
             void locEl.offsetWidth;
             locEl.classList.add('flash-location');
             
-            // Pridali sme 'true', čiže toast tu zamrzne a čaká na dokončenie
             showToast(`Načítavam lokáciu ${currentCity}... ⏳`, true);
             
             try {
@@ -935,7 +910,6 @@ function openExtendedTips(overrideScenarioIdx = null) {
                 forecast16Data = { current: dataIcon.current, hourly: dataAuto.hourly, daily: dataAuto.daily };
                 const current = forecast16Data.current;
                 
-                // Uložíme zónu mesta a prekreslíme hodiny hore
                 currentTimezone = dataAuto.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
                 updateTime();
 
@@ -978,19 +952,14 @@ function openExtendedTips(overrideScenarioIdx = null) {
                 let statusClass = "status-good";
                 let statusType = "good";
 
-                // ❌ Zmotaj káble! (Červená - Nebezpečenstvo na pľaci)
                 if (code >= 95) { scenarioTitle = "⛈️ Koniec sveta (Búrka a lejak)"; mainEmoji = "❌"; mainText = "Zmotaj káble!"; statusClass = "status-bad"; statusType = "bad"; }
                 else if (wind > 35) { scenarioTitle = "💨 Vetrisko (Extrém)"; mainEmoji = "❌"; mainText = "Zmotaj káble!"; statusClass = "status-bad"; statusType = "bad"; }
-                
-                // ⚠️ Ježíš, dávaj pozor! (Oranžová - Komplikácie, ale točíme)
                 else if (code >= 71 && code <= 86) { scenarioTitle = "❄️ Biela tma (Sneh a sneženie)"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; statusClass = "status-warn"; statusType = "warn"; }
                 else if (code === 45 || code === 48) { scenarioTitle = "🌫️ Hmla ako v Londýne"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; statusClass = "status-warn"; statusType = "warn"; }
                 else if (wind >= 20) { scenarioTitle = "💨 Vetrisko (Fučí celkom dosť)"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; statusClass = "status-warn"; statusType = "warn"; }
                 else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) { scenarioTitle = "🌦️ Uplakaný deň (Mrholenie a prehánky)"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; statusClass = "status-warn"; statusType = "warn"; }
                 else if (temp >= 22 && hum >= 70) { scenarioTitle = "🥵 Skleník (Extrémne dusno a vlhkosť)"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; statusClass = "status-warn"; statusType = "warn"; }
                 else if (temp < 5) { scenarioTitle = "🥶 Doba ľadová (Kosa a mráz)"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; statusClass = "status-warn"; statusType = "warn"; }
-                
-                // ✅ Nekukaj a toč! (Zelená - Zlatá cesta, noc, teplo alebo ploché svetlo)
                 else if (current.is_day === 0) { 
                     if (clouds >= 80) { scenarioTitle = "☁️ Zamračená noc (Tma ako v rohu)"; mainEmoji = "✅"; mainText = "Nekukaj a toč!"; statusClass = "status-good"; statusType = "good"; }
                     else { scenarioTitle = "🌙 Nočná šichta (Jasná noc)"; mainEmoji = "✅"; mainText = "Nekukaj a toč!"; statusClass = "status-good"; statusType = "good"; }
@@ -1001,11 +970,9 @@ function openExtendedTips(overrideScenarioIdx = null) {
 
                 setStatus(statusClass, mainEmoji, mainText, scenarioTitle, statusType);
 
-// Spustenie animácií na pozadí
                 const isRainNow = (code >= 51 && code <= 67) || (code >= 80 && code <= 82) || code >= 95;
                 updateWeatherAnimations(clouds, isRainNow, dataAuto.daily.sunrise[0], dataAuto.daily.sunset[0], wind, code);
 
-                // Aktualizácia svetelných fáz slnka
                 updateSunPhaseUI();
                 if (!sunPhasesInterval) sunPhasesInterval = setInterval(updateSunPhaseUI, 30000);
 
@@ -1070,7 +1037,6 @@ function openExtendedTips(overrideScenarioIdx = null) {
             for (let i = 0; i < 16; i++) {
                 const div = document.createElement('div');
                 
-                // Kontrola, či existuje nielen čas, ale reálne aj dáta pre teplotu (Open-Meteo pre chýbajúce dni vráti null)
                 if (forecast16Data.daily.time && forecast16Data.daily.time[i] && forecast16Data.daily.temperature_2m_max[i] !== null && forecast16Data.daily.temperature_2m_max[i] !== undefined) {
                     const dateObj = new Date(forecast16Data.daily.time[i]);
                     const dayName = daysSk[dateObj.getDay()];
@@ -1087,7 +1053,6 @@ function openExtendedTips(overrideScenarioIdx = null) {
                         <div class="text-sm font-bold text-white">${tempMax}°</div>
                     `;
                 } else {
-                    // Úplne prázdne okienko (nič... nič... nič...)
                     div.className = 'bg-zinc-800/10 border border-zinc-800/30 rounded-2xl p-3 flex flex-col items-center justify-center cursor-not-allowed h-full min-h-[110px]';
                     div.innerHTML = ``;
                 }
@@ -1127,7 +1092,6 @@ function openExtendedTips(overrideScenarioIdx = null) {
             document.getElementById('hourlyTitle').innerText = mainText;
             document.getElementById('hourlyDesc').innerText = scenarioTitle;
             
-            // Nastavíme akciu pre kliknutie (zavrie toto okno a otvorí Bárine tipy)
             const actionClick = () => {
                 document.getElementById('hourlyStatusModal').classList.replace('flex','hidden');
                 openExtendedTips(sIdx);
@@ -1137,17 +1101,14 @@ function openExtendedTips(overrideScenarioIdx = null) {
             const titleEl = document.getElementById('hourlyTitle');
             const descEl = document.getElementById('hourlyDesc');
 
-            // Priradíme klikanie priamo na prvky
             emojiEl.onclick = actionClick;
             titleEl.onclick = actionClick;
             descEl.onclick = actionClick;
 
-            // Pridáme CSS triedy, aby to vyzeralo klikateľne (ručička kurzoru a jemný efekt po namierení myšou)
-            emojiEl.className = "text-7xl mb-4 drop-shadow-lg cursor-pointer hover:scale-110 transition-transform inline-block";
-            titleEl.className = "text-3xl font-black text-white mb-2 tracking-tight cursor-pointer hover:text-emerald-300 transition-colors";
-            descEl.className = "text-zinc-400 text-lg mb-6 cursor-pointer hover:text-emerald-300 transition-colors";
+            emojiEl.className = "text-[clamp(3.5rem,10vh,6rem)] mb-[2vh] drop-shadow-lg cursor-pointer hover:scale-110 transition-transform inline-block leading-none";
+            titleEl.className = "text-[clamp(1.5rem,4vh,2.5rem)] font-black text-white mb-[1vh] tracking-tight cursor-pointer hover:text-emerald-300 transition-colors leading-tight";
+            descEl.className = "text-[clamp(0.95rem,2.2vh,1.25rem)] mb-[3vh] cursor-pointer hover:text-emerald-300 transition-colors font-medium";
 
-            // Necháme tam už len jedno tlačidlo na zavretie
             document.getElementById('hourlyModalActions').innerHTML = `
                 <button onclick="document.getElementById('hourlyStatusModal').classList.replace('flex','hidden')" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-2xl transition-all shadow-md no-share">Bára, dík!</button>
             `;
@@ -1285,23 +1246,22 @@ async function shareWindow(elementId) {
             setTimeout(() => toast.classList.remove('opacity-0'), 10);
             
             clearTimeout(toastTimeout);
-            // Odpočítavanie sa spustí len vtedy, ak sme nezadali, že má ostať svietiť
             if (!persist) {
                 toastTimeout = setTimeout(() => {
                     toast.classList.add('opacity-0');
                     setTimeout(() => toast.classList.add('hidden'), 300);
-                }, 2000); // Trošku som to zrýchlila na 2 sekundy pre svižnejší pocit
+                }, 2000); 
             }
         }
 
         function showMyMapOnly() {
             if (!navigator.geolocation) return alert("Geolokácia nie je podporovaná");
-            showToast("Zisťujem polohu pre mapu... 📍", true); // Zamknuté
+            showToast("Zisťujem polohu pre mapu... 📍", true); 
             navigator.geolocation.getCurrentPosition(p => {
                 document.getElementById('mapModalTitle').innerHTML = '<span class="text-2xl">🗺️</span> Tu si!';
                 document.getElementById('mapIframe').src = `https://maps.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}&z=14&output=embed`;
                 document.getElementById('mapModal').classList.replace('hidden', 'flex');
-                showToast("Mapa načítaná ✅"); // Odoknuté, po 2s zmizne
+                showToast("Mapa načítaná ✅"); 
             }, () => {
                 showToast("Nepodarilo sa zistiť polohu pre mapu ❌");
             });
@@ -1388,7 +1348,6 @@ async function shareWindow(elementId) {
 
             debounceTimer = setTimeout(async () => {
                 try {
-                    // Načítame až 40 výsledkov
                     const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=40&language=sk`);
                     const data = await res.json();
 
@@ -1402,11 +1361,10 @@ async function shareWindow(elementId) {
                         city.distance = calculateDistance(currentLat, currentLon, city.latitude, city.longitude);
                         return city;
                     }).sort((a, b) => {
-                        // Magický Bárin vzorec: Vzdialenosť je "zlá" (pridáva body), populácia je "dobrá" (odčítava body).
                         let scoreA = a.distance - (a.population || 0) / 100;
                         let scoreB = b.distance - (b.population || 0) / 100;
                         return scoreA - scoreB;
-                    }); // Zrušený .slice(0, 5) -> Vypíše to všetko a vieš skrolovať!
+                    }); 
 
                     zoradeneVysledky.forEach(city => {
                         const div = document.createElement('div');
