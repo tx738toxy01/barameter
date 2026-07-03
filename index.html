@@ -98,11 +98,11 @@
                 </div>
 
                 <div class="flex justify-between items-center text-sm md:text-base mt-3 px-1">
-    <div onclick="openSunPhases()" class="flex items-center gap-1.5 text-emerald-300 cursor-pointer bg-black/30 hover:bg-black/50 border border-emerald-500/30 px-3 py-1.5 rounded-xl transition-all shadow-sm">
+    <div onclick="event.stopImmediatePropagation(); openSunPhases()" class="flex items-center gap-1.5 text-emerald-300 cursor-pointer bg-black/30 hover:bg-black/50 border border-emerald-500/30 px-3 py-1.5 rounded-xl transition-all shadow-sm">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6"/><path d="M12 2l-3 3"/><path d="M12 2l3 3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
         <span id="mainSunrise" class="font-bold tracking-wider text-outline">--:--</span>
     </div>
-    <div onclick="openSunPhases()" class="flex items-center gap-1.5 text-amber-300 cursor-pointer bg-black/30 hover:bg-black/50 border border-amber-500/30 px-3 py-1.5 rounded-xl transition-all shadow-sm">
+    <div onclick="event.stopImmediatePropagation(); openSunPhases()" class="flex items-center gap-1.5 text-amber-300 cursor-pointer bg-black/30 hover:bg-black/50 border border-amber-500/30 px-3 py-1.5 rounded-xl transition-all shadow-sm">
         <span id="mainSunset" class="font-bold tracking-wider text-outline">--:--</span>
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10V2"/><path d="M12 10l-3-3"/><path d="M12 10l3-3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
     </div>
