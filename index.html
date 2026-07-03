@@ -84,10 +84,12 @@
                         <div class="flex flex-wrap items-center gap-2 mt-1">
                             <div id="locationName" class="text-sm font-black text-white uppercase tracking-widest bg-black/30 px-2.5 py-1 rounded-xl border border-white/10 transition-all origin-left inline-block">Bratislava</div>
                             <span class="text-zinc-600 hidden md:inline">•</span>
-                            <div id="currentTime" class="text-emerald-400 text-sm font-mono mt-0.5 text-outline opacity-100"></div>
-                            <button onclick="event.stopImmediatePropagation(); openSunPhases()" id="currentSunPhase" class="text-[10px] font-bold px-2 py-1 rounded-md border transition-colors cursor-pointer bg-zinc-800 text-zinc-400 border-zinc-700 no-share">
-                                Načítavam svetlo...
-                            </button>
+                            <div class="flex items-center gap-2">
+                                <div id="currentTime" class="text-emerald-400 text-sm font-mono mt-0.5 text-outline opacity-100"></div>
+                                <button onclick="event.stopImmediatePropagation(); openSunPhases()" id="currentSunPhase" class="text-[10px] font-bold px-2 py-1 rounded-md border transition-colors cursor-pointer bg-zinc-800 text-zinc-400 border-zinc-700 no-share shadow-sm">
+                                    Načítavam...
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="flex items-center gap-2 z-20">
@@ -376,9 +378,6 @@
                 btnDetail.className = `text-[10px] font-bold px-2 py-0.5 rounded-md border transition-colors cursor-pointer shadow-sm ${colorClass}`;
             }
 
-            const timeDetail = document.getElementById('detailCurrentTime');
-            if (timeDetail) timeDetail.innerText = now.toLocaleTimeString('sk-SK', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
-
             return phases;
         }
 
@@ -491,14 +490,19 @@
 
         function updateTime() {
             const el = document.getElementById('currentTime');
+            const detailEl = document.getElementById('detailCurrentTime');
             const now = new Date();
             try {
-                el.innerText = now.toLocaleTimeString('sk-SK', { timeZone: currentTimezone, hour: '2-digit', minute: '2-digit' });
+                if (el) el.innerText = now.toLocaleTimeString('sk-SK', { timeZone: currentTimezone, hour: '2-digit', minute: '2-digit' });
+                // Detailový čas beží aj so sekundami
+                if (detailEl) detailEl.innerText = now.toLocaleTimeString('sk-SK', { timeZone: currentTimezone, hour: '2-digit', minute: '2-digit', second: '2-digit' });
             } catch(e) {
-                el.innerText = now.toLocaleTimeString('sk-SK', { hour: '2-digit', minute: '2-digit' });
+                if (el) el.innerText = now.toLocaleTimeString('sk-SK', { hour: '2-digit', minute: '2-digit' });
+                if (detailEl) detailEl.innerText = now.toLocaleTimeString('sk-SK', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
             }
         }
-        setInterval(updateTime, 30000);
+        // Skrátený interval z 30000 (30s) na 1000 (1s), aby sekundy tikali
+        setInterval(updateTime, 1000);
         updateTime();
 
         function setStatus(statusClass, emoji, text, desc, statusType) {
