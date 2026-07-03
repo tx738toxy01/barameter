@@ -162,13 +162,17 @@
         </div>
 
         <div class="grid grid-cols-2 gap-3 shrink-0 mt-1">
-            <div onclick="openCalendar()" class="glass rounded-[1.5rem] p-4 border border-zinc-700/50 hover:bg-zinc-800 transition-all cursor-pointer flex flex-col justify-center items-center text-center">
-                <div class="text-4xl md:text-5xl mb-2 drop-shadow-lg">📅</div>
+            <div onclick="openCalendar()" class="glass rounded-[1.5rem] p-4 border border-zinc-700/50 hover:bg-zinc-800 transition-all cursor-pointer flex flex-col justify-center items-center text-center group">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 md:w-11 md:h-11 mb-2.5 text-emerald-400 drop-shadow-lg group-hover:scale-110 transition-transform">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                </svg>
                 <div class="font-bold text-sm md:text-lg leading-tight text-white">Bára, a čo<br>ďalšie dni?</div>
             </div>
 
-            <div onclick="tellJoke()" class="glass rounded-[1.5rem] p-4 border border-zinc-700/50 hover:bg-zinc-800 transition-all cursor-pointer flex flex-col justify-center items-center text-center">
-                <div class="text-4xl md:text-5xl mb-2 drop-shadow-lg">🎭</div>
+            <div onclick="tellJoke()" class="glass rounded-[1.5rem] p-4 border border-zinc-700/50 hover:bg-zinc-800 transition-all cursor-pointer flex flex-col justify-center items-center text-center group">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 md:w-11 md:h-11 mb-2.5 text-amber-400 drop-shadow-lg group-hover:scale-110 transition-transform">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm3.604 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75z" />
+                </svg>
                 <div class="font-bold text-sm md:text-lg leading-tight text-white">Bára,<br>povedz vtip!</div>
             </div>
         </div>
@@ -729,13 +733,10 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
                         <div class="text-sm font-bold text-white">${tempMax}°</div>
                     `;
                 } else {
-                    // Ak pre tento deň už model nemá dáta (prázdne okienko)
-                    div.className = 'bg-zinc-800/20 border border-zinc-800/50 rounded-2xl p-3 flex flex-col items-center justify-center opacity-50 cursor-not-allowed';
+                    // Úplne čisté a elegantné prázdne okienko
+                    div.className = 'bg-zinc-800/10 border border-zinc-800/30 rounded-2xl p-3 flex flex-col items-center justify-center cursor-not-allowed h-full min-h-[110px]';
                     div.innerHTML = `
-                        <div class="text-xs text-zinc-600 font-bold mb-2">--</div>
-                        <div class="text-xs font-medium text-zinc-600 mb-2">--.--.</div>
-                        <div class="text-3xl mb-1 grayscale opacity-20">☁️</div>
-                        <div class="text-sm font-bold text-zinc-700">--°</div>
+                        <div class="text-zinc-700/50 text-3xl font-black">-</div>
                     `;
                 }
                 grid.appendChild(div);
