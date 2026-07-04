@@ -1502,10 +1502,13 @@
         document.addEventListener('click', (e) => {
             const isSearchBtn = e.target.closest('button[onclick="searchCity()"]');
             const isLocBtn = e.target.closest('button[onclick="useMyLocation()"]');
+            const isCloseBtn = e.target.closest('button[onclick="closeSearchOverlay()"]');
+            const isOverlayBg = e.target.id === 'searchOverlay';
             
             if (!suggestionsBox.classList.contains('hidden') && !suggestionsBox.contains(e.target) && e.target !== cityInput) {
-                // Ak sme neklikli ani na "Hľadať", ani na "Moja poloha", zablokuj klik
-                if (!isSearchBtn && !isLocBtn) {
+                // Zablokuj klik iba vtedy, ak si klikol do prázdneho miesta vnútri bieleho okna.
+                // Ak si klikol na X, čierne pozadie, hľadať alebo polohu, nechaj klik prejsť.
+                if (!isSearchBtn && !isLocBtn && !isCloseBtn && !isOverlayBg) {
                     e.stopPropagation(); 
                     e.preventDefault();
                 }
