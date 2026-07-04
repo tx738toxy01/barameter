@@ -689,50 +689,46 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
                 }
 
                 html += `
-                    <div class="mb-2 pb-2">
+                    <div class="mb-1 pb-1">
                         <div class="flex justify-between items-baseline mb-1">
-                            <div class="text-xs text-zinc-500 uppercase tracking-wider">Meteostanica</div>
+                            <div class="text-xs text-zinc-300 uppercase tracking-wider">Meteostanica</div>
                             ${distanceBadge}
                         </div>
-                        <div class="text-2xl font-black text-white mb-4">${stName}</div>
+                        <div class="text-xl font-black text-white mb-3">${stName}</div>
                         
-                        <div class="flex items-center gap-4 mb-4 bg-zinc-800/50 p-3 rounded-2xl border border-zinc-700/50">
-                            <div class="text-5xl drop-shadow-lg">${owmIcon}</div>
+                        <div class="flex items-center gap-3 mb-3 bg-zinc-800/50 p-2.5 rounded-2xl border border-zinc-700/50">
+                            <div class="text-3xl drop-shadow-md">${owmIcon}</div>
                             <div>
-                                <div class="text-3xl font-black">${wTemp}°C</div>
-                                <div class="text-sm text-zinc-300 font-medium">${wDesc}</div>
+                                <div class="text-2xl font-black">${wTemp}°C</div>
+                                <div class="text-sm text-white font-medium">${wDesc}</div>
                             </div>
                         </div>
                         
-                        <div class="grid grid-cols-2 gap-y-2.5 text-sm px-2 mt-2 border-t border-zinc-800 pt-3">
-                            <div class="text-zinc-500">Pocitová teplota:</div> <div class="text-right font-bold text-white">${wFeels} °C</div>
-                            <div class="text-zinc-500">Rosný bod (Dew pt.):</div> <div class="text-right font-bold text-blue-300">${dew} °C</div>
+                        <!-- Zosumarizované všetky dostupné meteo informácie -->
+                        <div class="grid grid-cols-2 gap-y-1.5 text-sm px-1 mt-1 border-t border-zinc-800 pt-3">
+                            <div class="text-zinc-300">Pocitová teplota:</div> <div class="text-right font-bold text-white">${wFeels} °C</div>
+                            <div class="text-zinc-300">Rosný bod (Dew pt.):</div> <div class="text-right font-bold text-blue-300">${dew} °C</div>
                             
-                            <div class="col-span-2 my-1 border-t border-zinc-800/50"></div>
+                            <div class="col-span-2 my-0.5 border-t border-zinc-800/50"></div>
                             
-                            <div class="text-zinc-500">UV Index:</div> <div class="text-right font-bold text-amber-400">${uv}</div>
-                            <div class="text-zinc-500">Viditeľnosť:</div> <div class="text-right font-bold text-white">${vis}</div>
+                            <div class="text-zinc-300">UV Index:</div> <div class="text-right font-bold text-amber-400">${uv}</div>
+                            <div class="text-zinc-300">Viditeľnosť:</div> <div class="text-right font-bold text-white">${vis}</div>
                             
-                            <div class="col-span-2 my-1 border-t border-zinc-800/50"></div>
+                            <div class="col-span-2 my-0.5 border-t border-zinc-800/50"></div>
 
-                            <div class="text-zinc-500">Rýchlosť vetra:</div> <div class="text-right font-bold text-white">${wSpd} km/h</div>
-                            <div class="text-zinc-500">Nárazy vetra:</div> <div class="text-right font-bold text-red-400">${gusts} km/h</div>
-                            <div class="text-zinc-500">Smer vetra:</div> <div class="text-right font-bold text-white">${windDir}</div>
+                            <div class="text-zinc-300">Rýchlosť vetra:</div> <div class="text-right font-bold text-white">${wSpd} km/h</div>
+                            <div class="text-zinc-300">Nárazy vetra:</div> <div class="text-right font-bold text-red-400">${gusts} km/h</div>
+                            <div class="text-zinc-300">Smer vetra:</div> <div class="text-right font-bold text-white">${windDir}</div>
                             
-                            <div class="col-span-2 my-1 border-t border-zinc-800/50"></div>
+                            <div class="col-span-2 my-0.5 border-t border-zinc-800/50"></div>
                             
-                            <div class="text-zinc-500">Zrážky:</div> <div class="text-right font-bold text-blue-400">${precip}</div>
-                            <div class="text-zinc-500">Vlhkosť vzduchu:</div> <div class="text-right font-bold text-white">${wHum} %</div>
-                            <div class="text-zinc-500">Celková oblačnosť:</div> <div class="text-right font-bold text-white">${c.cloudcover} %</div>
-                            
-                            <div class="col-span-2 my-1 border-t border-zinc-800/50"></div>
-                            
-                            <div class="text-zinc-500">Tlak vzduchu:</div> <div class="text-right font-bold text-white">${wPress} hPa</div>
-                            <div class="text-zinc-500">Kód počasia (WMO):</div> <div class="text-right font-mono font-bold text-emerald-400">${c.weathercode}</div>
-                            <div class="text-zinc-500">Denná fáza:</div> <div class="text-right font-bold text-white">${c.is_day ? 'Deň ☀️' : 'Noc 🌙'}</div>
+                            <div class="text-zinc-300">Zrážky:</div> <div class="text-right font-bold text-blue-400">${precip}</div>
+                            <div class="text-zinc-300">Vlhkosť vzduchu:</div> <div class="text-right font-bold text-white">${wHum} %</div>
+                            <div class="text-zinc-300">Celková oblačnosť:</div> <div class="text-right font-bold text-white">${c.cloudcover} %</div>
+                            <div class="text-zinc-300">Tlak vzduchu:</div> <div class="text-right font-bold text-white">${wPress} hPa</div>
                         </div>
                     </div>
-                    <button onclick="hideTipsModal()" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-2xl transition-all shadow-md mt-4 no-share">Bára, dík!</button>
+                    <button onclick="hideTipsModal()" class="w-full py-2.5 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-2xl transition-all shadow-md mt-3 no-share">Bára, dík!</button>
                 `;
             } else {
                 html = '<div class="text-center py-8 text-zinc-500">Dáta nie sú k dispozícii.</div>';
