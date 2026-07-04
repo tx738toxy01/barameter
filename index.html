@@ -42,6 +42,7 @@
         }
         .text-outline { text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000; }
         #statusEmoji, #statusText, #statusDesc, #hourlyEmoji, #hourlyTitle, #hourlyDesc { opacity: 1 !important; }
+.export-mode, .export-mode * { backdrop-filter: none !important; }
     </style>
 </head>
 <body class="p-2 sm:p-4 max-w-[95vw] lg:max-w-screen-md mx-auto flex flex-col h-[100dvh] overflow-hidden select-none bg-[#0a0a0b] text-white font-sans">
@@ -1186,11 +1187,16 @@
                 const hideElements = targetEl.querySelectorAll('.no-share');
                 hideElements.forEach(el => el.style.opacity = '0');
 
+                // ZAPNUTIE: Vypne sklenené efekty pre čistý export
+                targetEl.classList.add('export-mode');
+
                 const dataUrl = await htmlToImage.toPng(targetEl, { 
-                    backgroundColor: '#18181b',
+                    backgroundColor: '#0a0a0b', // Zmenené na hlavnú farbu tvojho pozadia
                     pixelRatio: 2
                 });
 
+                // VYPNUTIE: Vráti všetko späť do normálu
+                targetEl.classList.remove('export-mode');
                 hideElements.forEach(el => el.style.opacity = '1');
 
                 const res = await fetch(dataUrl);
@@ -1209,6 +1215,7 @@
                 console.error(err);
                 const targetEl = document.getElementById(elementId);
                 if(targetEl) {
+                    targetEl.classList.remove('export-mode');
                     targetEl.querySelectorAll('.no-share').forEach(el => el.style.opacity = '1');
                 }
                 showToast('Zdieľanie sa nepodarilo ❌');
