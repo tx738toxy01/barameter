@@ -960,12 +960,19 @@
             showToast(`Načítavam lokáciu ${currentCity}... ⏳`, true);
             
             try {
-                const iconUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,surface_pressure,weathercode,windspeed_10m,cloudcover,uv_index,dew_point_2m,visibility,wind_direction_10m,precipitation,wind_gusts_10m&models=${mainModel}&timezone=auto`;
+                const iconUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,surface_pressure,weathercode,windspeed_10m,cloudcover,dew_point_2m,visibility,wind_direction_10m,precipitation,wind_gusts_10m&models=${mainModel}&timezone=auto`;
                 const autoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,windspeed_10m,cloudcover,weathercode&daily=weathercode,temperature_2m_max,sunrise,sunset&forecast_days=16&models=${calendarModel}&timezone=auto`;
+                
+                // Extra link len pre UV index z globálneho modelu (lebo iné modely ho nemusia mať)
+                const uvUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=uv_index&timezone=auto`;
 
-                const [resIcon, resAuto] = await Promise.all([fetch(iconUrl), fetch(autoUrl)]);
+                const [resIcon, resAuto, resUv] = await Promise.all([fetch(iconUrl), fetch(autoUrl), fetch(uvUrl)]);
                 const dataIcon = await resIcon.json();
                 const dataAuto = await resAuto.json();
+                const dataUv = await resUv.json();
+
+                // Umelo vložíme UV index k ostatným stiahnutým dátam
+                dataIcon.current.uv_index = (dataUv.current && dataUv.current.uv_index !== undefined) ? dataUv.current.uv_index : '--';
 
                 forecast16Data = { current: dataIcon.current, hourly: dataAuto.hourly, daily: dataAuto.daily };
                 const current = forecast16Data.current;
