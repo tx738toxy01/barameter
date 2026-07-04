@@ -116,8 +116,8 @@
                         <div id="wind" class="font-black text-[clamp(0.85rem,2vh,1.4rem)] text-white whitespace-nowrap">-- km/h</div>
                     </div>
                     <div class="flex flex-col items-center justify-center">
-                        <div class="text-[clamp(1.3rem,4vh,3rem)] drop-shadow-md mb-0.5 sm:mb-1 transition-all">☔</div>
-                        <div class="text-zinc-400 text-[clamp(8px,1vh,11px)] uppercase tracking-wider mb-0.5 font-bold leading-none">Zrážky</div>
+                        <div id="rainIcon" class="text-[clamp(1.3rem,4vh,3rem)] drop-shadow-md mb-0.5 sm:mb-1 transition-all">☔</div>
+                        <div id="rainLabel" class="text-zinc-400 text-[clamp(8px,1vh,11px)] uppercase tracking-wider mb-0.5 font-bold leading-none">Zrážky</div>
                         <div id="rain" class="font-black text-[clamp(0.85rem,2vh,1.4rem)] text-white whitespace-nowrap">--</div>
                     </div>
                     <div class="flex flex-col items-center justify-center">
@@ -1003,7 +1003,23 @@
                 document.getElementById('temp').innerText = temp + "°C";
                 document.getElementById('wind').innerText = wind + " km/h";
                 document.getElementById('clouds').innerText = clouds + " %";
-                document.getElementById('rain').innerText = (code >= 51 && code <= 99) ? "Áno" : "Nie";
+                
+                // Dynamická zmena: Zrážky vs. UV Index
+                const rainEl = document.getElementById('rain');
+                const rainIconEl = document.getElementById('rainIcon');
+                const rainLabelEl = document.getElementById('rainLabel');
+                
+                // Zistíme, či prší (podľa mm zrážok alebo weather code)
+                if (current.precipitation > 0 || (code >= 51 && code <= 99)) {
+                    rainIconEl.innerText = "☔";
+                    rainLabelEl.innerText = "Zrážky";
+                    // Ak sú zrážky > 0, ukážeme mm, inak aspoň "Áno" pre istotu
+                    rainEl.innerText = (current.precipitation > 0) ? current.precipitation.toFixed(1) + " mm" : "Áno";
+                } else {
+                    rainIconEl.innerText = "🔆";
+                    rainLabelEl.innerText = "UV Index";
+                    rainEl.innerText = (typeof current.uv_index === 'number') ? current.uv_index.toFixed(1) : "--";
+                }
 
                 const hum = current.relative_humidity_2m;
                 let scenarioTitle = "";
