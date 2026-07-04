@@ -46,7 +46,18 @@
 </head>
 <body class="p-2 sm:p-4 max-w-[95vw] lg:max-w-screen-md mx-auto flex flex-col h-[100dvh] overflow-hidden select-none bg-[#0a0a0b] text-white font-sans">
 
-    <!-- Obal pre zdieľanie (Hlavička + Zelené okno sa odfotia spolu) -->
+    <!-- Pôvodný hlavný nadpis a poloha -->
+    <div class="flex justify-between items-center mb-3 mt-1 shrink-0">
+        <div>
+            <h1 class="text-4xl md:text-5xl font-black tracking-tighter">Barameter</h1>
+            <p class="text-zinc-500 text-sm md:text-base mt-0.5">Nezúfaj, Bara ti povie, že čo!</p>
+        </div>
+        <button onclick="showMyMapOnly()" class="px-4 py-2.5 bg-black/40 backdrop-blur-md border border-emerald-500/30 rounded-2xl font-bold text-sm md:text-base text-white hover:bg-black/60 hover:border-emerald-400 transition-all shadow-md tracking-wide">
+            Bára, kde som?
+        </button>
+    </div>
+
+<!-- Obal pre zdieľanie (Hlavička + Zelené okno sa odfotia spolu) -->
     <div id="captureArea" class="flex flex-col gap-3 flex-1 min-h-0 pb-2">
         
         <!-- Nový moderný hlavičkový blok -->
@@ -78,12 +89,21 @@
             <div id="weatherAnimBg" class="anim-bg-layer"></div> 
             
             <div onclick="openExtendedTips()" class="cursor-pointer flex flex-col flex-1 min-h-0 group/status z-10 select-none relative">
-                <!-- Tlačidlo zdieľať odfotí celý blok hlavičky aj s počasím -->
-                <button onclick="event.stopImmediatePropagation(); shareWindow('captureArea')" class="absolute top-0 right-0 text-white/50 hover:text-white transition-colors p-2 bg-black/20 hover:bg-black/40 rounded-xl backdrop-blur-sm no-share z-20 border border-white/10" title="Zdieľať">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" /></svg>
-                </button>
+                
+                <!-- Vrátený nápis a tlačidlo "Kde to je" (aj s tlačidlom na zdieľanie) -->
+                <div class="flex justify-between items-start content-layer mb-2">
+                    <div class="text-2xl md:text-3xl font-black text-white tracking-tight group-hover/status:text-emerald-300 transition-colors">Bára, a čo teraz?</div>
+                    <div class="flex items-center gap-2 z-20">
+                        <button onclick="event.stopImmediatePropagation(); openMapModal()" class="px-3 py-1.5 bg-black/40 backdrop-blur-md border border-emerald-500/30 rounded-xl font-bold text-xs md:text-sm text-white hover:bg-black/60 hover:border-emerald-400 transition-all text-center leading-tight shadow-md whitespace-nowrap no-share">
+                            Bára, kde<br>to je?
+                        </button>
+                        <button onclick="event.stopImmediatePropagation(); shareWindow('captureArea')" class="text-white hover:text-emerald-400 transition-colors p-2 bg-black/20 hover:bg-black/40 rounded-xl backdrop-blur-sm no-share z-20 border border-white/10" title="Zdieľať">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" /></svg>
+                        </button>
+                    </div>
+                </div>
 
-                <div class="flex flex-col items-center justify-center text-center py-1 flex-1 min-h-0 content-layer my-auto justify-items-center mt-6">
+                <div class="flex flex-col items-center justify-center text-center py-1 flex-1 min-h-0 content-layer my-auto justify-items-center">
                     <div id="statusEmoji" class="text-[clamp(2rem,9vh,6.5rem)] mb-1 drop-shadow-xl leading-none shrink-0 transition-all">⏳</div>
                     <div id="statusText" class="text-[clamp(1.1rem,3.5vh,2.75rem)] font-black tracking-tighter leading-tight shrink-0 text-outline transition-all">Načítavam...</div>
                     <div id="statusDesc" class="text-zinc-200 mt-0.5 text-[clamp(0.7rem,1.8vh,1.25rem)] font-medium shrink-0 text-outline transition-all"></div>
