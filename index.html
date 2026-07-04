@@ -425,10 +425,10 @@
             else if (now >= phases.eveningGoldenStart && now < phases.eveningGoldenEnd) phaseColor = "text-amber-400";
             else if (now >= phases.eveningGoldenEnd && now < phases.eveningBlueEnd) phaseColor = "text-blue-400";
 
-            // Update headeru (bez boldu)
+            // Update headeru (statický text, dynamická farba)
             const btnDetail = document.getElementById('detailSunPhase');
             if (btnDetail) {
-                btnDetail.innerText = phaseName;
+                btnDetail.innerText = "Svetelné fázy dňa";
                 btnDetail.className = `truncate px-2 text-center flex-1 text-base sm:text-lg ${phaseColor}`;
             }
 
