@@ -19,11 +19,10 @@
             50% { color: #34d399; transform: scale(1.05); text-shadow: 0 0 15px rgba(52, 211, 153, 0.8); border-color: #34d399; }
         }
         .flash-location { animation: locationFlash 0.6s ease-in-out 2; }
-@keyframes driftBg { from { transform: translateX(110vw); } to { transform: translateX(-50vw); } }
+        @keyframes driftBg { from { transform: translateX(110vw); } to { transform: translateX(-50vw); } }
         @keyframes rainDrop { 0% { transform: translateY(-10px) translateX(0); opacity: 1; } 100% { transform: translateY(100vh) translateX(-20px); opacity: 0; } }
         .anim-bg-layer { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; border-radius: inherit; opacity: 0.8; }
         .content-layer { position: relative; z-index: 10; }
-        
         @keyframes lightning {
             0% { background-color: transparent; }
             1% { background-color: rgba(255, 255, 255, 0.9); }
@@ -32,7 +31,7 @@
             4% { background-color: transparent; }
             100% { background-color: transparent; }
         }
-@keyframes boltFlash {
+        @keyframes boltFlash {
             0%, 100% { opacity: 0; }
             5%, 25% { opacity: 1; transform: translateX(-50%) scale(1.1); }
             15% { opacity: 0; }
@@ -41,14 +40,13 @@
             position: absolute; inset: 0; z-index: 5; pointer-events: none;
             animation: lightning 6s infinite;
         }
-.text-outline { text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000; }
-
-#statusEmoji, #statusText, #statusDesc, #hourlyEmoji, #hourlyTitle, #hourlyDesc { opacity: 1 !important; }
+        .text-outline { text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000; }
+        #statusEmoji, #statusText, #statusDesc, #hourlyEmoji, #hourlyTitle, #hourlyDesc { opacity: 1 !important; }
     </style>
 </head>
 <body class="p-2 sm:p-4 max-w-[95vw] lg:max-w-screen-md mx-auto flex flex-col h-[100dvh] overflow-hidden select-none bg-[#0a0a0b] text-white font-sans">
 
-<!-- Obal pre zdieľanie (Hlavička + Zelené okno sa odfotia spolu) -->
+    <!-- Obal pre zdieľanie (Hlavička + Zelené okno sa odfotia spolu) -->
     <div id="captureArea" class="flex flex-col gap-3 flex-1 min-h-0 pb-2">
         
         <!-- Nový moderný hlavičkový blok -->
@@ -80,7 +78,7 @@
             <div id="weatherAnimBg" class="anim-bg-layer"></div> 
             
             <div onclick="openExtendedTips()" class="cursor-pointer flex flex-col flex-1 min-h-0 group/status z-10 select-none relative">
-                <!-- Tlačidlo zdieľať teraz odfotí celý captureArea -->
+                <!-- Tlačidlo zdieľať odfotí celý blok hlavičky aj s počasím -->
                 <button onclick="event.stopImmediatePropagation(); shareWindow('captureArea')" class="absolute top-0 right-0 text-white/50 hover:text-white transition-colors p-2 bg-black/20 hover:bg-black/40 rounded-xl backdrop-blur-sm no-share z-20 border border-white/10" title="Zdieľať">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" /></svg>
                 </button>
@@ -130,24 +128,25 @@
                         </select>
                         <span class="absolute right-1 sm:right-2 text-[7px] sm:text-[8px] pointer-events-none text-emerald-400">▼</span>
                     </div>
-                </div> <!-- Ukončenie spodného panelu s počasím -->
+                </div>
+            </div> <!-- Ukončenie spodného panelu s počasím -->
         </div> <!-- Ukončenie celého zeleného okna statusCard -->
     </div> <!-- Ukončenie captureArea -->
             
+    <!-- Spodné tlačidlá -->
     <div class="grid grid-cols-2 gap-2 sm:gap-3 shrink-0 mt-1">
-            <div onclick="openCalendar()" class="glass rounded-[1.5rem] p-[2vh] border border-zinc-700/50 hover:bg-zinc-800 transition-all cursor-pointer flex flex-col justify-center items-center text-center group">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[4.5vh] h-[4.5vh] max-w-[36px] max-h-[36px] mb-1.5 text-emerald-400 drop-shadow-lg group-hover:scale-110 transition-transform">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-                </svg>
-                <div class="font-bold text-[clamp(0.8rem,1.8vh,1.05rem)] leading-tight text-white">Bára, a čo<br>ďalšie dni?</div>
-            </div>
+        <div onclick="openCalendar()" class="glass rounded-[1.5rem] p-[2vh] border border-zinc-700/50 hover:bg-zinc-800 transition-all cursor-pointer flex flex-col justify-center items-center text-center group">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[4.5vh] h-[4.5vh] max-w-[36px] max-h-[36px] mb-1.5 text-emerald-400 drop-shadow-lg group-hover:scale-110 transition-transform">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+            </svg>
+            <div class="font-bold text-[clamp(0.8rem,1.8vh,1.05rem)] leading-tight text-white">Bára, a čo<br>ďalšie dni?</div>
+        </div>
 
-            <div onclick="tellJoke()" class="glass rounded-[1.5rem] p-[2vh] border border-zinc-700/50 hover:bg-zinc-800 transition-all cursor-pointer flex flex-col justify-center items-center text-center group">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[4.5vh] h-[4.5vh] max-w-[36px] max-h-[36px] mb-1.5 text-amber-400 drop-shadow-lg group-hover:scale-110 transition-transform">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm3.604 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75z" />
-                </svg>
-                <div class="font-bold text-[clamp(0.8rem,1.8vh,1.05rem)] leading-tight text-white">Bára,<br>povedz vtip!</div>
-            </div>
+        <div onclick="tellJoke()" class="glass rounded-[1.5rem] p-[2vh] border border-zinc-700/50 hover:bg-zinc-800 transition-all cursor-pointer flex flex-col justify-center items-center text-center group">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[4.5vh] h-[4.5vh] max-w-[36px] max-h-[36px] mb-1.5 text-amber-400 drop-shadow-lg group-hover:scale-110 transition-transform">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm3.604 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75z" />
+            </svg>
+            <div class="font-bold text-[clamp(0.8rem,1.8vh,1.05rem)] leading-tight text-white">Bára,<br>povedz vtip!</div>
         </div>
     </div>
 
@@ -164,12 +163,15 @@
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" /></svg>
                     </button>
                 </div>
+                <!-- Pridané chýbajúce tlačidlo Hľadať -->
+                <button onclick="searchCity()" class="bg-emerald-600 hover:bg-emerald-500 px-5 sm:px-6 rounded-xl font-bold text-base sm:text-lg shrink-0 transition-colors shadow-md">Hľadať</button>
             </div>
-            <!-- Tu sa vygeneruje história a návrhy -->
+            
             <div id="suggestions" class="mt-3 w-full overflow-y-auto overscroll-contain bg-zinc-800/40 rounded-xl flex-1 hidden border border-zinc-700/50"></div>
         </div>
     </div>
 
+    <!-- Modál s aktuálnym počasím a detailami -->
     <div id="tipsModal" onclick="hideTipsModal()" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
         <div id="tipsWrap" onclick="event.stopImmediatePropagation()" class="relative glass rounded-3xl p-8 max-w-sm w-full mx-4 border border-zinc-700 max-h-[90vh] overflow-y-auto">
             <div class="absolute top-5 right-5 flex items-center gap-2 no-share">
@@ -184,7 +186,7 @@
                     <div class="text-[9px] text-emerald-500/60 uppercase tracking-widest mt-1 mb-3 font-mono">Model: ICON Seamless</div>
                     <div class="flex items-center gap-3">
                         <div id="detailCurrentTime" class="text-sm font-mono text-zinc-300 font-bold">--:--</div>
-                        <button onclick="openSunPhases()" id="detailSunPhase" class="text-[10px] font-bold px-2 py-0.5 rounded-md border transition-colors cursor-pointer bg-zinc-800 text-zinc-400 border-zinc-700">
+                        <button onclick="openSunPhases()" id="detailSunPhaseModal" class="text-[10px] font-bold px-2 py-0.5 rounded-md border transition-colors cursor-pointer bg-zinc-800 text-zinc-400 border-zinc-700">
                             --
                         </button>
                     </div>
@@ -194,6 +196,7 @@
         </div>
     </div>
 
+    <!-- Kalendár (16 dní) -->
     <div id="calendarModal" onclick="if(event.target === this) hideCalendar()" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
         <div id="calendarWrap" class="bg-zinc-900 rounded-3xl w-full max-w-md max-h-[85vh] overflow-y-auto border border-zinc-700 shadow-2xl">
             <div class="sticky top-0 bg-zinc-900/95 backdrop-blur px-6 py-4 flex justify-between items-start border-b border-zinc-700 z-10">
@@ -225,6 +228,7 @@
         </div>
     </div>
 
+    <!-- Detail dňa -->
     <div id="dayDetailModal" onclick="if(event.target === this) hideDayDetail()" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[60] p-4">
         <div id="dayDetailWrap" class="bg-zinc-900 rounded-3xl w-full max-w-sm max-h-[85vh] overflow-y-auto border border-zinc-700 shadow-2xl">
             <div class="sticky top-0 bg-zinc-900/95 backdrop-blur px-5 py-4 flex justify-between items-start border-b border-zinc-700 z-10">
@@ -243,6 +247,7 @@
         </div>
     </div>
 
+    <!-- Vtip -->
     <div id="jokeModal" onclick="if(event.target === this) this.classList.replace('flex','hidden')" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
         <div id="jokeWrap" class="relative bg-zinc-900 rounded-3xl p-8 text-center max-w-sm w-full border border-zinc-700 shadow-2xl">
             <div class="absolute top-4 right-4 flex items-center gap-2 no-share">
@@ -257,6 +262,7 @@
         </div>
     </div>
 
+    <!-- Hodinový detail dňa -->
     <div id="hourlyStatusModal" onclick="if(event.target === this) this.classList.replace('flex','hidden')" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[80] p-4">
         <div id="hourlyModalContent" class="relative bg-zinc-900 rounded-3xl p-8 text-center max-w-sm w-full border border-zinc-700 shadow-2xl">
             <div class="absolute top-4 right-4 flex items-center gap-2 no-share">
@@ -280,7 +286,8 @@
         </div>
     </div>
 
-<div id="extendedTipsModal" onclick="if(event.target === this) hideExtendedTips()" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[80] p-4">
+    <!-- Bárine profi tipy -->
+    <div id="extendedTipsModal" onclick="if(event.target === this) hideExtendedTips()" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[80] p-4">
         <div id="extendedTipsWrap" class="bg-zinc-900 rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col border border-zinc-700 shadow-2xl relative">
             <div class="sticky top-0 bg-zinc-900/95 backdrop-blur px-6 py-4 flex justify-between items-center border-b border-zinc-700 z-10 rounded-t-3xl shrink-0">
                 <div id="extendedTipsTitle" class="font-bold text-lg md:text-xl text-white">Bárine profi tipy</div>
@@ -298,7 +305,8 @@
         </div>
     </div>
 
-<div id="sunPhasesModal" onclick="if(event.target === this) hideSunPhases()" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[90] p-4">
+    <!-- Svetelné fázy -->
+    <div id="sunPhasesModal" onclick="if(event.target === this) hideSunPhases()" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[90] p-4">
         <div class="bg-zinc-900 rounded-3xl w-full max-w-md flex flex-col border border-zinc-700 shadow-2xl relative overflow-hidden">
             <div class="bg-zinc-900/95 backdrop-blur px-6 py-4 flex justify-between items-start border-b border-zinc-700 z-10">
                 <div>
@@ -308,17 +316,19 @@
                 <button onclick="hideSunPhases()" class="text-3xl text-zinc-400 hover:text-white leading-none mt-0.5">×</button>
             </div>
             <div id="sunPhasesContent" class="p-6 space-y-3 overflow-y-auto max-h-[70vh]">
-                </div>
+            </div>
             <div class="p-6 pt-0 shrink-0">
                 <button onclick="hideSunPhases()" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-2xl transition-all shadow-md no-share">Bára, dík!</button>
             </div>
         </div>
     </div>
 
+    <!-- Toast správa -->
     <div id="toastMsg" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[100] bg-white text-zinc-900 px-8 py-4 rounded-full shadow-[0_10px_40px_rgba(0,0,0,0.8)] border border-zinc-200 opacity-0 transition-all duration-300 pointer-events-none hidden font-bold text-lg whitespace-nowrap">
         Načítavam...
     </div>
 
+    <!-- Mapa -->
     <div id="mapModal" onclick="if(event.target === this) closeMapModal()" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[70] p-4">
         <div class="bg-zinc-900 rounded-3xl w-full max-w-4xl h-[80vh] flex flex-col border border-zinc-700 shadow-2xl overflow-hidden">
             <div class="bg-zinc-900/95 px-6 py-4 flex justify-between items-center border-b border-zinc-700 z-10">
@@ -334,6 +344,7 @@
         </div>
     </div>
 
+    <!-- Skripty -->
     <script>
         let currentLat = 48.1486;
         let currentLon = 17.1077;
@@ -347,7 +358,6 @@
         let currentTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         let sunPhasesInterval; 
 
-        // Bárin výpočet slnečných fáz
         function updateSunPhaseUI() {
             if (!forecast16Data || !forecast16Data.daily || !forecast16Data.daily.sunrise) return;
             
@@ -388,10 +398,25 @@
             else if (now >= phases.eveningGoldenStart && now < phases.eveningGoldenEnd) phaseColor = "text-amber-400";
             else if (now >= phases.eveningGoldenEnd && now < phases.eveningBlueEnd) phaseColor = "text-blue-400";
 
+            // Update headeru
             const btnDetail = document.getElementById('detailSunPhase');
             if (btnDetail) {
                 btnDetail.innerText = phaseName;
                 btnDetail.className = `font-bold truncate px-2 text-center flex-1 ${phaseColor}`;
+            }
+
+            // Update v okne Detail počasia
+            let phaseColorModal = "text-indigo-300 border-indigo-700/50 bg-indigo-900/40";
+            if (now >= phases.morningBlueStart && now < phases.morningBlueEnd) phaseColorModal = "text-blue-400 border-blue-500/40 bg-blue-600/20";
+            else if (now >= phases.morningBlueEnd && now < phases.morningGoldenEnd) phaseColorModal = "text-amber-400 border-amber-500/40 bg-amber-500/20";
+            else if (now >= phases.morningGoldenEnd && now < phases.eveningGoldenStart) phaseColorModal = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
+            else if (now >= phases.eveningGoldenStart && now < phases.eveningGoldenEnd) phaseColorModal = "text-amber-400 border-amber-500/40 bg-amber-500/20";
+            else if (now >= phases.eveningGoldenEnd && now < phases.eveningBlueEnd) phaseColorModal = "text-blue-400 border-blue-500/40 bg-blue-600/20";
+
+            const btnDetailModal = document.getElementById('detailSunPhaseModal');
+            if (btnDetailModal) {
+                btnDetailModal.innerText = phaseName;
+                btnDetailModal.className = `text-[10px] font-bold px-2 py-0.5 rounded-md border transition-colors cursor-pointer shadow-sm ${phaseColorModal}`;
             }
 
             return phases;
@@ -487,7 +512,7 @@
             "Prečo po blesku prichádza hrom? Aj Boh musí čakať na zvuk.",
             "Vieš, prečo filmári na pľaci tak radi a často nadávajú na zlé počasie? Lebo na hercov sa nahlas nadávať nesmie.",
             "Najkratší filmársky vtip:<br>„Dnes ideme presne podľa dispo.“",
-            "Na počiatku Boh stvoril kameramana. Boh si prezrel kameramana a bol spokojný. Kameraman si prezrel Boha a vraví: „Otoč hlavu, tu sa pozeraj, vyššie bradu....to čo je za svetlo?“ Boh povedal: „To je moje.“ Kameraman povedal: „Tak pozri, chcelo by to čistý low-key. To veľké pichnime na dimmer a stiahneme ho, nech len tak tlie, dajme jej takých 2700 Kelvinov. Potom zober nejaký Skypanel alebo LED matrac, daj to cez chimeru s voštinou, zavesme to jemne zvrchu zo strany, nech to namotivujeme od nej a nerozbijeme si to kade-tade. Z druhej strany to úplne zabijeme – prines mi dve čierne floppyny do véčka, nech z toho urobíme poriadny negatívny výkryt a líca nech padajú do tmy. Na odlepenie od pozadia chcem nejakú studenú mesačku. Daj mi doozadu M18-tku s CTB-čkom, nech to vytvorí peknú kontru a jemne lízne vlasy a rameno. A ak budú mŕtve oči, pichneme k objektívu jednu malú Asteru stiahnutú na 2 % len na iskru. Môžeš to začať stavať.“<br>Boh ho chvíľu mlčky počúva, potom stlačí „delete“ a kameraman zmizne. Boh si povie: „Stvorím radšej youtubera, tomu stačí ring-light z Alzy.",
+            "Na počiatku Boh stvoril kameramana. Boh si prezrel kameramana a bol spokojný. Kameraman si prezrel Boha a vraví: „Otoč hlavu, tu sa pozeraj, vyššie bradu....to čo je za svetlo?“ Boh povedal: „To je moje.“ Kameraman povedal: „Tak pozri, chcelo by to čistý low-key. To veľké pichnime na dimmer a stiahneme ho, nech len tak tlie, dajme jej takých 2700 Kelvinov. Potom zober nejaký Skypanel alebo LED matrac, daj to cez chimeru s voštinou, zavesme to jemne zvrchu zo strany, nech to namotivujeme od nej a nerozbijeme si to kade-tade. Z druhej strany to úplne zabijeme – prines mi dve čierne floppyny do véčka, nech z toho urobíme poriadny negatívny výkryt a líca nech padajú do tmy. Na odlepenie od pozadia chcem nejakú studenú mesačku. Daj mi doozadu M18-tku s CTB-čkom, nech to vytvorí peknú kontru a jemne lízne vlasy a rameno. A ak budú mŕtve oči, pichneme k objektívu jednu malú Asteru stiahnutú na 2 % len na iskru. Môžeš to začať stavať?“<br>Boh ho chvíľu mlčky počúva, potom stlačí „delete“ a kameraman zmizne. Boh si povie: „Stvorím radšej youtubera, tomu stačí ring-light z Alzy.",
             "Koľko hercov je potrebných na zaskrutkovanie žiarovky? Jeden. Chyti žiarovku a celý svet sa točí okolo neho.",
             "Koľko rekvizitárov je potrebných na zaskrutkovanie žiarovky?<br>„Musí to byť žiarovka? Mám taký parádny svietnik...“",
             "Koľko strihačov je potrebných na výmenu žiarovky?<br>„Ak zmením žiarovku, budeme musieť zmeniť všetko.“",
@@ -500,8 +525,7 @@
             "Aký je rozdiel medzi štábom a psom?<br>Ľudia sa rozčuľujú, keď sa so psom zaobchádza zle.",
             "Proč má Harry Potter na čele jizvu ve tvaru blesku? Protože když byl malý, tak ho srazil Opel. Na druhou stranu může být rád, že ho nesrazil Renault...",
             "Tak sa vám raz šťúram špendlíkom v uchu a zrazu ticho! No a tak sa pozriem na ten špendlík zblízka a zrazu tma!",
-            "Nemíváte-li ve sportech štěstí napoprvé, parašutismus není pro vás.",
-            "Každý člověk má dobré srdce. - Hannibal Lecter"
+            "Nemíváte-li ve sportech štěstí napoprvé, parašutismus není pro vás."
         ];
 
         function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -521,7 +545,6 @@
             const now = new Date();
             try {
                 if (el) el.innerText = now.toLocaleTimeString('sk-SK', { timeZone: currentTimezone, hour: '2-digit', minute: '2-digit' });
-                // Detailový čas beží aj so sekundami
                 if (detailEl) detailEl.innerText = now.toLocaleTimeString('sk-SK', { timeZone: currentTimezone, hour: '2-digit', minute: '2-digit', second: '2-digit' });
             } catch(e) {
                 if (el) el.innerText = now.toLocaleTimeString('sk-SK', { hour: '2-digit', minute: '2-digit' });
@@ -540,7 +563,7 @@
             currentStatusType = statusType;
         }
 
-function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, windSpeed = 0, weatherCode = 0) {
+        function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, windSpeed = 0, weatherCode = 0) {
             const bg = document.getElementById('weatherAnimBg');
             bg.innerHTML = ''; 
 
@@ -750,36 +773,36 @@ function updateWeatherAnimations(cloudCover, isRain, sunriseISO, sunsetISO, wind
             content.innerHTML = html;
         }
 
-function openExtendedTips(overrideScenarioIdx = null) {
-    if (!forecast16Data || !forecast16Data.current) return showToast("Čakám na stiahnutie dát... ⏳");
-    
-    let scenarioIdx = 1; 
+        function openExtendedTips(overrideScenarioIdx = null) {
+            if (!forecast16Data || !forecast16Data.current) return showToast("Čakám na stiahnutie dát... ⏳");
+            
+            let scenarioIdx = 1; 
 
-    if (overrideScenarioIdx !== null) {
-        scenarioIdx = overrideScenarioIdx;
-    } else {
-        const c = forecast16Data.current;
-        const temp = c.temperature_2m;
-        const wind = c.windspeed_10m;
-        const cloud = c.cloudcover;
-        const code = c.weathercode;
-        const hum = currentOwmData ? currentOwmData.main.humidity : 50;
+            if (overrideScenarioIdx !== null) {
+                scenarioIdx = overrideScenarioIdx;
+            } else {
+                const c = forecast16Data.current;
+                const temp = c.temperature_2m;
+                const wind = c.windspeed_10m;
+                const cloud = c.cloudcover;
+                const code = c.weathercode;
+                const hum = currentOwmData ? currentOwmData.main.humidity : 50;
 
-        // Bárina hierarchia scenárov pre aktuálne počasie
-        if (code >= 95) scenarioIdx = 7; // Koniec sveta (Búrka)
-        else if (code >= 71 && code <= 86) scenarioIdx = 10; // Biela tma (Sneh)
-        else if (code === 45 || code === 48) scenarioIdx = 8; // Hmla
-        else if (wind >= 20) scenarioIdx = 5; // Vetrisko
-        else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) scenarioIdx = 6; // Uplakaný deň (Dážď)
-        else if (c.is_day === 0) scenarioIdx = cloud >= 80 ? 12 : 11; // Noc (Zamračená alebo jasná)
-        else if (temp >= 25 && cloud < 30) scenarioIdx = 2; // Peklo zhora (Ostré slnko a teplo)
-        else if (temp >= 22 && hum >= 70) scenarioIdx = 9; // Skleník (Dusno a vlhko)
-        else if (temp < 5) scenarioIdx = 4; // Doba ľadová (Mráz)
-        else if (cloud >= 90) scenarioIdx = 3; // Plechová obloha
-        else scenarioIdx = 1; // Ideál
-    } 
+                // Bárina hierarchia scenárov pre aktuálne počasie
+                if (code >= 95) scenarioIdx = 7; 
+                else if (code >= 71 && code <= 86) scenarioIdx = 10; 
+                else if (code === 45 || code === 48) scenarioIdx = 8; 
+                else if (wind >= 20) scenarioIdx = 5; 
+                else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) scenarioIdx = 6; 
+                else if (c.is_day === 0) scenarioIdx = cloud >= 80 ? 12 : 11; 
+                else if (temp >= 25 && cloud < 30) scenarioIdx = 2; 
+                else if (temp >= 22 && hum >= 70) scenarioIdx = 9; 
+                else if (temp < 5) scenarioIdx = 4; 
+                else if (cloud >= 90) scenarioIdx = 3; 
+                else scenarioIdx = 1; 
+            } 
 
-    const scenarios = {
+            const scenarios = {
                 1: { title: "🌤️ Ideál (Zlatá stredná cesta)", 
                      kamera: "Krásne difúzne svetlo vďaka obláčikom. Kresba v tieňoch je jemná, pleťovka vyzerá super. Stačí odrážať a jemne modlovať. Slnko sa ale môže skrývať a vykukovať, takže bacha na zmeny expozície uprostred klapky a kontinuitu.",
                      zvuk: "Zvyčajne bez extrémov. Príjemné podmienky, treba si len ustrážiť bežné ruchy prostredia.",
@@ -1126,7 +1149,7 @@ function openExtendedTips(overrideScenarioIdx = null) {
             document.getElementById('hourlyStatusModal').classList.replace('hidden', 'flex');
         }
 
-async function shareWindow(elementId) {
+        async function shareWindow(elementId) {
             const shareUrl = window.location.origin + window.location.pathname;
             const textToShare = `🤦🏻‍♀️ Barameter 🎬\n${shareUrl}`;
 
@@ -1397,6 +1420,7 @@ async function shareWindow(elementId) {
                             cityInput.value = city.name;
                             suggestionsBox.classList.add('hidden');
                             cityInput.blur(); 
+                            closeSearchOverlay();
                             fetchWeather(city.latitude, city.longitude, city.name);
                             saveToHistory({ name: city.name, lat: city.latitude, lon: city.longitude, desc: desc });
                         };
@@ -1445,7 +1469,7 @@ async function shareWindow(elementId) {
         fetchWeather(48.1486, 17.1077, "Bratislava");
     </script>
 
-<div class="hidden landscape:flex fixed inset-0 z-[9999] bg-zinc-950 flex-col items-center justify-center p-6 text-center">
+    <div class="hidden landscape:flex fixed inset-0 z-[9999] bg-zinc-950 flex-col items-center justify-center p-6 text-center">
         <div class="text-7xl mb-6 drop-shadow-lg">📱</div>
         <div class="text-3xl font-black text-white mb-3">Nespi!</div>
         <div class="text-zinc-400 text-lg">Prosím ťa, otoč si telefón späť na výšku, takto sa spolu baviť nebudeme.</div>
