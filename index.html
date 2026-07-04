@@ -1545,9 +1545,24 @@
                 document.getElementById('hourlyStatusModal').classList.replace('hidden', 'flex');
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
-        });
 
-        fetchWeather(48.1486, 17.1077, "Bratislava");
+            // Okamžité zistenie približnej polohy podľa IP adresy (bez pýtania povolení)
+            fetch('https://ipapi.co/json/')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.latitude && data.longitude) {
+                        // Ak sa podarí zistiť IP, načíta sa tvoje mesto (napr. Košice, Žilina...)
+                        fetchWeather(data.latitude, data.longitude, data.city || "Moja poloha");
+                    } else {
+                        // Poistka, ak by IP služba zlyhala
+                        fetchWeather(48.1486, 17.1077, "Bratislava");
+                    }
+                })
+                .catch(() => {
+                    // Úplná záloha, ak by používateľ napríklad nemal signál pri štarte
+                    fetchWeather(48.1486, 17.1077, "Bratislava");
+                });
+        });
     </script>
 
     <div class="hidden landscape:flex fixed inset-0 z-[9999] bg-zinc-950 flex-col items-center justify-center p-6 text-center">
