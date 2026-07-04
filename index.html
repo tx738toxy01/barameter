@@ -453,10 +453,19 @@
             document.getElementById('searchOverlay').classList.replace('hidden', 'flex');
             setTimeout(() => document.getElementById('cityInput').focus(), 100);
             showHistory(); 
+            // Vytvorenie záchytného bodu pre hardvérové tlačidlo "Späť"
+            history.pushState({ modal: 'search' }, '', '#search');
         }
 
         function closeSearchOverlay() {
             document.getElementById('searchOverlay').classList.replace('flex', 'hidden');
+            document.getElementById('suggestions').classList.add('hidden'); // Hneď skryje aj históriu
+            document.getElementById('cityInput').blur(); // Okamžite stiahne klávesnicu
+            
+            // Ak okno zavrieš krížikom alebo klikom vedľa, potichu zmažeme "#search" z URL
+            if (window.location.hash === '#search') {
+                history.back();
+            }
         }
 
         function openSunPhases() {
@@ -1492,8 +1501,11 @@
 
         document.addEventListener('click', (e) => {
             const isSearchBtn = e.target.closest('button[onclick="searchCity()"]');
+            const isLocBtn = e.target.closest('button[onclick="useMyLocation()"]');
+            
             if (!suggestionsBox.classList.contains('hidden') && !suggestionsBox.contains(e.target) && e.target !== cityInput) {
-                if (!isSearchBtn) {
+                // Ak sme neklikli ani na "Hľadať", ani na "Moja poloha", zablokuj klik
+                if (!isSearchBtn && !isLocBtn) {
                     e.stopPropagation(); 
                     e.preventDefault();
                 }
@@ -1506,6 +1518,16 @@
             if (e.key === 'Enter') {
                 suggestionsBox.classList.add('hidden');
                 searchCity();
+            }
+        });
+
+// Reakcia na stlačenie hardvérového tlačidla "Späť" na telefóne
+        window.addEventListener('popstate', () => {
+            if (window.location.hash !== '#search') {
+                // Zavrie kompletne celé vyhľadávanie
+                document.getElementById('searchOverlay').classList.replace('flex', 'hidden');
+                document.getElementById('suggestions').classList.add('hidden');
+                document.getElementById('cityInput').blur();
             }
         });
 
