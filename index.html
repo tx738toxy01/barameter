@@ -185,7 +185,7 @@
             
             <div class="flex gap-2 relative z-20 shrink-0">
                 <div class="relative w-full">
-                    <input type="text" inputmode="search" id="cityInput" name="nahodne_vyhladavanie" placeholder="Zadaj mesto..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-form-type="other" class="w-full bg-zinc-800 border border-zinc-600 text-white text-lg rounded-xl px-5 py-3.5 pr-12 outline-none focus:border-emerald-500 shadow-inner">
+                    <input type="text" inputmode="search" id="searchInput" name="q_search" placeholder="Hľadať..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="w-full bg-zinc-800 border border-zinc-600 text-white text-lg rounded-xl px-5 py-3.5 pr-12 outline-none focus:border-emerald-500 shadow-inner">
                     <button onclick="useMyLocation()" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-red-500 hover:text-red-400 transition-colors z-10" title="Moja poloha">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" /></svg>
                     </button>
@@ -451,7 +451,7 @@
 
         function openSearchOverlay() {
             document.getElementById('searchOverlay').classList.replace('hidden', 'flex');
-            setTimeout(() => document.getElementById('cityInput').focus(), 100);
+            setTimeout(() => document.getElementById('searchInput').focus(), 100);
             showHistory(); 
             // Vytvorenie záchytného bodu pre hardvérové tlačidlo "Späť"
             history.pushState({ modal: 'search' }, '', '#search');
@@ -460,7 +460,7 @@
         function closeSearchOverlay() {
             document.getElementById('searchOverlay').classList.replace('flex', 'hidden');
             document.getElementById('suggestions').classList.add('hidden'); // Hneď skryje aj históriu
-            document.getElementById('cityInput').blur(); // Okamžite stiahne klávesnicu
+            document.getElementById('searchInput').blur(); // Okamžite stiahne klávesnicu
             
             // Ak okno zavrieš krížikom alebo klikom vedľa, potichu zmažeme "#search" z URL
             if (window.location.hash === '#search') {
@@ -1317,11 +1317,11 @@
         function hideDayDetail() { document.getElementById('dayDetailModal').classList.replace('flex', 'hidden'); }
 
         function searchCity() {
-            const cityInputEl = document.getElementById('cityInput');
-            const input = cityInputEl.value.trim();
+            const searchInputEl = document.getElementById('searchInput');
+            const input = searchInputEl.value.trim();
             if (!input) return;
             
-            cityInputEl.blur(); 
+            searchInputEl.blur(); 
             closeSearchOverlay();
 
             fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(input)}&count=1&language=sk`)
@@ -1370,9 +1370,9 @@
             if (!navigator.geolocation) return alert("Geolokácia nie je podporovaná");
             closeSearchOverlay();
             showToast("Zisťujem tvoju polohu... 📍", true);
-            const cityInputEl = document.getElementById('cityInput');
-            cityInputEl.value = "Moja poloha";
-            cityInputEl.blur();
+            const searchInputEl = document.getElementById('searchInput');
+            searchInputEl.value = "Moja poloha";
+            searchInputEl.blur();
             navigator.geolocation.getCurrentPosition(p => {
                 fetchWeather(p.coords.latitude, p.coords.longitude, "Moja poloha");
             }, () => {
@@ -1392,7 +1392,7 @@
         }
 
         let debounceTimer = null;
-        const cityInput = document.getElementById('cityInput');
+        const searchInput = document.getElementById('searchInput');
         const suggestionsBox = document.getElementById('suggestions');
         let searchHistory = JSON.parse(localStorage.getItem('barameter_history')) || [];
 
@@ -1421,9 +1421,9 @@
                 `;
                 div.onmousedown = (e) => { 
                     e.preventDefault(); 
-                    cityInput.value = city.name;
+                    searchInput.value = city.name;
                     suggestionsBox.classList.add('hidden');
-                    cityInput.blur(); 
+                    searchInput.blur(); 
                     closeSearchOverlay();
                     fetchWeather(city.lat, city.lon, city.name);
                     saveToHistory(city); 
@@ -1433,14 +1433,14 @@
             suggestionsBox.classList.remove('hidden');
         }
 
-        cityInput.addEventListener('focus', () => {
-            cityInput.value = ''; 
+        searchInput.addEventListener('focus', () => {
+            searchInput.value = ''; 
             showHistory();        
         });
 
-        cityInput.addEventListener('input', () => {
+        searchInput.addEventListener('input', () => {
             clearTimeout(debounceTimer);
-            const query = cityInput.value.trim();
+            const query = searchInput.value.trim();
             if (query.length < 2) {
                 if (query.length === 0) showHistory();
                 else suggestionsBox.classList.add('hidden');
@@ -1482,9 +1482,9 @@
                         `;
                         div.onmousedown = (e) => {
                             e.preventDefault();
-                            cityInput.value = city.name;
+                            searchInput.value = city.name;
                             suggestionsBox.classList.add('hidden');
-                            cityInput.blur(); 
+                            searchInput.blur(); 
                             closeSearchOverlay();
                             fetchWeather(city.latitude, city.longitude, city.name);
                             saveToHistory({ name: city.name, lat: city.latitude, lon: city.longitude, desc: desc });
@@ -1505,7 +1505,7 @@
             const isCloseBtn = e.target.closest('button[onclick="closeSearchOverlay()"]');
             const isOverlayBg = e.target.id === 'searchOverlay';
             
-            if (!suggestionsBox.classList.contains('hidden') && !suggestionsBox.contains(e.target) && e.target !== cityInput) {
+            if (!suggestionsBox.classList.contains('hidden') && !suggestionsBox.contains(e.target) && e.target !== searchInput) {
                 // Zablokuj klik iba vtedy, ak si klikol do prázdneho miesta vnútri bieleho okna.
                 // Ak si klikol na X, čierne pozadie, hľadať alebo polohu, nechaj klik prejsť.
                 if (!isSearchBtn && !isLocBtn && !isCloseBtn && !isOverlayBg) {
@@ -1513,11 +1513,11 @@
                     e.preventDefault();
                 }
                 suggestionsBox.classList.add('hidden');
-                cityInput.blur(); 
+                searchInput.blur(); 
             }
         }, true);
 
-        document.getElementById('cityInput').addEventListener('keypress', e => {
+        document.getElementById('searchInput').addEventListener('keypress', e => {
             if (e.key === 'Enter') {
                 suggestionsBox.classList.add('hidden');
                 searchCity();
@@ -1530,7 +1530,7 @@
                 // Zavrie kompletne celé vyhľadávanie
                 document.getElementById('searchOverlay').classList.replace('flex', 'hidden');
                 document.getElementById('suggestions').classList.add('hidden');
-                document.getElementById('cityInput').blur();
+                document.getElementById('searchInput').blur();
             }
         });
 
