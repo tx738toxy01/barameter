@@ -80,6 +80,19 @@
             </div>
         </div>
 
+<!-- Riadok 2: Fázy dňa presunuté pod zelené okno -->
+        <div onclick="openSunPhases()" class="flex justify-between items-center text-sm sm:text-base bg-zinc-800/80 hover:bg-zinc-700/80 border border-zinc-700/50 rounded-xl px-4 sm:px-5 py-2.5 sm:py-3.5 cursor-pointer transition-all shadow-inner min-h-[3.5rem] sm:min-h-[4rem] shrink-0 z-20">
+            <div class="flex items-center gap-1.5 text-amber-400 font-bold">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 sm:w-6 sm:h-6"><path d="M12 2v6"/><path d="M12 2l-3 3"/><path d="M12 2l3 3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
+                <span id="mainSunrise" class="text-base sm:text-lg">--:--</span>
+            </div>
+            <div id="detailSunPhase" class="truncate px-2 text-center flex-1 text-base sm:text-lg">Načítavam...</div>
+            <div class="flex items-center gap-1.5 text-indigo-400 font-bold">
+                <span id="mainSunset" class="text-base sm:text-lg">--:--</span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 sm:w-6 sm:h-6"><path d="M12 10V2"/><path d="M12 10l-3-3"/><path d="M12 10l3-3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
+            </div>
+        </div>
+
         <!-- Hlavné zelené okno (Status Card) -->
         <div id="statusCard" class="glass rounded-[2rem] p-4 sm:p-5 border transition-all duration-300 cursor-pointer flex-1 flex flex-col justify-between min-h-0 shadow-lg overflow-hidden relative status-good">
             <div id="weatherAnimBg" class="anim-bg-layer"></div> 
@@ -143,19 +156,6 @@
                 </div>
             </div> <!-- Ukončenie spodného panelu s počasím -->
         </div> <!-- Ukončenie celého zeleného okna statusCard -->
-
-        <!-- Riadok 2: Fázy dňa presunuté pod zelené okno -->
-        <div onclick="openSunPhases()" class="flex justify-between items-center text-sm sm:text-base bg-zinc-800/80 hover:bg-zinc-700/80 border border-zinc-700/50 rounded-xl px-4 sm:px-5 py-2.5 sm:py-3.5 cursor-pointer transition-all shadow-inner min-h-[3.5rem] sm:min-h-[4rem] shrink-0 z-20">
-            <div class="flex items-center gap-1.5 text-amber-400 font-bold">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 sm:w-6 sm:h-6"><path d="M12 2v6"/><path d="M12 2l-3 3"/><path d="M12 2l3 3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
-                <span id="mainSunrise" class="text-base sm:text-lg">--:--</span>
-            </div>
-            <div id="detailSunPhase" class="truncate px-2 text-center flex-1 text-base sm:text-lg">Načítavam...</div>
-            <div class="flex items-center gap-1.5 text-indigo-400 font-bold">
-                <span id="mainSunset" class="text-base sm:text-lg">--:--</span>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 sm:w-6 sm:h-6"><path d="M12 10V2"/><path d="M12 10l-3-3"/><path d="M12 10l3-3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
-            </div>
-        </div>
 
     </div> <!-- Ukončenie captureArea -->
             
@@ -475,7 +475,7 @@
             
             // Zmeníme nadpis v okne (ak tam máš hardcodnuté "SHMÚ Radar", nájdeme ho podľa ikonky 📡 a prepíšeme)
             const modalTitle = document.querySelector('#radarModal .text-emerald-400');
-            if (modalTitle) modalTitle.innerHTML = '<span class="text-2xl">📡</span> LIVE Rain Radar';
+            if (modalTitle) modalTitle.innerHTML = '<span class="text-2xl">📡</span> Live Radar';
 
             document.getElementById('radarModal').classList.replace('hidden', 'flex');
         }
@@ -508,7 +508,7 @@
         function openSunPhases() {
             const phases = updateSunPhaseUI();
             if (!phases) return showToast("Zatiaľ nemám dáta o slnku", false);
-            document.getElementById('sunPhasesDate').innerText = new Date().toLocaleDateString('sk-SK', { weekday: 'long', day: 'numeric', month: 'long' });
+            document.getElementById('sunPhasesDate').innerText = `${currentCity} | ` + new Date().toLocaleDateString('sk-SK', { weekday: 'long', day: 'numeric', month: 'long' });
 
             const formatT = (date) => date.toLocaleTimeString('sk-SK', {hour: '2-digit', minute:'2-digit'});
             const content = document.getElementById('sunPhasesContent');
