@@ -1091,18 +1091,19 @@
         }
 
         function getOmIcon(code, isDay = 1) {
-            // Mesiac vytiahnutý hore (-top-[30%]) a zmenšený, mrak je ukotvený dole
+            // Naše nočné ikonky poskladané z dvoch emoji
             const mCloud = `<span class="relative inline-flex items-center justify-center w-[1.2em] h-[1em] align-middle"><span class="absolute -top-[30%] right-0 text-[65%] z-0">🌙</span><span class="absolute -bottom-[10%] left-0 text-[100%] z-10 drop-shadow-md">☁️</span></span>`;
             const mRain = `<span class="relative inline-flex items-center justify-center w-[1.2em] h-[1em] align-middle"><span class="absolute -top-[30%] right-0 text-[65%] z-0">🌙</span><span class="absolute -bottom-[10%] left-0 text-[100%] z-10 drop-shadow-md">🌧️</span></span>`;
+            const mSnow = `<span class="relative inline-flex items-center justify-center w-[1.2em] h-[1em] align-middle"><span class="absolute -top-[30%] right-0 text-[65%] z-0">🌙</span><span class="absolute -bottom-[10%] left-0 text-[100%] z-10 drop-shadow-md">🌨️</span></span>`;
 
             if (code === 0) return isDay ? '☀️' : '🌙';
             if (code === 1 || code === 2) return isDay ? '🌤️' : mCloud;
             if (code === 3) return '☁️';
             if (code === 45 || code === 48) return '🌫️';
             if (code >= 51 && code <= 67) return isDay ? '🌧️' : mRain;
-            if (code >= 71 && code <= 77) return '🌨️';
+            if (code >= 71 && code <= 77) return isDay ? '🌨️' : mSnow;
             if (code >= 80 && code <= 82) return isDay ? '🌧️' : mRain;
-            if (code >= 85 && code <= 86) return '🌨️';
+            if (code >= 85 && code <= 86) return isDay ? '🌨️' : mSnow;
             if (code >= 95) return '⛈️';
             return '☁️';
         }
