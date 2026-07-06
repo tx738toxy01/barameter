@@ -84,47 +84,29 @@
         <div id="statusCard" class="glass rounded-[2rem] p-4 sm:p-5 border transition-all duration-300 cursor-pointer flex-1 flex flex-col justify-between min-h-0 shadow-lg overflow-hidden relative status-good">
             <div id="weatherAnimBg" class="anim-bg-layer"></div> 
             
-            <div onclick="openExtendedTips()" class="cursor-pointer flex flex-col flex-1 min-h-0 group/status z-10 select-none relative">
+            <div class="flex flex-col flex-1 min-h-0 z-10 select-none relative">
                 
-                <!-- Vrátený nápis a tlačidlo "Kde to je" (aj s tlačidlom na zdieľanie) -->
-                <div class="flex justify-between items-start content-layer mb-2">
-                    <div class="text-2xl md:text-3xl font-black text-emerald-400 tracking-tight group-hover/status:text-emerald-300 transition-colors drop-shadow-md">Bára, a čo teraz?</div>
-                    <div class="flex items-center gap-2 z-20">
-                        <button onclick="event.stopImmediatePropagation(); shareWindow('captureArea')" class="text-white hover:text-emerald-400 transition-colors p-2 bg-black/20 hover:bg-black/40 rounded-xl backdrop-blur-sm no-share z-20 border border-white/10" title="Zdieľať">
+                <div class="flex justify-between items-start content-layer mb-2 z-20">
+                    <div onclick="openExtendedTips()" class="cursor-pointer text-2xl md:text-3xl font-black text-emerald-400 tracking-tight hover:text-emerald-300 transition-colors drop-shadow-md" title="Otvorí pokyny pre nakrúcanie">Bára, a čo teraz?</div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="event.stopImmediatePropagation(); shareWindow('captureArea')" class="text-white hover:text-emerald-400 transition-colors p-2 bg-black/20 hover:bg-black/40 rounded-xl backdrop-blur-sm no-share border border-white/10" title="Zdieľať">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" /></svg>
                         </button>
                     </div>
                 </div>
 
-                <div class="flex flex-col items-center justify-center text-center py-1 flex-1 min-h-0 content-layer my-auto justify-items-center">
+                <div onclick="showTipsModal()" class="cursor-pointer flex flex-col items-center justify-center text-center py-1 flex-1 min-h-0 content-layer my-auto justify-items-center hover:scale-[1.02] transition-transform" title="Otvorí presnú predpoveď">
                     <div id="statusEmoji" class="text-[clamp(2rem,9vh,6.5rem)] mb-1 drop-shadow-xl leading-none shrink-0 transition-all">⏳</div>
                     <div id="statusText" class="text-amber-400 text-[clamp(1.1rem,3.5vh,2.75rem)] font-black tracking-tighter leading-tight shrink-0 text-outline transition-all">Načítavam...</div>
                     <div id="statusDesc" class="text-emerald-300 mt-0.5 text-[clamp(0.7rem,1.8vh,1.25rem)] font-bold shrink-0 text-outline transition-all"></div>
                 </div>
             </div>
     
-            <div onclick="event.stopImmediatePropagation(); showTipsModal()" class="shrink-0 w-full mt-auto mb-0 content-layer bg-black/20 hover:bg-black/35 border border-white/5 rounded-[2rem] p-2.5 sm:p-4 shadow-inner cursor-pointer transition-all group/weather z-20">
-                <div class="grid grid-cols-4 gap-1 sm:gap-2 text-center">
-                    <div class="flex flex-col items-center justify-center">
-                        <div class="text-[clamp(1.3rem,4vh,3rem)] drop-shadow-md mb-0.5 sm:mb-1 transition-all">🌡️</div>
-                        <div class="text-zinc-400 text-[clamp(8px,1vh,11px)] uppercase tracking-wider mb-0.5 font-bold leading-none">Teplota</div>
-                        <div id="temp" class="font-black text-[clamp(0.85rem,2vh,1.4rem)] text-white whitespace-nowrap">--°C</div>
-                    </div>
-                    <div class="flex flex-col items-center justify-center">
-                        <div class="text-[clamp(1.3rem,4vh,3rem)] drop-shadow-md mb-0.5 sm:mb-1 transition-all">💨</div>
-                        <div class="text-zinc-400 text-[clamp(8px,1vh,11px)] uppercase tracking-wider mb-0.5 font-bold leading-none">Vietor</div>
-                        <div id="wind" class="font-black text-[clamp(0.85rem,2vh,1.4rem)] text-white whitespace-nowrap">-- km/h</div>
-                    </div>
-                    <div class="flex flex-col items-center justify-center">
-                        <div id="rainIcon" class="text-[clamp(1.3rem,4vh,3rem)] drop-shadow-md mb-0.5 sm:mb-1 transition-all">☔</div>
-                        <div id="rainLabel" class="text-zinc-400 text-[clamp(8px,1vh,11px)] uppercase tracking-wider mb-0.5 font-bold leading-none">Zrážky</div>
-                        <div id="rain" class="font-black text-[clamp(0.85rem,2vh,1.4rem)] text-white whitespace-nowrap">--</div>
-                    </div>
-                    <div class="flex flex-col items-center justify-center">
-                        <div class="text-[clamp(1.3rem,4vh,3rem)] drop-shadow-md mb-0.5 sm:mb-1 transition-all">☁️</div>
-                        <div class="text-zinc-400 text-[clamp(8px,1vh,11px)] uppercase tracking-wider mb-0.5 font-bold leading-none">Oblaky</div>
-                        <div id="clouds" class="font-black text-[clamp(0.85rem,2vh,1.4rem)] text-white whitespace-nowrap">-- %</div>
-                    </div>
+            <div onclick="event.stopImmediatePropagation(); openTodayDetail()" class="shrink-0 w-full mt-auto mb-0 content-layer bg-black/20 hover:bg-black/35 border border-white/5 rounded-[2rem] p-3 sm:p-4 shadow-inner cursor-pointer transition-all z-20">
+                <div class="text-xs sm:text-sm font-bold text-emerald-400 mb-2 uppercase tracking-wider text-center">Predpoveď na 24 hodín</div>
+                <div id="forecast24h" class="grid grid-cols-6 gap-1 sm:gap-2 text-center">
+                    <!-- Sem sa dynamicky vygeneruje 6 ikoniek cez JavaScript -->
+                    <div class="col-span-6 text-zinc-400 text-sm py-2">Načítavam...</div>
                 </div>
                 
                 <div class="flex justify-between items-center text-[9px] sm:text-[10px] md:text-xs text-white/40 font-mono uppercase tracking-widest w-full border-t border-white/10 pt-2 mt-2 sm:pt-3 sm:mt-3">
@@ -268,8 +250,12 @@
                 </div>
             </div>
             <div id="dayDetailContent" class="p-5 space-y-3"></div>
-            <div class="p-5 pt-0">
-                <button onclick="hideDayDetail()" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-2xl transition-all shadow-md no-share">Bára, dík!</button>
+            <div class="p-5 pt-0 space-y-3">
+                <div class="flex justify-between gap-3 no-share">
+                    <button onclick="changeDayDetail(-1)" id="btnPrevDay" class="flex-1 py-2 bg-zinc-800 hover:bg-zinc-700 text-white font-bold text-sm rounded-xl transition-all border border-zinc-700">&larr; Predchádzajúci</button>
+                    <button onclick="changeDayDetail(1)" id="btnNextDay" class="flex-1 py-2 bg-zinc-800 hover:bg-zinc-700 text-white font-bold text-sm rounded-xl transition-all border border-zinc-700">Nasledujúci &rarr;</button>
+                </div>
+                <button onclick="hideDayDetail()" class="w-full py-3 bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 font-bold rounded-2xl transition-all border border-emerald-500/30 shadow-md no-share">Bára, dík!</button>
             </div>
         </div>
     </div>
@@ -1016,25 +1002,32 @@
                 
                 document.getElementById('mainSunrise').innerText = todaySunrise;
                 document.getElementById('mainSunset').innerText = todaySunset;
-                document.getElementById('temp').innerText = temp + "°C";
-                document.getElementById('wind').innerText = wind + " km/h";
-                document.getElementById('clouds').innerText = clouds + " %";
+                // --- Generovanie 24h predpovede (6 ikoniek) ---
+                const forecast24hEl = document.getElementById('forecast24h');
+                forecast24hEl.innerHTML = '';
                 
-                // Dynamická zmena: Zrážky vs. UV Index
-                const rainEl = document.getElementById('rain');
-                const rainIconEl = document.getElementById('rainIcon');
-                const rainLabelEl = document.getElementById('rainLabel');
+                // Nájdeme správny index pre posun hodín z hourly poľa (nájde index najbližšej celej hodiny)
+                const currentStr = new Date().toISOString().substring(0, 13);
+                let startIndex = dataAuto.hourly.time.findIndex(t => t.startsWith(currentStr));
+                if(startIndex === -1) startIndex = new Date().getHours(); // Fallback
                 
-                // Zistíme, či prší (podľa mm zrážok alebo weather code)
-                if (current.precipitation > 0 || (code >= 51 && code <= 99)) {
-                    rainIconEl.innerText = "☔";
-                    rainLabelEl.innerText = "Zrážky";
-                    // Ak sú zrážky > 0, ukážeme mm, inak aspoň "Áno" pre istotu
-                    rainEl.innerText = (current.precipitation > 0) ? current.precipitation.toFixed(1) + " mm" : "Áno";
-                } else {
-                    rainIconEl.innerText = "🔆";
-                    rainLabelEl.innerText = "UV Index";
-                    rainEl.innerText = (typeof current.uv_index === 'number') ? current.uv_index.toFixed(1) : "--";
+                // Vygenerujeme presne 6 hodinových blokov v rozostupe 4 hodín (pokrýva 24h)
+                for (let i = 0; i < 6; i++) {
+                    const hIndex = startIndex + (i * 4) + 1; // +1, aby prvá ikona ukazovala už blízku budúcnosť
+                    if (hIndex >= dataAuto.hourly.temperature_2m.length) break;
+                    
+                    const fTemp = Math.round(dataAuto.hourly.temperature_2m[hIndex]);
+                    const fCode = dataAuto.hourly.weathercode[hIndex];
+                    const fTime = new Date(dataAuto.hourly.time[hIndex]).getHours() + ":00";
+                    const fIcon = getOmIcon(fCode);
+
+                    forecast24hEl.innerHTML += `
+                        <div class="flex flex-col items-center justify-center">
+                            <div class="text-[clamp(10px,1.5vh,12px)] text-zinc-400 font-mono mb-1">${fTime}</div>
+                            <div class="text-[clamp(1.5rem,3.5vh,2.5rem)] drop-shadow-md mb-1">${fIcon}</div>
+                            <div class="font-black text-[clamp(0.85rem,2vh,1.1rem)] text-white">${fTemp}°</div>
+                        </div>
+                    `;
                 }
 
                 const hum = current.relative_humidity_2m;
@@ -1254,7 +1247,34 @@
             }
         }
 
+        let currentDayDetailIndex = 0;
+
+        function openTodayDetail() {
+            if (!forecast16Data) return;
+            const todayIndex = 0;
+            const fullDays = ['Ne', 'Po', 'Ut', 'St', 'Št', 'Pi', 'So'];
+            const dateObj = new Date(forecast16Data.daily.time[todayIndex]);
+            openDayDetail(todayIndex, fullDays[dateObj.getDay()], dateObj.getDate() + '.' + (dateObj.getMonth() + 1) + '.');
+        }
+
+        function changeDayDetail(step) {
+            let newIndex = currentDayDetailIndex + step;
+            if (newIndex < 0 || newIndex > 15) return;
+            
+            const fullDays = ['Ne', 'Po', 'Ut', 'St', 'Št', 'Pi', 'So'];
+            const dateObj = new Date(forecast16Data.daily.time[newIndex]);
+            openDayDetail(newIndex, fullDays[dateObj.getDay()], dateObj.getDate() + '.' + (dateObj.getMonth() + 1) + '.');
+        }
+
         function openDayDetail(dayIndex, dayName, dayNum) {
+            currentDayDetailIndex = dayIndex;
+            
+            // Logika viditeľnosti tlačidiel (skryje Prev na dni 0 a Next na dni 15)
+            const btnPrev = document.getElementById('btnPrevDay');
+            const btnNext = document.getElementById('btnNextDay');
+            if(btnPrev) btnPrev.style.visibility = (dayIndex === 0) ? 'hidden' : 'visible';
+            if(btnNext) btnNext.style.visibility = (dayIndex === 15) ? 'hidden' : 'visible';
+
             document.getElementById('dayDetailTitle').innerHTML = `
                 <div class="text-left">
                     <div class="text-white">${currentCity} | ${dayName} ${dayNum}</div>
