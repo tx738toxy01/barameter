@@ -93,6 +93,11 @@
                     </div>
                     
                     <div class="flex items-center gap-2 shrink-0">
+                        <!-- Tlačidlo SHMÚ Radaru -->
+                        <button onclick="event.stopImmediatePropagation(); openRadarModal()" class="text-blue-400 hover:text-blue-300 transition-colors p-2.5 bg-black/20 hover:bg-black/40 rounded-xl backdrop-blur-sm no-share border border-white/10 shadow-sm active:scale-95" title="Zrážkový radar">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V19m-4-2.5v1.5m8-1.5v1.5M4 12a8 8 0 0115.3-2.9C21 9.4 22 10.6 22 12c0 1.6-1.3 3-3 3H5c-1.6 0-3-1.4-3-3z" /></svg>
+                        </button>
+                        <!-- Tlačidlo Zdieľať -->
                         <button onclick="event.stopImmediatePropagation(); shareWindow('captureArea')" class="text-white hover:text-emerald-400 transition-colors p-2.5 bg-black/20 hover:bg-black/40 rounded-xl backdrop-blur-sm no-share border border-white/10 shadow-sm active:scale-95" title="Zdieľať">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" /></svg>
                         </button>
@@ -369,6 +374,23 @@
         </div>
     </div>
 
+<!-- Zrážkový Radar -->
+    <div id="radarModal" onclick="if(event.target === this) closeRadarModal()" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[80] p-4">
+        <div class="bg-zinc-900 rounded-3xl w-full max-w-4xl h-[85vh] flex flex-col border border-zinc-700 shadow-2xl overflow-hidden">
+            <div class="bg-zinc-900/95 px-6 py-4 flex justify-between items-center border-b border-zinc-700 z-10">
+                <div class="font-bold text-lg text-emerald-400 flex items-center gap-2"><span class="text-2xl">📡</span> SHMÚ Radar</div>
+                <button onclick="closeRadarModal()" class="text-3xl text-zinc-400 hover:text-white leading-none">×</button>
+            </div>
+            <div class="flex-1 w-full bg-zinc-800 relative">
+                <!-- SHMÚ iframe ukazuje rovno na ich mobilnú radarovú verziu -->
+                <iframe id="radarIframe" src="" class="w-full h-full border-0 absolute inset-0" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+            <div class="p-4 bg-zinc-900 border-t border-zinc-700 shrink-0">
+                <button onclick="closeRadarModal()" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-2xl transition-all shadow-md no-share">Bára, dík!</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Skripty -->
     <script>
         let currentLat = 48.1486;
@@ -445,6 +467,18 @@
             }
 
             return phases;
+        }
+
+        function openRadarModal() {
+            // Natiahne radar až po kliknutí, aby to nebrzdilo appku pri štarte
+            document.getElementById('radarIframe').src = 'https://m.shmu.sk/sk/?page=1&id=meteo_radar';
+            document.getElementById('radarModal').classList.replace('hidden', 'flex');
+        }
+
+        function closeRadarModal() {
+            document.getElementById('radarModal').classList.replace('flex', 'hidden');
+            // Vyprázdnením URL šetríme RAM a dáta na pozadí
+            document.getElementById('radarIframe').src = ''; 
         }
 
         function openSearchOverlay() {
