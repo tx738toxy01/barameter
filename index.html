@@ -99,11 +99,18 @@
                     </div>
                 </div>
 
-                <!-- Stredová zóna (Nekukaj a toč) obalená do výrazného klikateľného boxu -->
-                <div onclick="showTipsModal()" class="cursor-pointer flex flex-col items-center justify-center text-center py-2 px-3 my-auto flex-1 min-h-0 content-layer bg-black/15 hover:bg-black/30 border border-white/5 rounded-[1.75rem] shadow-inner transition-all active:scale-[0.99] group/statusbox" title="Otvorí vyčerpávajúcu predpoveď">
-                    <div id="statusEmoji" class="text-[clamp(2rem,9vh,6.5rem)] mb-1 drop-shadow-xl leading-none shrink-0 transition-transform duration-300 group-hover/statusbox:scale-105">⏳</div>
-                    <div id="statusText" class="text-amber-400 text-[clamp(1.1rem,3.5vh,2.75rem)] font-black tracking-tighter leading-tight shrink-0 text-outline transition-all">Načítavam...</div>
-                    <div id="statusDesc" class="text-emerald-300 mt-0.5 text-[clamp(0.7rem,1.8vh,1.25rem)] font-bold shrink-0 text-outline transition-all"></div>
+                <!-- Stredová zóna - Emoji voľne, podklad iba pod textom -->
+                <div onclick="showTipsModal()" class="cursor-pointer flex flex-col items-center justify-center text-center my-auto flex-1 min-h-0 content-layer group/statusbox" title="Otvorí vyčerpávajúcu predpoveď">
+                    
+                    <!-- Samotná fajfka/emoji úplne bez pozadia -->
+                    <div id="statusEmoji" class="text-[clamp(2rem,9vh,6.5rem)] drop-shadow-xl leading-none shrink-0 transition-transform duration-300 group-hover/statusbox:scale-110 group-hover/statusbox:-translate-y-1 mb-2">⏳</div>
+                    
+                    <!-- Texty zabalené vo vlastnom tmavom podklade -->
+                    <div class="bg-black/20 group-hover/statusbox:bg-black/40 border border-white/10 rounded-3xl shadow-inner px-5 py-2 transition-all active:scale-[0.98]">
+                        <div id="statusText" class="text-amber-400 text-[clamp(1.1rem,3.5vh,2.75rem)] font-black tracking-tighter leading-tight shrink-0 text-outline transition-all">Načítavam...</div>
+                        <div id="statusDesc" class="text-emerald-300 mt-1 text-[clamp(0.7rem,1.8vh,1.25rem)] font-bold shrink-0 text-outline transition-all"></div>
+                    </div>
+                    
                 </div>
             </div>
     
@@ -1084,9 +1091,9 @@
         }
 
         function getOmIcon(code, isDay = 1) {
-            // Naše vlastnoručne "vyrobené" nočné ikonky poskladané z dvoch emoji cez seba
-            const mCloud = `<span class="relative inline-block w-[1.1em] h-[1em] align-middle"><span class="absolute -top-[10%] right-[5%] text-[70%] z-0">🌙</span><span class="absolute bottom-[5%] left-[5%] text-[90%] z-10">☁️</span></span>`;
-            const mRain = `<span class="relative inline-block w-[1.1em] h-[1em] align-middle"><span class="absolute -top-[10%] right-[5%] text-[70%] z-0">🌙</span><span class="absolute bottom-[5%] left-[5%] text-[90%] z-10">🌧️</span></span>`;
+            // Mesiac vytiahnutý hore (-top-[30%]) a zmenšený, mrak je ukotvený dole
+            const mCloud = `<span class="relative inline-flex items-center justify-center w-[1.2em] h-[1em] align-middle"><span class="absolute -top-[30%] right-0 text-[65%] z-0">🌙</span><span class="absolute -bottom-[10%] left-0 text-[100%] z-10 drop-shadow-md">☁️</span></span>`;
+            const mRain = `<span class="relative inline-flex items-center justify-center w-[1.2em] h-[1em] align-middle"><span class="absolute -top-[30%] right-0 text-[65%] z-0">🌙</span><span class="absolute -bottom-[10%] left-0 text-[100%] z-10 drop-shadow-md">🌧️</span></span>`;
 
             if (code === 0) return isDay ? '☀️' : '🌙';
             if (code === 1 || code === 2) return isDay ? '🌤️' : mCloud;
