@@ -1026,8 +1026,17 @@
                     
                     const fTemp = Math.round(dataAuto.hourly.temperature_2m[hIndex]);
                     const fCode = dataAuto.hourly.weathercode[hIndex];
-                    const fTime = new Date(dataAuto.hourly.time[hIndex]).getHours() + ":00";
-                    const fIcon = getOmIcon(fCode);
+                    const dateObj = new Date(dataAuto.hourly.time[hIndex]);
+                    const fHour = dateObj.getHours();
+                    const fTime = fHour + ":00";
+                    
+                    // Zistíme presný deň a jeho východ/západ slnka pre danú hodinu
+                    const dIndex = Math.floor(hIndex / 24); 
+                    const srHour = new Date(dataAuto.daily.sunrise[dIndex]).getHours();
+                    const ssHour = new Date(dataAuto.daily.sunset[dIndex]).getHours();
+                    const isDay = (fHour >= srHour && fHour < ssHour) ? 1 : 0;
+                    
+                    const fIcon = getOmIcon(fCode, isDay);
 
                     forecast24hEl.innerHTML += `
                         <div class="flex flex-col items-center justify-center">
@@ -1077,9 +1086,10 @@
             }
         }
 
-        function getOmIcon(code) {
-            if (code === 0) return '☀️';
-            if (code === 1 || code === 2) return '🌤️';
+        function getOmIcon(code, isDay = 1) {
+            if (code === 0) return isDay ? '☀️' : '🌙';
+            if (code === 1) return isDay ? '🌤️' : '🌙';
+            if (code === 2) return isDay ? '🌤️' : '☁️';
             if (code === 3) return '☁️';
             if (code === 45 || code === 48) return '🌫️';
             if (code >= 51 && code <= 67) return '🌧️';
@@ -1313,6 +1323,10 @@
 
             const hoursToDisplay = [6, 12, 18, 21];
             const labels = ["Ráno (06:00)", "Obed (12:00)", "Večer (18:00)", "Noc (21:00)"];
+            
+            // Získame presnú hodinu východu a západu slnka pre vybraný deň
+            const srHour = new Date(forecast16Data.daily.sunrise[dayIndex]).getHours();
+            const ssHour = new Date(forecast16Data.daily.sunset[dayIndex]).getHours();
 
             hoursToDisplay.forEach((hour, idx) => {
                 const absoluteIndex = (dayIndex * 24) + hour;
@@ -1321,10 +1335,13 @@
                 const cloud = forecast16Data.hourly.cloudcover[absoluteIndex];
                 const code = forecast16Data.hourly.weathercode[absoluteIndex];
                 
+                // Vyhodnotíme, či je táto hodina medzi východom a západom
+                const isDay = (hour >= srHour && hour < ssHour) ? 1 : 0;
+                
                 content.innerHTML += `
                     <div onclick="showHourlyStatus(${temp}, ${wind}, ${cloud}, ${code}, ${hour}, '${labels[idx]}', '${fullDayName}', '${dayNum}')" class="bg-zinc-800/80 hover:bg-zinc-700 transition-all cursor-pointer border border-zinc-700 rounded-2xl p-4 flex items-center justify-between">
                         <div class="flex items-center gap-4">
-                            <div class="text-4xl w-10 text-center drop-shadow-lg">${getOmIcon(code)}</div>
+                            <div class="text-4xl w-10 text-center drop-shadow-lg">${getOmIcon(code, isDay)}</div>
                             <div>
                                 <div class="text-sm text-zinc-400 font-bold mb-1">${labels[idx]}</div>
                                 <div class="text-xl font-black text-white">${temp}°C</div>
