@@ -99,14 +99,11 @@
                     </div>
                 </div>
 
-                <div onclick="showTipsModal()" class="cursor-pointer flex flex-col items-center justify-center text-center py-4 px-3 my-1 flex-1 min-h-0 content-layer bg-black/15 hover:bg-black/30 border border-white/5 rounded-[1.75rem] shadow-inner transition-all active:scale-[0.99] group/statusbox" title="Otvorí vyčerpávajúcu predpoveď">
+                <!-- Stredová zóna (Nekukaj a toč) obalená do výrazného klikateľného boxu -->
+                <div onclick="showTipsModal()" class="cursor-pointer flex flex-col items-center justify-center text-center py-2 px-3 my-auto flex-1 min-h-0 content-layer bg-black/15 hover:bg-black/30 border border-white/5 rounded-[1.75rem] shadow-inner transition-all active:scale-[0.99] group/statusbox" title="Otvorí vyčerpávajúcu predpoveď">
                     <div id="statusEmoji" class="text-[clamp(2rem,9vh,6.5rem)] mb-1 drop-shadow-xl leading-none shrink-0 transition-transform duration-300 group-hover/statusbox:scale-105">⏳</div>
                     <div id="statusText" class="text-amber-400 text-[clamp(1.1rem,3.5vh,2.75rem)] font-black tracking-tighter leading-tight shrink-0 text-outline transition-all">Načítavam...</div>
                     <div id="statusDesc" class="text-emerald-300 mt-0.5 text-[clamp(0.7rem,1.8vh,1.25rem)] font-bold shrink-0 text-outline transition-all"></div>
-                    
-                    <div class="text-[9px] text-white/30 group-hover/statusbox:text-white/60 font-mono uppercase tracking-widest mt-3 bg-black/20 px-3 py-1 rounded-full border border-white/5 transition-all shadow-sm">
-                        Klikni pre detail predpovede &darr;
-                    </div>
                 </div>
             </div>
     
@@ -1087,14 +1084,17 @@
         }
 
         function getOmIcon(code, isDay = 1) {
+            // Naše vlastnoručne "vyrobené" nočné ikonky poskladané z dvoch emoji cez seba
+            const mCloud = `<span class="relative inline-block w-[1.1em] h-[1em] align-middle"><span class="absolute -top-[10%] right-[5%] text-[70%] z-0">🌙</span><span class="absolute bottom-[5%] left-[5%] text-[90%] z-10">☁️</span></span>`;
+            const mRain = `<span class="relative inline-block w-[1.1em] h-[1em] align-middle"><span class="absolute -top-[10%] right-[5%] text-[70%] z-0">🌙</span><span class="absolute bottom-[5%] left-[5%] text-[90%] z-10">🌧️</span></span>`;
+
             if (code === 0) return isDay ? '☀️' : '🌙';
-            if (code === 1) return isDay ? '🌤️' : '🌙';
-            if (code === 2) return isDay ? '🌤️' : '☁️';
+            if (code === 1 || code === 2) return isDay ? '🌤️' : mCloud;
             if (code === 3) return '☁️';
             if (code === 45 || code === 48) return '🌫️';
-            if (code >= 51 && code <= 67) return '🌧️';
+            if (code >= 51 && code <= 67) return isDay ? '🌧️' : mRain;
             if (code >= 71 && code <= 77) return '🌨️';
-            if (code >= 80 && code <= 82) return '🌧️';
+            if (code >= 80 && code <= 82) return isDay ? '🌧️' : mRain;
             if (code >= 85 && code <= 86) return '🌨️';
             if (code >= 95) return '⛈️';
             return '☁️';
