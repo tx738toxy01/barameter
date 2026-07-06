@@ -826,7 +826,7 @@
 
                 // Bárina hierarchia scenárov pre aktuálne počasie
                 if (code >= 95) scenarioIdx = 7; 
-                else if (code >= 71 && code <= 86) scenarioIdx = 10; 
+                else if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) scenarioIdx = 10; 
                 else if (code === 45 || code === 48) scenarioIdx = 8; 
                 else if (wind >= 20) scenarioIdx = 5; 
                 else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) scenarioIdx = 6; 
@@ -1046,7 +1046,7 @@
 
                 if (code >= 95) { scenarioTitle = "⛈️ Koniec sveta (Búrka a lejak)"; mainEmoji = "❌"; mainText = "Zmotaj káble!"; statusClass = "status-bad"; statusType = "bad"; }
                 else if (wind > 35) { scenarioTitle = "💨 Vetrisko (Extrém)"; mainEmoji = "❌"; mainText = "Zmotaj káble!"; statusClass = "status-bad"; statusType = "bad"; }
-                else if (code >= 71 && code <= 86) { scenarioTitle = "❄️ Biela tma (Sneh a sneženie)"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; statusClass = "status-warn"; statusType = "warn"; }
+                else if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) { scenarioTitle = "❄️ Biela tma (Sneh a sneženie)"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; statusClass = "status-warn"; statusType = "warn"; }
                 else if (code === 45 || code === 48) { scenarioTitle = "🌫️ Hmla ako v Londýne"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; statusClass = "status-warn"; statusType = "warn"; }
                 else if (wind >= 20) { scenarioTitle = "💨 Vetrisko (Fučí celkom dosť)"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; statusClass = "status-warn"; statusType = "warn"; }
                 else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) { scenarioTitle = "🌦️ Uplakaný deň (Mrholenie a prehánky)"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; statusClass = "status-warn"; statusType = "warn"; }
@@ -1165,7 +1165,7 @@
 
             if (code >= 95) { scenarioTitle = "⛈️ Koniec sveta (Búrka a lejak)"; mainEmoji = "❌"; mainText = "Zmotaj káble!"; sIdx = 7; }
             else if (wind > 35) { scenarioTitle = "💨 Vetrisko (Extrém)"; mainEmoji = "❌"; mainText = "Zmotaj káble!"; sIdx = 5; }
-            else if (code >= 71 && code <= 86) { scenarioTitle = "❄️ Biela tma (Sneh a sneženie)"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; sIdx = 10; }
+            else if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) { scenarioTitle = "❄️ Biela tma (Sneh a sneženie)"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; sIdx = 10; }
             else if (code === 45 || code === 48) { scenarioTitle = "🌫️ Hmla ako v Londýne"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; sIdx = 8; }
             else if (wind >= 20) { scenarioTitle = "💨 Vetrisko (Fučí celkom dosť)"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; sIdx = 5; }
             else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) { scenarioTitle = "🌦️ Uplakaný deň (Mrholenie a prehánky)"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; sIdx = 6; }
