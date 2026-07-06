@@ -470,8 +470,13 @@
         }
 
         function openRadarModal() {
-            // Natiahne radar až po kliknutí, aby to nebrzdilo appku pri štarte
-            document.getElementById('radarIframe').src = 'https://m.shmu.sk/sk/?page=1&id=meteo_radar';
+            // Použijeme odľahčený embed od Windy, ktorý funguje všade a vycentruje sa presne na tvoju polohu
+            document.getElementById('radarIframe').src = `https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=%C2%B0C&metricWind=km%2Fh&zoom=7&overlay=radar&product=radar&level=surface&lat=${currentLat}&lon=${currentLon}&detailLat=${currentLat}&detailLon=${currentLon}&marker=true`;
+            
+            // Zmeníme nadpis v okne (ak tam máš hardcodnuté "SHMÚ Radar", nájdeme ho podľa ikonky 📡 a prepíšeme)
+            const modalTitle = document.querySelector('#radarModal .text-emerald-400');
+            if (modalTitle) modalTitle.innerHTML = '<span class="text-2xl">📡</span> Live Radar';
+
             document.getElementById('radarModal').classList.replace('hidden', 'flex');
         }
 
