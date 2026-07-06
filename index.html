@@ -1018,10 +1018,10 @@
                 const forecast24hEl = document.getElementById('forecast24h');
                 forecast24hEl.innerHTML = '';
                 
-                // Nájdeme správny index pre posun hodín z hourly poľa (nájde index najbližšej celej hodiny)
-                const currentStr = new Date().toISOString().substring(0, 13);
-                let startIndex = dataAuto.hourly.time.findIndex(t => t.startsWith(currentStr));
-                if(startIndex === -1) startIndex = new Date().getHours(); // Fallback
+                // 1. Zistíme aktuálny čas v MIESTNEJ ČASOVEJ ZÓNE vyhľadaného mesta (napr. Peking)
+                const targetNowStr = new Date().toLocaleString('sv-SE', { timeZone: currentTimezone }).replace(' ', 'T').substring(0, 13);
+                let startIndex = dataAuto.hourly.time.findIndex(t => t.startsWith(targetNowStr));
+                if (startIndex === -1) startIndex = 0; // Fallback
                 
                 // Vygenerujeme presne 6 hodinových blokov v rozostupe 4 hodín (pokrýva 24h)
                 for (let i = 0; i < 6; i++) {
@@ -1030,14 +1030,16 @@
                     
                     const fTemp = Math.round(dataAuto.hourly.temperature_2m[hIndex]);
                     const fCode = dataAuto.hourly.weathercode[hIndex];
-                    const dateObj = new Date(dataAuto.hourly.time[hIndex]);
-                    const fHour = dateObj.getHours();
-                    const fTime = fHour + ":00";
                     
-                    // Zistíme presný deň a jeho východ/západ slnka pre danú hodinu
+                    // 2. Čas čítame priamo ako text z Open-Meteo dát (vyhneme sa tak prepočtu zón v telefóne)
+                    const timeStr = dataAuto.hourly.time[hIndex]; // napr. "2026-07-07T05:00"
+                    const fHour = parseInt(timeStr.substring(11, 13), 10); // Vysekne len hodinu (05)
+                    const fTime = timeStr.substring(11, 16); // Vysekne hodinu a minúty (05:00)
+                    
+                    // Zistíme presný deň a jeho východ/západ slnka (tiež z textu)
                     const dIndex = Math.floor(hIndex / 24); 
-                    const srHour = new Date(dataAuto.daily.sunrise[dIndex]).getHours();
-                    const ssHour = new Date(dataAuto.daily.sunset[dIndex]).getHours();
+                    const srHour = parseInt(dataAuto.daily.sunrise[dIndex].substring(11, 13), 10);
+                    const ssHour = parseInt(dataAuto.daily.sunset[dIndex].substring(11, 13), 10);
                     const isDay = (fHour >= srHour && fHour < ssHour) ? 1 : 0;
                     
                     const fIcon = getOmIcon(fCode, isDay);
