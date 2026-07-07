@@ -931,7 +931,7 @@
                      zvuk: "V noci býva mesto tichšie, takže vyniknú aj tie najmenšie detaily. Na druhej strane, ak je blízko nejaká hlučná cesta, bude ju v tichu počuť viac ako cez deň.",
                      prod: "Nočné točky sú vyčerpávajúce. Káva, energeťáky a silný teplý catering o polnoci sú absolútnym základom pre to, aby štáb nezaspal v dodávke.",
                      masky: "Únava hercov sa ukáže najmä na kruhoch pod očami. Majte po ruke chladivé vankúšiky a korektory." },
-                12: { title: "☁️ Zamračená noc (Tma ako v rohu)", 
+                12: { title: "☁️ Zamračená noc (Tma ako v štúdiu)", 
                      kamera: "Oblaky v noci fungujú ako obrovský odrazový panel pre svetelný smog – obloha nad mestom bude mať hnedo-oranžový nádych. Ak ste mimo mesta, je to absolútna čierna diera. Zabaľte si dostatok malých batériových svetiel do pozadia.",
                      zvuk: "Ticho pred búrkou. Dajte pozor na bzučanie agregátov alebo filmových svetiel v úplnom tichu noci.",
                      prod: "Pohyb po tme je nebezpečný. Rozdajte štábu čelovky a zabezpečte pracovné svetlá (vajíčka) pre bezpečný presun gripu a techniky.",
@@ -1137,7 +1137,7 @@
                 else if (temp >= 29 && hum >= 70) { scenarioTitle = "🥵 Skleník (Extrémne dusno a vlhkosť)"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; statusClass = "status-warn"; statusType = "warn"; }
                 else if (temp < 5) { scenarioTitle = "🥶 Doba ľadová (Kosa a mráz)"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; statusClass = "status-warn"; statusType = "warn"; }
                 else if (current.is_day === 0) { 
-                    if (clouds >= 80) { scenarioTitle = "☁️ Zamračená noc (Tma ako v rohu)"; mainEmoji = "✅"; mainText = "Nekukaj a toč!"; statusClass = "status-good"; statusType = "good"; }
+                    if (clouds >= 80) { scenarioTitle = "☁️ Zamračená noc (Tma ako v štúdiu)"; mainEmoji = "✅"; mainText = "Nekukaj a toč!"; statusClass = "status-good"; statusType = "good"; }
                     else { scenarioTitle = "🌙 Nočná šichta (Jasná noc)"; mainEmoji = "✅"; mainText = "Nekukaj a toč!"; statusClass = "status-good"; statusType = "good"; }
                 }
                 else if (temp >= 25 && clouds < 30) { scenarioTitle = "☀️ Peklo zhora (Ostré slnko a výpek)"; mainEmoji = "✅"; mainText = "Nekukaj a toč!"; statusClass = "status-good"; statusType = "good"; }
@@ -1260,7 +1260,7 @@
             else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) { scenarioTitle = "🌦️ Uplakaný deň (Mrholenie a prehánky)"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; sIdx = 6; }
             else if (temp < 5) { scenarioTitle = "🥶 Doba ľadová (Kosa a mráz)"; mainEmoji = "⚠️"; mainText = "Ježíš, dávaj pozor!"; sIdx = 4; }
             else if (isDay === 0) { 
-                if (cloud >= 80) { scenarioTitle = "☁️ Zamračená noc (Tma ako v rohu)"; mainEmoji = "✅"; mainText = "Nekukaj a toč!"; sIdx = 12; }
+                if (cloud >= 80) { scenarioTitle = "☁️ Zamračená noc (Tma ako v šúdiu)"; mainEmoji = "✅"; mainText = "Nekukaj a toč!"; sIdx = 12; }
                 else { scenarioTitle = "🌙 Nočná šichta (Jasná noc)"; mainEmoji = "✅"; mainText = "Nekukaj a toč!"; sIdx = 11; }
             }
             else if (temp >= 25 && cloud < 30) { scenarioTitle = "☀️ Peklo zhora (Ostré slnko a výpek)"; mainEmoji = "✅"; mainText = "Nekukaj a toč!"; sIdx = 2; }
