@@ -558,8 +558,7 @@
 
         function changeModel(newModel) {
             mainModel = newModel;
-            calendarModel = newModel; // Pridané: Vynúti stiahnutie nových dát aj pre 24h osu
-            document.getElementById('calendarModelSelect').value = newModel; // Pridané: Vizuálne zosynchronizuje aj roletku ukrytú v kalendári
+            // Zmazali sme prepoj na calendarModel, takže 16-dňový výhľad si už žije vlastným životom!
             fetchWeather(currentLat, currentLon, currentCity);
         }
 
@@ -1008,8 +1007,11 @@
             showToast(`Načítavam lokáciu ${currentCity}... ⏳`, true);
             
             try {
-                // Pre aktuálne počasie VŽDY použijeme 'best_match' (zaručí nám to všetky premenné vrátane viditeľnosti z lokálnych senzorov)
-                const iconUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,surface_pressure,weathercode,windspeed_10m,cloudcover,dew_point_2m,visibility,wind_direction_10m,precipitation,wind_gusts_10m&models=best_match&timezone=auto`;
+                // Ošetríme ECMWF (nemá viditeľnosť) a stiahneme si aj dáta na 2 dni dopredu pre náš 24h panel z HLAVNÉHO modelu
+                let currentParams = "temperature_2m,relative_humidity_2m,apparent_temperature,is_day,surface_pressure,weathercode,windspeed_10m,cloudcover,dew_point_2m,wind_direction_10m,precipitation,wind_gusts_10m";
+                if (mainModel !== 'ecmwf_ifs04') currentParams += ",visibility";
+
+                const iconUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=${currentParams}&hourly=temperature_2m,weathercode&forecast_days=2&models=${mainModel}&timezone=auto`;
                 const autoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,windspeed_10m,cloudcover,weathercode&daily=weathercode,temperature_2m_max,sunrise,sunset&forecast_days=16&models=${calendarModel}&timezone=auto`;
                 
                 // Extra link len pre UV index z globálneho modelu (lebo iné modely ho nemusia mať)
