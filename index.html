@@ -1034,10 +1034,16 @@
 
                 // TOTO JE MÁGIA: Prepiseme skutočné aktuálne dáta predpoveďou z vybraného modelu!
                 const current = dataCurrent.current;
-                current.temperature_2m = dataMainHourly.hourly.temperature_2m[currentHIndex];
-                current.windspeed_10m = dataMainHourly.hourly.windspeed_10m[currentHIndex];
-                current.weathercode = dataMainHourly.hourly.weathercode[currentHIndex];
-                current.cloudcover = dataMainHourly.hourly.cloudcover[currentHIndex];
+                const mTemp = dataMainHourly.hourly.temperature_2m[currentHIndex];
+                const mWind = dataMainHourly.hourly.windspeed_10m[currentHIndex];
+                const mCode = dataMainHourly.hourly.weathercode[currentHIndex];
+                const mCloud = dataMainHourly.hourly.cloudcover[currentHIndex];
+
+                // OCHRANA: Ak model (napr. ECMWF) ešte nemá pre túto hodinu dáta (vráti null), ponecháme reálne dáta zo senzorov
+                if (mTemp !== null && mTemp !== undefined) current.temperature_2m = mTemp;
+                if (mWind !== null && mWind !== undefined) current.windspeed_10m = mWind;
+                if (mCode !== null && mCode !== undefined) current.weathercode = mCode;
+                if (mCloud !== null && mCloud !== undefined) current.cloudcover = mCloud;
 
                 forecast16Data = { current: current, hourly: dataAuto.hourly, daily: dataAuto.daily };
 
@@ -1084,8 +1090,15 @@
                     const hIndex = startIndex + (i * 4) + 1; // +1, aby prvá ikona ukazovala už blízku budúcnosť
                     if (hIndex >= dataMainHourly.hourly.temperature_2m.length) break;
                     
-                    const fTemp = Math.round(dataMainHourly.hourly.temperature_2m[hIndex]);
-                    const fCode = dataMainHourly.hourly.weathercode[hIndex];
+                    let fTempRaw = dataMainHourly.hourly.temperature_2m[hIndex];
+                    let fCodeRaw = dataMainHourly.hourly.weathercode[hIndex];
+                    
+                    // OCHRANA: Ak ECMWF pre túto hodinu vráti null, požičiame si dáta zo stabilného AUTO modelu
+                    if (fTempRaw === null || fTempRaw === undefined) fTempRaw = dataAuto.hourly.temperature_2m[hIndex];
+                    if (fCodeRaw === null || fCodeRaw === undefined) fCodeRaw = dataAuto.hourly.weathercode[hIndex];
+
+                    const fTemp = Math.round(fTempRaw);
+                    const fCode = fCodeRaw;
                     
                     // Čas čítame priamo ako text z Open-Meteo dát
                     const timeStr = dataMainHourly.hourly.time[hIndex]; 
