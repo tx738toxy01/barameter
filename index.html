@@ -1056,27 +1056,33 @@
                 
                 document.getElementById('mainSunrise').innerText = todaySunrise;
                 document.getElementById('mainSunset').innerText = todaySunset;
+                
+                // Prepiseme názov aktuálneho modelu priamo v modálnom okne Aktuálne počasie
+                const tipsModalText = document.querySelector('#tipsModal .text-\\[9px\\]');
+                if (tipsModalText) tipsModalText.innerText = `Model: ${modelNames[mainModel] || mainModel}`;
                 // --- Generovanie 24h predpovede (6 ikoniek) ---
                 const forecast24hEl = document.getElementById('forecast24h');
                 forecast24hEl.innerHTML = '';
                 
                 // 1. Zistíme aktuálny čas v MIESTNEJ ČASOVEJ ZÓNE vyhľadaného mesta (napr. Peking)
                 const targetNowStr = new Date().toLocaleString('sv-SE', { timeZone: currentTimezone }).replace(' ', 'T').substring(0, 13);
-                let startIndex = dataAuto.hourly.time.findIndex(t => t.startsWith(targetNowStr));
+                
+                // ZMENA: Čítame z dataIcon (ktorý používa hlavnú roletku), nie z dataAuto (kalendár)
+                let startIndex = dataIcon.hourly.time.findIndex(t => t.startsWith(targetNowStr));
                 if (startIndex === -1) startIndex = 0; // Fallback
                 
                 // Vygenerujeme presne 6 hodinových blokov v rozostupe 4 hodín (pokrýva 24h)
                 for (let i = 0; i < 6; i++) {
                     const hIndex = startIndex + (i * 4) + 1; // +1, aby prvá ikona ukazovala už blízku budúcnosť
-                    if (hIndex >= dataAuto.hourly.temperature_2m.length) break;
+                    if (hIndex >= dataIcon.hourly.temperature_2m.length) break;
                     
-                    const fTemp = Math.round(dataAuto.hourly.temperature_2m[hIndex]);
-                    const fCode = dataAuto.hourly.weathercode[hIndex];
+                    const fTemp = Math.round(dataIcon.hourly.temperature_2m[hIndex]);
+                    const fCode = dataIcon.hourly.weathercode[hIndex];
                     
-                    // 2. Čas čítame priamo ako text z Open-Meteo dát (vyhneme sa tak prepočtu zón v telefóne)
-                    const timeStr = dataAuto.hourly.time[hIndex]; // napr. "2026-07-07T05:00"
-                    const fHour = parseInt(timeStr.substring(11, 13), 10); // Vysekne len hodinu (05)
-                    const fTime = timeStr.substring(11, 16); // Vysekne hodinu a minúty (05:00)
+                    // Čas čítame priamo ako text z Open-Meteo dát
+                    const timeStr = dataIcon.hourly.time[hIndex]; 
+                    const fHour = parseInt(timeStr.substring(11, 13), 10); 
+                    const fTime = timeStr.substring(11, 16);
                     
                     // Zistíme presný deň a jeho východ/západ slnka (tiež z textu)
                     const dIndex = Math.floor(hIndex / 24); 
