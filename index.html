@@ -209,7 +209,7 @@
             <div class="flex justify-between items-start mb-4">
                 <div>
                     <div class="font-bold text-xl pr-8">Aktuálne počasie</div>
-                    <div class="text-[9px] text-emerald-500/60 uppercase tracking-widest mt-1 mb-3 font-mono">Model: ICON Seamless</div>
+                    <div class="text-[9px] text-emerald-500/60 uppercase tracking-widest mt-1 mb-3 font-mono">Dáta: Lokálne senzory (Mix)</div>
                     <div class="flex items-center gap-3">
                         <div id="detailCurrentTime" class="text-sm font-mono text-zinc-300 font-bold">--:--</div>
                         <button onclick="openSunPhases()" id="detailSunPhaseModal" class="text-xs sm:text-sm px-2.5 py-1 rounded-md border transition-colors cursor-pointer bg-zinc-800 text-zinc-400 border-zinc-700">
@@ -558,6 +558,8 @@
 
         function changeModel(newModel) {
             mainModel = newModel;
+            calendarModel = newModel; // Pridané: Vynúti stiahnutie nových dát aj pre 24h osu
+            document.getElementById('calendarModelSelect').value = newModel; // Pridané: Vizuálne zosynchronizuje aj roletku ukrytú v kalendári
             fetchWeather(currentLat, currentLon, currentCity);
         }
 
@@ -1006,7 +1008,8 @@
             showToast(`Načítavam lokáciu ${currentCity}... ⏳`, true);
             
             try {
-                const iconUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,surface_pressure,weathercode,windspeed_10m,cloudcover,dew_point_2m,visibility,wind_direction_10m,precipitation,wind_gusts_10m&models=${mainModel}&timezone=auto`;
+                // Pre aktuálne počasie VŽDY použijeme 'best_match' (zaručí nám to všetky premenné vrátane viditeľnosti z lokálnych senzorov)
+                const iconUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,surface_pressure,weathercode,windspeed_10m,cloudcover,dew_point_2m,visibility,wind_direction_10m,precipitation,wind_gusts_10m&models=best_match&timezone=auto`;
                 const autoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,windspeed_10m,cloudcover,weathercode&daily=weathercode,temperature_2m_max,sunrise,sunset&forecast_days=16&models=${calendarModel}&timezone=auto`;
                 
                 // Extra link len pre UV index z globálneho modelu (lebo iné modely ho nemusia mať)
