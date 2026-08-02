@@ -1670,12 +1670,12 @@
             }
 
             // Okamžité zistenie približnej polohy podľa IP adresy (bez pýtania povolení)
-            fetch('https://ipapi.co/json/')
+            fetch('https://get.geojs.io/v1/ip/geo.json')
                 .then(response => response.json())
                 .then(data => {
                     if (data.latitude && data.longitude) {
                         // Ak sa podarí zistiť IP, načíta sa tvoje mesto (napr. Košice, Žilina...)
-                        fetchWeather(data.latitude, data.longitude, data.city || "Moja poloha");
+                        fetchWeather(parseFloat(data.latitude), parseFloat(data.longitude), data.city || "Moja poloha");
                     } else {
                         // Poistka, ak by IP služba zlyhala
                         fetchWeather(48.1486, 17.1077, "Bratislava");
