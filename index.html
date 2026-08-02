@@ -1490,27 +1490,25 @@
         }
 
         function useMyLocation() {
-            if (!navigator.geolocation) return alert("Geolokácia nie je podporovaná");
             closeSearchOverlay();
-            showToast("Zisťujem tvoju polohu... 📍", true);
+            showToast("Zisťujem polohu podľa IP... 📍", true);
             const searchInputEl = document.getElementById('searchInput');
             searchInputEl.blur();
-            navigator.geolocation.getCurrentPosition(async p => {
-                const lat = p.coords.latitude;
-                const lon = p.coords.longitude;
-                let cityName = "Moja poloha";
-                try {
-                    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&accept-language=sk`);
-                    const data = await res.json();
-                    if (data && data.address) {
-                        cityName = data.address.city || data.address.town || data.address.village || data.address.county || "Moja poloha";
+            
+            fetch('https://get.geojs.io/v1/ip/geo.json')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.latitude && data.longitude) {
+                        const cityName = data.city || "Moja poloha";
+                        searchInputEl.value = cityName;
+                        fetchWeather(parseFloat(data.latitude), parseFloat(data.longitude), cityName);
+                    } else {
+                        showToast("Nepodarilo sa zistiť polohu z IP ❌");
                     }
-                } catch (e) {}
-                searchInputEl.value = cityName;
-                fetchWeather(lat, lon, cityName);
-            }, () => {
-                showToast("Nepodarilo sa zistiť polohu ❌");
-            });
+                })
+                .catch(() => {
+                    showToast("Nepodarilo sa pripojiť k službe IP ❌");
+                });
         }
 
         function openMapModal() {
