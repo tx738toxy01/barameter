@@ -1494,10 +1494,20 @@
             closeSearchOverlay();
             showToast("Zisťujem tvoju polohu... 📍", true);
             const searchInputEl = document.getElementById('searchInput');
-            searchInputEl.value = "Moja poloha";
             searchInputEl.blur();
-            navigator.geolocation.getCurrentPosition(p => {
-                fetchWeather(p.coords.latitude, p.coords.longitude, "Moja poloha");
+            navigator.geolocation.getCurrentPosition(async p => {
+                const lat = p.coords.latitude;
+                const lon = p.coords.longitude;
+                let cityName = "Moja poloha";
+                try {
+                    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&accept-language=sk`);
+                    const data = await res.json();
+                    if (data && data.address) {
+                        cityName = data.address.city || data.address.town || data.address.village || data.address.county || "Moja poloha";
+                    }
+                } catch (e) {}
+                searchInputEl.value = cityName;
+                fetchWeather(lat, lon, cityName);
             }, () => {
                 showToast("Nepodarilo sa zistiť polohu ❌");
             });
