@@ -118,15 +118,15 @@
                 </div>
 
                 <!-- Stredová zóna - Emoji voľne, podklad iba pod textom -->
-                <div onclick="showTipsModal()" class="cursor-pointer flex flex-col items-center justify-center text-center my-auto flex-1 min-h-0 content-layer group/statusbox" title="Otvorí vyčerpávajúcu predpoveď">
+                <div onclick="showTipsModal()" class="cursor-pointer flex flex-col items-center justify-center text-center my-auto flex-1 min-h-0 content-layer group/statusbox gap-4 sm:gap-6 py-4" title="Otvorí vyčerpávajúcu predpoveď">
                     
                     <!-- Samotná fajfka/emoji úplne bez pozadia -->
-                    <div id="statusEmoji" class="text-[clamp(2rem,9vh,6.5rem)] drop-shadow-xl leading-none shrink-0 transition-transform duration-300 group-hover/statusbox:scale-110 group-hover/statusbox:-translate-y-1 mb-10">⏳</div>
+                    <div id="statusEmoji" class="text-[clamp(2.5rem,10vh,7rem)] drop-shadow-xl leading-none shrink-0 transition-transform duration-300 group-hover/statusbox:scale-110 group-hover/statusbox:-translate-y-1">⏳</div>
                     
                     <!-- Texty zabalené vo vlastnom tmavom podklade -->
-                    <div class="bg-black/20 group-hover/statusbox:bg-black/40 border border-white/10 rounded-[2rem] shadow-inner px-6 py-4 mt-3 transition-all active:scale-[0.98]">
-                        <div id="statusText" class="text-amber-400 text-[clamp(1.1rem,3.5vh,2.75rem)] font-black tracking-tighter leading-tight shrink-0 text-outline transition-all">Načítavam...</div>
-                        <div id="statusDesc" class="text-emerald-300 mt-2.5 text-[clamp(0.7rem,1.8vh,1.25rem)] font-bold shrink-0 text-outline transition-all"></div>
+                    <div class="bg-black/20 group-hover/statusbox:bg-black/40 border border-white/10 rounded-[2rem] shadow-inner px-6 py-3 sm:py-4 transition-all active:scale-[0.98]">
+                        <div id="statusText" class="text-amber-400 text-[clamp(1.2rem,4vh,3rem)] font-black tracking-tighter leading-tight shrink-0 text-outline transition-all">Načítavam...</div>
+                        <div id="statusDesc" class="text-emerald-300 mt-1.5 text-[clamp(0.8rem,2vh,1.4rem)] font-bold shrink-0 text-outline transition-all"></div>
                     </div>
                     
                 </div>
