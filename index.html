@@ -47,7 +47,7 @@
 </head>
 <body class="p-2 sm:p-4 max-w-[95vw] lg:max-w-screen-md mx-auto flex flex-col h-[100dvh] overflow-hidden select-none bg-[#0a0a0b] text-white font-sans">
 
-    <!-- Pôvodný hlavný nadpis a poloha -->
+<!-- Pôvodný hlavný nadpis a poloha -->
     <div class="flex justify-between items-center mb-3 mt-1 shrink-0">
         <div>
             <h1 class="text-4xl md:text-5xl font-black tracking-tighter">Barameter</h1>
@@ -58,24 +58,29 @@
         </button>
     </div>
 
-<!-- Obal pre zdieľanie (Hlavička + Zelené okno sa odfotia spolu) -->
+    <!-- Obal pre zdieľanie (Hlavička + Zelené okno sa odfotia spolu) -->
     <div id="captureArea" class="flex flex-col gap-3 flex-1 min-h-0 pb-2">
         
-        <!-- Stredová zóna - Emoji voľne, podklad iba pod textom -->
-                <div onclick="showTipsModal()" class="cursor-pointer flex flex-col items-center justify-center text-center my-auto flex-1 min-h-0 content-layer group/statusbox" title="Otvorí vyčerpávajúcu predpoveď">
-                    
-                    <!-- Samotná fajfka/emoji úplne bez pozadia -->
-                    <div id="statusEmoji" class="text-[clamp(2rem,9vh,6.5rem)] drop-shadow-xl leading-none shrink-0 transition-transform duration-300 group-hover/statusbox:scale-110 group-hover/statusbox:-translate-y-1 mb-6">⏳</div>
-                    
-                    <!-- Texty zabalené vo vlastnom tmavom podklade -->
-                    <div class="bg-black/20 group-hover/statusbox:bg-black/40 border border-white/10 rounded-3xl shadow-inner px-5 py-2 transition-all active:scale-[0.98]">
-                        <div id="statusText" class="text-amber-400 text-[clamp(1.1rem,3.5vh,2.75rem)] font-black tracking-tighter leading-tight shrink-0 text-outline transition-all">Načítavam...</div>
-                        <div id="statusDesc" class="text-emerald-300 mt-1 text-[clamp(0.7rem,1.8vh,1.25rem)] font-bold shrink-0 text-outline transition-all"></div>
-                    </div>
-                    
+        <!-- Nový moderný hlavičkový blok (zúžený) -->
+        <div class="glass rounded-2xl sm:rounded-[1.5rem] p-2 sm:p-2.5 border border-zinc-700/50 shadow-lg shrink-0 z-20 relative bg-zinc-900/80">
+            <!-- Riadok 1: Lupa, Mesto + Čas (klikateľné), Mapa -->
+            <div class="flex justify-between items-center">
+                <button onclick="openSearchOverlay()" class="text-zinc-400 hover:text-white transition-colors p-1.5 -ml-1 bg-zinc-800/50 hover:bg-zinc-700/50 rounded-lg no-share shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+                </button>
+                
+                <div class="flex items-center justify-center gap-2 flex-1 overflow-hidden px-2 cursor-pointer hover:opacity-80 transition-opacity" onclick="openSearchOverlay()">
+                    <div id="locationName" class="text-lg sm:text-xl font-black text-white tracking-tight uppercase truncate">Bratislava</div>
+                    <div id="currentTime" class="text-emerald-400 font-mono text-xs sm:text-sm font-bold bg-emerald-900/40 px-2 py-0.5 rounded-md border border-emerald-500/30 shrink-0">--:--</div>
                 </div>
 
-<!-- Riadok 2: Fázy dňa presunuté pod zelené okno -->
+                <button onclick="openMapModal()" class="text-zinc-400 hover:text-white transition-colors p-1.5 -mr-1 bg-zinc-800/50 hover:bg-zinc-700/50 rounded-lg no-share shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z" /></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Riadok 2: Fázy dňa presunuté pod zelené okno -->
         <div onclick="openSunPhases()" class="flex justify-between items-center text-sm sm:text-base bg-zinc-800/80 hover:bg-zinc-700/80 border border-zinc-700/50 rounded-xl px-4 sm:px-5 py-2.5 sm:py-3.5 cursor-pointer transition-all shadow-inner min-h-[3.5rem] sm:min-h-[4rem] shrink-0 z-20">
             <div class="flex items-center gap-1.5 text-amber-400 font-bold">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 sm:w-6 sm:h-6"><path d="M12 2v6"/><path d="M12 2l-3 3"/><path d="M12 2l3 3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
@@ -116,12 +121,12 @@
                 <div onclick="showTipsModal()" class="cursor-pointer flex flex-col items-center justify-center text-center my-auto flex-1 min-h-0 content-layer group/statusbox" title="Otvorí vyčerpávajúcu predpoveď">
                     
                     <!-- Samotná fajfka/emoji úplne bez pozadia -->
-                    <div id="statusEmoji" class="text-[clamp(2rem,9vh,6.5rem)] drop-shadow-xl leading-none shrink-0 transition-transform duration-300 group-hover/statusbox:scale-110 group-hover/statusbox:-translate-y-1 mb-2">⏳</div>
+                    <div id="statusEmoji" class="text-[clamp(2rem,9vh,6.5rem)] drop-shadow-xl leading-none shrink-0 transition-transform duration-300 group-hover/statusbox:scale-110 group-hover/statusbox:-translate-y-1 mb-10">⏳</div>
                     
                     <!-- Texty zabalené vo vlastnom tmavom podklade -->
-                    <div class="bg-black/20 group-hover/statusbox:bg-black/40 border border-white/10 rounded-3xl shadow-inner px-5 py-2 transition-all active:scale-[0.98]">
+                    <div class="bg-black/20 group-hover/statusbox:bg-black/40 border border-white/10 rounded-[2rem] shadow-inner px-6 py-4 mt-3 transition-all active:scale-[0.98]">
                         <div id="statusText" class="text-amber-400 text-[clamp(1.1rem,3.5vh,2.75rem)] font-black tracking-tighter leading-tight shrink-0 text-outline transition-all">Načítavam...</div>
-                        <div id="statusDesc" class="text-emerald-300 mt-1 text-[clamp(0.7rem,1.8vh,1.25rem)] font-bold shrink-0 text-outline transition-all"></div>
+                        <div id="statusDesc" class="text-emerald-300 mt-2.5 text-[clamp(0.7rem,1.8vh,1.25rem)] font-bold shrink-0 text-outline transition-all"></div>
                     </div>
                     
                 </div>
