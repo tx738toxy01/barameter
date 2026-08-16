@@ -45,7 +45,7 @@
 .export-mode, .export-mode * { backdrop-filter: none !important; }
     </style>
 </head>
-<body class="p-2 sm:p-4 mx-auto flex flex-col bg-[#0a0a0b] text-white font-sans select-none w-full max-w-[430px] portrait:h-[100dvh] portrait:overflow-hidden landscape:h-[100dvh] landscape:min-h-[850px] landscape:border-x landscape:border-zinc-800/50 landscape:shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+<body class="p-2 sm:p-4 mx-auto flex flex-col bg-[#0a0a0b] text-white font-sans select-none sm:border-x sm:border-zinc-800/50">
 
 <!-- Pôvodný hlavný nadpis a poloha -->
     <div class="flex justify-between items-center mb-3 mt-1 shrink-0">
@@ -1701,5 +1701,29 @@
                 });
         });
     </script>
+<script>
+    function fixAppDimensions() {
+        const isLandscape = window.innerWidth > window.innerHeight;
+        const body = document.body;
+        
+        const shortSide = Math.min(window.screen.width, window.screen.height);
+        const longSide = Math.max(window.screen.width, window.screen.height);
+        
+        if (isLandscape) {
+            body.style.width = shortSide + 'px';
+            body.style.height = longSide + 'px';
+            body.style.overflowY = 'auto';
+            body.style.boxShadow = '0 0 50px rgba(0,0,0,0.5)';
+        } else {
+            body.style.width = '100%';
+            body.style.height = '100dvh';
+            body.style.overflowY = 'hidden';
+            body.style.boxShadow = 'none';
+        }
+    }
+    
+    window.addEventListener('resize', fixAppDimensions);
+    fixAppDimensions();
+</script>
 </body>
 </html>
