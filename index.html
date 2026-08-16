@@ -81,80 +81,72 @@
         </div>
 
         <!-- Riadok 2: Fázy dňa presunuté pod zelené okno -->
-        <div onclick="openSunPhases()" class="flex justify-between items-center text-sm sm:text-base bg-zinc-800/80 hover:bg-zinc-700/80 border border-zinc-700/50 rounded-xl px-4 sm:px-5 py-2.5 sm:py-3.5 cursor-pointer transition-all shadow-inner min-h-[3.5rem] sm:min-h-[4rem] max-h-[5rem] flex-[0.15] z-20">
-            <div class="flex items-center gap-1.5 text-amber-400 font-bold">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 sm:w-6 sm:h-6"><path d="M12 2v6"/><path d="M12 2l-3 3"/><path d="M12 2l3 3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
-                <span id="mainSunrise" class="text-base sm:text-lg">--:--</span>
+        <div onclick="openSunPhases()" class="flex justify-between items-center text-sm bg-zinc-800/80 hover:bg-zinc-700/80 border border-zinc-700/50 rounded-xl px-4 py-2 sm:py-2.5 cursor-pointer transition-all shadow-inner shrink-0 z-20">
+            <div class="flex items-center gap-1 text-amber-400 font-bold">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 sm:w-5 sm:h-5"><path d="M12 2v6"/><path d="M12 2l-3 3"/><path d="M12 2l3 3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
+                <span id="mainSunrise" class="text-sm sm:text-base">--:--</span>
             </div>
-            <div id="detailSunPhase" class="truncate px-2 text-center flex-1 text-base sm:text-lg">Načítavam...</div>
-            <div class="flex items-center gap-1.5 text-indigo-400 font-bold">
-                <span id="mainSunset" class="text-base sm:text-lg">--:--</span>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 sm:w-6 sm:h-6"><path d="M12 10V2"/><path d="M12 10l-3-3"/><path d="M12 10l3-3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
+            <div id="detailSunPhase" class="truncate px-2 text-center flex-1 text-sm sm:text-base">Načítavam...</div>
+            <div class="flex items-center gap-1 text-indigo-400 font-bold">
+                <span id="mainSunset" class="text-sm sm:text-base">--:--</span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 sm:w-5 sm:h-5"><path d="M12 10V2"/><path d="M12 10l-3-3"/><path d="M12 10l3-3"/><path d="M4.93 10.93l1.41 1.41"/><path d="M2 18h20"/><path d="M20 14h-2"/><path d="M15 14c0-2.21-1.79-4-4-4s-4 1.79-4 4"/><path d="M4 14H2"/></svg>
             </div>
         </div>
 
         <!-- Hlavné zelené okno (Status Card) -->
-        <div id="statusCard" class="glass rounded-[2rem] p-4 sm:p-5 border transition-all duration-300 cursor-pointer flex-1 flex flex-col justify-between min-h-0 shadow-lg overflow-hidden relative status-good">
+        <div id="statusCard" class="glass rounded-[2rem] p-3 sm:p-4 border transition-all duration-300 cursor-pointer flex-1 flex flex-col justify-between min-h-0 shadow-lg overflow-hidden relative status-good gap-2">
             <div id="weatherAnimBg" class="anim-bg-layer"></div> 
             
-            <div class="flex flex-col flex-1 min-h-0 z-10 select-none relative">
-                
-                <div class="flex justify-between items-center content-layer mb-2 z-20 gap-3">
-                    <div onclick="openExtendedTips()" class="cursor-pointer flex items-center gap-2 bg-black/20 hover:bg-black/35 border border-white/10 px-4 py-2 rounded-2xl transition-all shadow-sm active:scale-95 group/tipsbtn" title="Otvorí Bárine pokyny pre nakrúcanie">
-                        <span class="text-xl md:text-2xl font-black text-emerald-400 tracking-tight group-hover/tipsbtn:text-emerald-300 transition-colors drop-shadow-md">Bára, a čo teraz?</span>
-                        <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded-lg border border-emerald-500/30 uppercase tracking-wider hidden sm:inline-block">Tipy</span>
-                    </div>
-                    
-                    <div class="flex items-center gap-2 shrink-0">
-                        <!-- Tlačidlo SHMÚ Radaru -->
-                        <button onclick="event.stopImmediatePropagation(); openRadarModal()" class="text-blue-400 hover:text-blue-300 transition-colors p-2.5 bg-black/20 hover:bg-black/40 rounded-xl backdrop-blur-sm no-share border border-white/10 shadow-sm active:scale-95" title="Zrážkový radar">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V19m-4-2.5v1.5m8-1.5v1.5M4 12a8 8 0 0115.3-2.9C21 9.4 22 10.6 22 12c0 1.6-1.3 3-3 3H5c-1.6 0-3-1.4-3-3z" /></svg>
-                        </button>
-                        <!-- Tlačidlo Zdieľať -->
-                        <button onclick="event.stopImmediatePropagation(); shareWindow('captureArea')" class="text-white hover:text-emerald-400 transition-colors p-2.5 bg-black/20 hover:bg-black/40 rounded-xl backdrop-blur-sm no-share border border-white/10 shadow-sm active:scale-95" title="Zdieľať">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" /></svg>
-                        </button>
-                    </div>
+            <!-- TOP BUTTONS -->
+            <div class="flex justify-between items-center content-layer z-20 gap-2 shrink-0">
+                <div onclick="openExtendedTips()" class="cursor-pointer flex items-center gap-1.5 sm:gap-2 bg-black/20 hover:bg-black/35 border border-white/10 px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl transition-all shadow-sm active:scale-95 group/tipsbtn" title="Otvorí Bárine pokyny pre nakrúcanie">
+                    <span class="text-lg sm:text-xl md:text-2xl font-black text-emerald-400 tracking-tight group-hover/tipsbtn:text-emerald-300 transition-colors drop-shadow-md">Bára, a čo teraz?</span>
+                    <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded-lg border border-emerald-500/30 uppercase tracking-wider hidden sm:inline-block">Tipy</span>
                 </div>
+                
+                <div class="flex items-center gap-2 shrink-0">
+                    <button onclick="event.stopImmediatePropagation(); openRadarModal()" class="text-blue-400 hover:text-blue-300 transition-colors p-2 bg-black/20 hover:bg-black/40 rounded-xl backdrop-blur-sm no-share border border-white/10 shadow-sm active:scale-95" title="Zrážkový radar">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V19m-4-2.5v1.5m8-1.5v1.5M4 12a8 8 0 0115.3-2.9C21 9.4 22 10.6 22 12c0 1.6-1.3 3-3 3H5c-1.6 0-3-1.4-3-3z" /></svg>
+                    </button>
+                    <button onclick="event.stopImmediatePropagation(); shareWindow('captureArea')" class="text-white hover:text-emerald-400 transition-colors p-2 bg-black/20 hover:bg-black/40 rounded-xl backdrop-blur-sm no-share border border-white/10 shadow-sm active:scale-95" title="Zdieľať">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" /></svg>
+                    </button>
+                </div>
+            </div>
 
-                <!-- Stredová zóna - Emoji voľne, podklad iba pod textom -->
-                <div onclick="showTipsModal()" class="cursor-pointer flex flex-col items-center justify-center text-center my-auto flex-1 min-h-0 content-layer group/statusbox gap-4 sm:gap-6 py-4" title="Otvorí vyčerpávajúcu predpoveď">
-                    
-                    <!-- Samotná fajfka/emoji úplne bez pozadia -->
-                    <div id="statusEmoji" class="text-[clamp(2.5rem,10vh,7rem)] drop-shadow-xl leading-none shrink-0 transition-transform duration-300 group-hover/statusbox:scale-110 group-hover/statusbox:-translate-y-1">⏳</div>
-                    
-                    <!-- Texty zabalené vo vlastnom tmavom podklade -->
-                    <div class="bg-black/20 group-hover/statusbox:bg-black/40 border border-white/10 rounded-[2rem] shadow-inner px-6 py-3 sm:py-4 transition-all active:scale-[0.98]">
-                        <div id="statusText" class="text-amber-400 text-[clamp(1.2rem,4vh,3rem)] font-black tracking-tighter leading-tight shrink-0 text-outline transition-all">Načítavam...</div>
-                        <div id="statusDesc" class="text-emerald-300 mt-1.5 text-[clamp(0.8rem,2vh,1.4rem)] font-bold shrink-0 text-outline transition-all"></div>
-                    </div>
-                    
+            <!-- MIDDLE EMOJI & TEXT -->
+            <div onclick="showTipsModal()" class="cursor-pointer flex flex-col items-center justify-center text-center my-auto flex-1 min-h-0 content-layer group/statusbox gap-1 sm:gap-2 py-1" title="Otvorí vyčerpávajúcu predpoveď">
+                <div id="statusEmoji" class="text-[clamp(3rem,8vh,6rem)] drop-shadow-xl leading-none shrink-0 transition-transform duration-300 group-hover/statusbox:scale-110">⏳</div>
+                
+                <div class="bg-black/20 group-hover/statusbox:bg-black/40 border border-white/10 rounded-2xl shadow-inner px-4 py-2 mt-1 sm:mt-2 transition-all active:scale-[0.98] flex flex-col justify-center min-h-0 shrink">
+                    <div id="statusText" class="text-amber-400 text-[clamp(1.1rem,3.5vh,2.5rem)] font-black tracking-tighter leading-tight shrink text-outline transition-all truncate">Načítavam...</div>
+                    <div id="statusDesc" class="text-emerald-300 mt-0.5 text-[clamp(0.7rem,2vh,1.2rem)] font-bold shrink text-outline transition-all truncate"></div>
                 </div>
             </div>
     
-            <div onclick="event.stopImmediatePropagation(); openTodayDetail()" class="shrink-0 w-full mt-auto mb-0 content-layer bg-black/20 hover:bg-black/35 border border-white/5 rounded-[2rem] p-5 sm:p-6 shadow-inner cursor-pointer transition-all z-20">
-                <div class="text-xs sm:text-sm font-normal text-emerald-400 mb-4 uppercase tracking-wider text-center">Predpoveď na ďalších 24 hodín</div>
+            <!-- BOTTOM 24H FORECAST -->
+            <div onclick="event.stopImmediatePropagation(); openTodayDetail()" class="shrink-0 w-full content-layer bg-black/20 hover:bg-black/35 border border-white/5 rounded-2xl p-2 sm:p-3 shadow-inner cursor-pointer transition-all z-20 flex flex-col justify-between gap-1">
+                <div class="text-[9px] sm:text-[10px] font-normal text-emerald-400 uppercase tracking-wider text-center shrink-0 leading-none mb-0.5">Predpoveď na ďalších 24 hodín</div>
                 
-                <div id="forecast24h" class="grid grid-cols-6 gap-1 sm:gap-2 text-center mb-4">
-                    <!-- Sem sa dynamicky vygeneruje 6 ikoniek cez JavaScript -->
-                    <div class="col-span-6 text-zinc-400 text-sm py-2">Načítavam...</div>
+                <div id="forecast24h" class="grid grid-cols-6 gap-0.5 text-center shrink-0">
+                    <div class="col-span-6 text-zinc-400 text-xs py-0.5">Načítavam...</div>
                 </div>
                 
-                <div class="flex items-center gap-2 text-[9px] sm:text-[10px] md:text-xs text-white/40 font-mono uppercase tracking-widest w-full border-t border-white/10 pt-4 mt-2">
+                <div class="flex items-center text-[8px] sm:text-[9px] text-white/40 font-mono uppercase tracking-widest w-full border-t border-white/10 pt-1.5 shrink-0 mt-0.5">
                     <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" onclick="event.stopImmediatePropagation()" class="hover:text-white/80 transition-colors whitespace-nowrap shrink-0">Data by <span class="font-bold text-white/60">Open-Meteo</span></a>
                     
-                    <div class="flex-1 relative flex items-center bg-black/40 hover:bg-black/60 border border-emerald-500/40 hover:border-emerald-400 rounded-lg sm:rounded-xl px-2 py-1 sm:px-2.5 sm:py-1.5 transition-all cursor-pointer text-white font-sans shadow-sm" onclick="event.stopImmediatePropagation()">
-                        <span class="text-zinc-400 mr-1 font-mono uppercase text-[8px] sm:text-[9px] shrink-0">Model:</span>
-                        <select id="modelSelect" onchange="changeModel(this.value)" class="bg-transparent appearance-none text-emerald-400 font-bold outline-none cursor-pointer pr-4 relative z-10 text-[9px] sm:text-xs flex-1 w-full min-w-0">
+                    <div class="flex-1 relative flex items-center bg-black/40 hover:bg-black/60 border border-emerald-500/40 hover:border-emerald-400 rounded-md px-1.5 py-0.5 transition-all cursor-pointer text-white font-sans shadow-sm ml-2" onclick="event.stopImmediatePropagation()">
+                        <span class="text-zinc-400 mr-1 font-mono uppercase text-[7px] sm:text-[8px] shrink-0">Model:</span>
+                        <select id="modelSelect" onchange="changeModel(this.value)" class="bg-transparent appearance-none text-emerald-400 font-bold outline-none cursor-pointer pr-3 relative z-10 text-[8px] sm:text-[9px] flex-1 w-full min-w-0">
                             <option value="icon_seamless" class="bg-zinc-900 text-white">ICON (EU)</option>
                             <option value="metno_seamless" class="bg-zinc-900 text-white">YR.NO (Nórsko)</option>
                             <option value="gfs_seamless" class="bg-zinc-900 text-white">GFS (USA)</option>
                             <option value="best_match" class="bg-zinc-900 text-white">AUTO (Mix)</option>
                         </select>
-                        <span class="absolute right-1 sm:right-2 text-[7px] sm:text-[8px] pointer-events-none text-emerald-400">▼</span>
+                        <span class="absolute right-1 text-[6px] pointer-events-none text-emerald-400">▼</span>
                     </div>
                 </div>
-            </div> <!-- Ukončenie spodného panelu s počasím -->
+            </div>
         </div> <!-- Ukončenie celého zeleného okna statusCard -->
 
     </div> <!-- Ukončenie captureArea -->
