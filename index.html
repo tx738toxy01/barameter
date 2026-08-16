@@ -45,7 +45,7 @@
 .export-mode, .export-mode * { backdrop-filter: none !important; }
     </style>
 </head>
-<body class="p-2 sm:p-4 max-w-[95vw] lg:max-w-screen-md mx-auto flex flex-col h-[100dvh] overflow-hidden select-none bg-[#0a0a0b] text-white font-sans">
+<body class="p-2 sm:p-4 mx-auto flex flex-col bg-[#0a0a0b] text-white font-sans select-none portrait:w-full portrait:h-[100dvh] portrait:overflow-hidden landscape:w-[100dvh] landscape:h-[100dvw] landscape:overflow-y-auto landscape:border-x landscape:border-zinc-800/50 landscape:shadow-[0_0_50px_rgba(0,0,0,0.5)]">
 
 <!-- Pôvodný hlavný nadpis a poloha -->
     <div class="flex justify-between items-center mb-3 mt-1 shrink-0">
@@ -1701,12 +1701,5 @@
                 });
         });
     </script>
-
-    <div class="hidden landscape:flex fixed inset-0 z-[9999] bg-zinc-950 flex-col items-center justify-center p-6 text-center">
-        <div class="text-7xl mb-6 drop-shadow-lg">📱</div>
-        <div class="text-3xl font-black text-white mb-3">Nespi!</div>
-        <div class="text-zinc-400 text-lg">Prosím ťa, otoč si telefón späť na výšku, takto sa spolu baviť nebudeme.</div>
-    </div>
-
 </body>
 </html>
