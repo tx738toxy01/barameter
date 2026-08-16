@@ -1707,7 +1707,8 @@
         const body = document.body;
         
         const shortSide = Math.min(window.screen.width, window.screen.height);
-        const longSide = Math.max(window.screen.width, window.screen.height);
+        // Zastropujeme výšku na max 1000px. Na tablete to neurobí nič, ale PC to zachráni pred roztiahnutím dizajnu.
+        const longSide = Math.min(Math.max(window.screen.width, window.screen.height), 1000);
         
         if (isLandscape) {
             body.style.width = shortSide + 'px';
